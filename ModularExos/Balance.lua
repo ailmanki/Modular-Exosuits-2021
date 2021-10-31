@@ -60,9 +60,9 @@ Exo.PhaseModuleTech = kTechId.ExosuitTech
 Exo.ThrusterModuleTech = kTechId.ExosuitTech
 
 --Weapons
-/*
+
 --RAILGUN --
-kRailgunDamage = 30
+--[[kRailgunDamage = 30
 kRailChargeDamage = 50
 Railgun.kRailChargeDamage = 50
 Railgun.kChargeTime = 2
@@ -72,8 +72,8 @@ Railgun.kRailgunSpread = Math.Radians(0)
 Railgun.kBulletSize = 0.3
 Railgun.kRailgunMovementSlowdown = 0.8
 Railgun.kRailgunChargeTime = 1.4
-Railgun.kRailgunDamage = 30
-*/
+Railgun.kRailgunDamage = 30]]
+
 
 kRailgunWeight = 0.1
 kRailgunDamage = 35

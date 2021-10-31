@@ -441,11 +441,11 @@ local function UpdateOverheated(self, player)
         self.overheated = true
         self:OnPrimaryAttackEnd(player)
         
-       /* if self:GetIsLeftSlot() then
+--[[        if self:GetIsLeftSlot() then
             player:TriggerEffects("minigun_overheated_left")
         elseif self:GetIsRightSlot() then    
             player:TriggerEffects("minigun_overheated_right")
-        end    */
+        end    ]]
         
         StartSoundEffectForPlayer(kOverheatedSoundName, player)
         
