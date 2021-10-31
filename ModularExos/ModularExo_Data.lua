@@ -111,15 +111,15 @@ kExoModuleTypesData = {
         weight = 0.12,
 		requiredTechId = Exo.ExoFlamerTech
     },
-  /*  [kExoModuleTypes.Shield] = {
-        category = kExoModuleCategories.Weapon,
-        powerCost = 0,
-		resourceCost = kExoShieldCost,
-        mapName = ExoShield.kMapName,
-        armType = kExoArmTypes.Claw,
-        weight = kExoShieldWeight,
-		requiredTechId = Exo.ExoShieldTech
-    },  */
+    --[kExoModuleTypes.Shield] = {
+    --    category = kExoModuleCategories.Weapon,
+    --    powerCost = 0,
+	--	resourceCost = kExoShieldCost,
+    --    mapName = ExoShield.kMapName,
+    --    armType = kExoArmTypes.Claw,
+    --    weight = kExoShieldWeight,
+	--	requiredTechId = Exo.ExoShieldTech
+    --},
     
     
     

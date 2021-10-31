@@ -67,8 +67,8 @@ function ExoWelder:OnInitialized()
 
 	
 end
-/*
-local kMuzzleEffectName = PrecacheAsset("cinematics/marine/magmalance/muzzle_flash.cinematic")
+
+--[[local kMuzzleEffectName = PrecacheAsset("cinematics/marine/magmalance/muzzle_flash.cinematic")
 local function CreateMuzzleEffect(self)
 
     local coords = Coords.GetIdentity()
@@ -78,8 +78,8 @@ local function CreateMuzzleEffect(self)
     cinematic:SetCinematic(kMuzzleEffectName)
     cinematic:SetCoords(coords)
 
-end
-*/
+end]]
+
 function ExoWelder:OnTag(tagName)
 
     if tagName == "deploy_end" then

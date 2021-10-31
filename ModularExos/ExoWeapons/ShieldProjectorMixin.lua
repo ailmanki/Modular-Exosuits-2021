@@ -105,7 +105,7 @@ end
 
 function ShieldProjectorMixin:OnEntityChange(oldId)
     if Server and self.nearbyShieldableEntityIdMap[oldId] then
-       // Print("Entity %s out of range (deleted)", oldId)
+        -- Print("Entity %s out of range (deleted)", oldId)
         local entityI = self.nearbyShieldableEntityIdMap[oldId]
         table.remove(self.nearbyShieldableEntityIdList, entityI)
         self.nearbyShieldableEntityIdMap[oldId] = nil
@@ -124,7 +124,7 @@ function ShieldProjectorMixin:UpdateShieldProjectorMixin(deltaTime)
                 if nearbyEntity:GetIsAlive() then
                     nearbyEntityIdMap[nearbyEntity:GetId()] = true
                     if not self.nearbyShieldableEntityIdMap[nearbyEntity:GetId()] then
-                      //  Print("New entity %s (%s) in range", nearbyEntity:GetId(), nearbyEntity:GetClassName())
+                        --  Print("New entity %s (%s) in range", nearbyEntity:GetId(), nearbyEntity:GetClassName())
                         
                         local entityI = #self.nearbyShieldableEntityIdList+1
                         self.nearbyShieldableEntityIdList[entityI] = nearbyEntity:GetId()

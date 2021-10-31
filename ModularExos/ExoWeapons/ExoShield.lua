@@ -374,11 +374,11 @@ function ExoShield:OnUpdateRender()
         self.shieldModel = Client.CreateRenderModel(RenderScene.Zone_Default)
         self.shieldModel:SetModel("models/effects/arc_blast.model")
     end
-   /* local rotAngles = Angles(-math.pi/2, 0, 0)
+    --[[ local rotAngles = Angles(-math.pi/2, 0, 0)
     coords = coords*rotAngles:GetCoords()
     coords.xAxis = coords.xAxis*24.00
     coords.yAxis = coords.yAxis*0.05
-    coords.zAxis = coords.zAxis*15.00*(0.1+math.max(0, self.shieldEffectScalar-0.5)/0.5*0.9)*/
+    coords.zAxis = coords.zAxis*15.00*(0.1+math.max(0, self.shieldEffectScalar-0.5)/0.5*0.9) ]]
     if self.shieldModel then
         self.shieldModel:SetIsVisible(self.shieldEffectScalar > 0)
         self.shieldModel:SetCoords(coords)
@@ -426,7 +426,7 @@ function ExoShield:OnUpdateRender()
             )
 		    local rate = RRR or 11+3*(2*math.random()-1)
             local angRate = math.pi*2/(4+1*(2*math.random()-1))
-           /* if trace.fraction ~= 1 then
+            --[[ if trace.fraction ~= 1 then
                 rate = rate*3
                 local normal = -trace.normal
                 newCoords = Angles(0, math.atan2(normal.x, normal.z), 0):GetCoords()
@@ -435,7 +435,7 @@ function ExoShield:OnUpdateRender()
                 --newCoords.xAxis = newCoords.xAxis*f
                 --newCoords.yAxis = newCoords.yAxis*f
                 --newCoords.zAxis = newCoords.zAxis*f
-            end*/
+            end ]]
             
             local prevCoords = self.cinematicCoordsList[cinematicI]
             local prevAngles = Angles() prevAngles:BuildFromCoords(prevCoords)

@@ -1,12 +1,12 @@
-// ======= Copyright (c) 2012, Unknown Worlds Entertainment, Inc. All rights reserved. ==========
-//
-// lua\GUILeftMinigunDisplay.lua
-//
-// Created by: Brian Cronin (brianc@unknownworlds.com)
-//
-// Displays the heat amount for the Exo's Minigun.
-//
-// ========= For more information, visit us at http://www.unknownworlds.com =====================
+--[[ ======= Copyright (c) 2012, Unknown Worlds Entertainment, Inc. All rights reserved. ==========
+
+ lua\GUILeftMinigunDisplay.lua
+
+ Created by: Brian Cronin (brianc@unknownworlds.com)
+
+ Displays the heat amount for the Exo's Minigun.
+
+ ========= For more information, visit us at http://www.unknownworlds.com =====================]]
 
 local animHeatAmount = 0
 local animHeatDir = 1
