@@ -34,6 +34,6 @@ function ShieldedMixin:GetShieldEntity()
     return Shared.GetEntity(self.shieldEntityId)
 end
 
-function ShieldedMixin:
-    
-end
+--function ShieldedMixin:
+--
+--end
