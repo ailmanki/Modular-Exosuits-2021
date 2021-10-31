@@ -1,4 +1,5 @@
-/*function GetPrecachedCosmeticMaterial( className, variantId, viewOnly )
+--[[
+function GetPrecachedCosmeticMaterial( className, variantId, viewOnly )
     if className == "Claw"  then
 		className = "Minigun"
 	elseif (className == "ExoWelder") or (className ==  "ExoFlamer") then
@@ -36,4 +37,4 @@
 
     Log("ERROR: No world materials matched for Class[%s] of Variant[%s]", className, variantId)
     return false
-end*/
+end]]
