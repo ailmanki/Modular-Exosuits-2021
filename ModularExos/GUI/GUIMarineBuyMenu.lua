@@ -368,8 +368,8 @@ function GUIMarineBuyMenu:_InitializeExoModularButtons()
 		end
 		
 		panelBackground:SetPosition(Vector(
-            kConfigAreaXOffset+panelX ,
-				kConfigAreaYOffset + panelY, 0
+            kConfigAreaXOffset + panelX ,
+			kConfigAreaYOffset + panelY, 0
 		))
 		self.rightSideRoot:AddChild(panelBackground)
 	end
