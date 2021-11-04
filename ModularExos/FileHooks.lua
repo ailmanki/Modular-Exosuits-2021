@@ -7,6 +7,7 @@ ModLoader.SetupFileHook( "lua/Globals.lua", "lua/ModularExos/Globals.lua", "post
 
 ModLoader.SetupFileHook( "lua/MarineTeam.lua", "lua/ModularExos/MarineTeam.lua", "post" )
 ModLoader.SetupFileHook( "lua/Marine.lua", "lua/ModularExos/Marine.lua", "post" )
+--ModLoader.SetupFileHook( "lua/NetworkMessages.lua", "lua/ModularExos/NetworkMessages.lua", "post" )
 
 
 -- Load new Exosuit weapons through Entity.lua
@@ -22,6 +23,7 @@ ModLoader.SetupFileHook( "lua/Weapons/DotMarker.lua", "lua/ModularExos/ExoWeapon
 -- Exosuit releavant
 ModLoader.SetupFileHook( "lua/ReadyRoomExo.lua", "lua/ModularExos/ReadyRoomExo.lua", "post" )
 ModLoader.SetupFileHook( "lua/Player_Client.lua", "lua/ModularExos/Player_Client.lua", "post" )
+ModLoader.SetupFileHook( "lua/GUIExoThruster.lua", "lua/ModularExos/GUI/GUIExoThruster.lua", "post" )
 
 
 

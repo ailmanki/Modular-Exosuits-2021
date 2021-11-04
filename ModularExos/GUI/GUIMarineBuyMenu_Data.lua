@@ -160,11 +160,11 @@ GUIMarineBuyMenu.kExoModuleData = {
 		image          = kInventoryIconsTexture,
 		imageTexCoords = { GetSmallIconPixelCoordinates(kTechId.Welder) },
 	},
-	--[kExoModuleTypes.Shield] = {
-	--    label = "SHIELD", tooltip = "EXO_WEAPON_SHIELD_TOOLTIP",
-	--    image = kInventoryIconsTexture,
-	--    imageTexCoords = {GetSmallIconPixelCoordinates(kTechId.PulseGrenade)},
-	--},
+    [kExoModuleTypes.Shield] = {
+        label = "SHIELD", tooltip = "EXO_WEAPON_SHIELD_TOOLTIP",
+        image = kInventoryIconsTexture,
+        imageTexCoords = {GetSmallIconPixelCoordinates(kTechId.PulseGrenade)},
+    },
 	[kExoModuleTypes.Railgun]      = {
 		label          = "RAILGUN", tooltip = "EXO_WEAPON_RAILGUN_TOOLTIP",
 		image          = kInventoryIconsTexture,

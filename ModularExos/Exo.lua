@@ -13,7 +13,7 @@ Exo.kDualAnimationGraph = PrecacheAsset("models/marine/exosuit/exosuit_mm.animat
 Exo.kDualRailgunModelName = PrecacheAsset("models/marine/exosuit/exosuit_rr.model")
 Exo.kDualRailgunAnimationGraph = PrecacheAsset("models/marine/exosuit/exosuit_rr.animation_graph")
 
-local kMaxSpeed = 8
+local kMaxSpeed = 7.5
 
 
 
@@ -36,11 +36,6 @@ kExoFuelRechargeRate = 10
 kMinigunFuelUsageScalar = 1
 kRailgunFuelUsageScalar = 1.5
 local kExoDeployDuration = 1.4
-local kThrustersCooldownTime = 2.5
-local kThrusterDuration = 1.5
-local kThrusterRefuelCooldownTime = 0.75
-local kMinTimeBetweenThrusterActivations = 0.75
-local kMinFuelForThrusterActivation = 0.3
 
 local networkVars = {
     powerModuleType    = "enum kExoModuleTypes",
@@ -149,7 +144,7 @@ debug.setupvaluex(Exo.GetMaxSpeed, "kMaxSpeed", kMaxSpeed)
 
 local orig_Exo_GetIsThrusterAllowed = Exo.GetIsThrusterAllowed
 function Exo:GetIsThrusterAllowed()
-	return self.hasThrusters and orig_Exo_GetIsThrusterAllowed(self)
+	return (not self.shieldActive or not self.repairActive) and (self.hasThrusters and orig_Exo_GetIsThrusterAllowed(self))
 end
 
 function Exo:GetSlowOnLand()
@@ -352,8 +347,8 @@ function Exo:HandleButtons(input)
     Player.HandleButtons(self, input)
     
     self:UpdateThrusters(input)
-    --self:UpdateRepairs(input)
-    --self:UpdateShields(input)
+    self:UpdateRepairs(input)
+    self:UpdateShields(input)
 
     if bit.band(input.commands, Move.Drop) ~= 0 then
        self:EjectExo()
@@ -361,46 +356,15 @@ function Exo:HandleButtons(input)
     
 end
 
-function Exo:UpdateThrusters(input)
-
-    local lastThrustersActive = self.thrustersActive
-    local jumpPressed = bit.band(input.commands, Move.Jump) ~= 0
-    local movementSpecialPressed = bit.band(input.commands, Move.MovementModifier) ~= 0
-    local thrusterDesired = (movementSpecialPressed) and self:GetIsThrusterAllowed()
-    
-    if thrusterDesired ~= lastThrustersActive then
-    
-        if thrusterDesired then
-                
-            local desiredMode = 
-                jumpPressed and kExoThrusterMode.Vertical 
-                or input.move.x < 0 and kExoThrusterMode.StrafeLeft 
-                or input.move.x > 0 and kExoThrusterMode.StrafeRight
-                or input.move.z < 0 and kExoThrusterMode.DodgeBack 
-                or input.move.z > 0 and kExoThrusterMode.Horizontal
-                or nil
-                
-            local now = Shared.GetTime()
-            if desiredMode and self:GetFuel() >= kMinFuelForThrusterActivation and
-                    now >= self.timeThrustersEnded + kMinTimeBetweenThrusterActivations then
-
-                self:HandleThrusterStart(desiredMode)
-            end
-
-        else
-            self:HandleThrusterEnd()
-        end
-        
-    end
-    
-    if self.thrustersActive and self:GetFuel() == 0 then
-        self:HandleThrusterEnd()
-    end
-
-end
-
 function Exo:CalculateWeight()
     return ModularExo_GetConfigWeight(ModularExo_ConvertNetMessageToConfig(self))
 end
+
+
+
+--ReplaceLocals(Exo.UpdateThrusters, { kThrusterMinimumFuel = kExoThrusterMinFuel })
+--ReplaceLocals(Exo.ModifyVelocity, { kHorizontalThrusterAddSpeed = kExoThrusterMaxSpeed })
+--ReplaceLocals(Exo.ModifyVelocity, { kThrusterHorizontalAcceleration = kExoThrusterLateralAccel })
+--ReplaceLocals(Exo.ModifyVelocity, { kThrusterUpwardsAcceleration = kExoThrusterVerticleAccel })
 
 Shared.LinkClassToMap("Exo", Exo.kMapName, networkVars, true)
