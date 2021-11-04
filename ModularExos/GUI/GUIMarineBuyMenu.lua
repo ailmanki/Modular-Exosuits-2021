@@ -113,7 +113,7 @@ local kItemIconYOffset            = {}
 local kEquippedIconTopOffset      = GUIScale(58)
 
 local kMenuWidth                  = GUIScale(190)
-local kPadding                    = GUIScale(8)
+local kPadding                    = (8)
 
 local kEquippedWidth              = GUIScale(128)
 
@@ -127,15 +127,15 @@ local kResearchTextSize           = GUIScale(24)
 
 local kResourceDisplayHeight      = GUIScale(64)
 
-local kResourceIconWidth          = GUIScale(32)
-local kResourceIconHeight         = GUIScale(32)
+local kResourceIconWidth          = (32)
+local kResourceIconHeight         = (32)
 
 local kMouseOverInfoTextSize      = GUIScale(20)
 local kMouseOverInfoOffset        = Vector(GUIScale(-30), GUIScale(-20), 0)
 local kMouseOverInfoResIconOffset = Vector(GUIScale(-40), GUIScale(-60), 0)
 
-local kButtonWidth                = GUIScale(160)
-local kButtonHeight               = GUIScale(64)
+local kButtonWidth                = 160 -- GUIScale(160)
+local kButtonHeight               = 64 --GUIScale(64)
 
 local kItemNameOffsetX            = GUIScale(28)
 local kItemNameOffsetY            = GUIScale(256)
@@ -170,25 +170,25 @@ local kConfigAreaYOffset                     = kPadding
 local kUpgradeButtonAreaHeight               = GUIScale(30)
 --GUIMarineBuyMenu.kUpgradeButtonWidth = GUIScale(160)
 --GUIMarineBuyMenu.kUpgradeButtonHeight = GUIScale(64)
-local kConfigAreaWidth                       = 1000
-local kConfigAreaHeight                      = 900
+local kConfigAreaWidth = 1000
+local kConfigAreaHeight = 900
 
 local kSlotPanelBackgroundColor              = Color(0.5, 0.8, 0.8, 1)
 
-local kSmallModuleButtonSize                 = GUIScale(Vector(60, 60, 0))
-local kWideModuleButtonSize                  = GUIScale(Vector(150, 60, 0))
-local kMediumModuleButtonSize                = GUIScale(Vector(100, 60, 0))
-local kWeaponImageSize                       = GUIScale(Vector(80, 40, 0))
-local kUtilityImageSize                      = GUIScale(Vector(39, 39, 0))
-local kModuleButtonGap                       = GUIScale(7)
-local kPanelTitleHeight                      = GUIScale(35)
+local kSmallModuleButtonSize                 = (Vector(60, 60, 0))
+local kWideModuleButtonSize                  = (Vector(150, 60, 0))
+local kMediumModuleButtonSize                = (Vector(100, 60, 0))
+local kWeaponImageSize                       = (Vector(80, 40, 0))
+local kUtilityImageSize                      = (Vector(39, 39, 0))
+local kModuleButtonGap                       = (7)
+local kPanelTitleHeight                      = (35)
 
 GUIMarineBuyMenu.kExoSlotData                = {
 	
 	
 	[kExoModuleSlots.RightArm] = {
 		label      = "RIGHT ARM", --label = "EXO_MODULESLOT_RIGHT_ARM",
-		xp         = 0.0, yp = 0.0, anchorX = GUIItem.Left, gap = kModuleButtonGap * 0.4,
+        xp = 0.15, yp = 0.0, anchorX = GUIItem.Left, gap = kModuleButtonGap*0.4,
 		makeButton = function(self, moduleType, moduleTypeData, offsetX, offsetY)
 			return self:MakeWeaponModuleButton(moduleType, moduleTypeData, offsetX, offsetY, kExoModuleSlots.RightArm)
 		end,
@@ -244,19 +244,23 @@ function GUIMarineBuyMenu:_InitializeExoModularButtons()
 	self.modularExoGraphicItemsToDestroyList = {}
 	self.modularExoModuleButtonList          = {}
 	
+	local kFontSize = 30
 	-------UPGRADE/BUY Button ---
-	self.modularExoBuyButton                 = GUIManager:CreateGraphicItem()
+	self.modularExoBuyButton                 = self:CreateAnimatedGraphicItem()
 	table.insert(self.modularExoGraphicItemsToDestroyList, self.modularExoBuyButton)
+	self.modularExoBuyButton:SetIsScaling(false)
 	self.modularExoBuyButton:SetAnchor(GUIItem.Middle, GUIItem.Center)
 	self.modularExoBuyButton:SetSize(Vector(kButtonWidth, kButtonHeight, 0))
-	self.modularExoBuyButton:SetPosition(Vector(kConfigAreaXOffset + 0.77 * kConfigAreaWidth, kConfigAreaYOffset + 0.8 * kConfigAreaHeight, 0))
+	self.modularExoBuyButton:SetPosition(Vector(kConfigAreaXOffset + 0.77*kConfigAreaWidth,kConfigAreaYOffset+0.8*kConfigAreaHeight ,0))
 	
 	self.modularExoBuyButton:SetTexture(kButtonTexture)
 	self.modularExoBuyButton:SetLayer(kGUILayerPlayerHUDForeground4)
+	self.modularExoBuyButton:SetOptionFlag(GUIItem.CorrectScaling)
 	self.rightSideRoot:AddChild(self.modularExoBuyButton)
 	
-	self.modularExoBuyButtonText = GUIManager:CreateTextItem()
+	self.modularExoBuyButtonText = self:CreateAnimatedTextItem()
 	table.insert(self.modularExoGraphicItemsToDestroyList, self.modularExoBuyButtonText)
+	self.modularExoBuyButtonText:SetIsScaling(false)
 	self.modularExoBuyButtonText:SetAnchor(GUIItem.Middle, GUIItem.Center)
 	self.modularExoBuyButtonText:SetPosition(Vector(0, 0, 0))
 	self.modularExoBuyButtonText:SetFontName(kFont)
@@ -265,10 +269,13 @@ function GUIMarineBuyMenu:_InitializeExoModularButtons()
 	self.modularExoBuyButtonText:SetText("UPGRADE")
 	self.modularExoBuyButtonText:SetFontIsBold(true)
 	self.modularExoBuyButtonText:SetColor(kCloseButtonColor)
+	self.modularExoBuyButtonText:SetOptionFlag(GUIItem.CorrectScaling)
+	GUIMakeFontScale(self.modularExoBuyButtonText, "kAgencyFB", kFontSize)
 	self.modularExoBuyButton:AddChild(self.modularExoBuyButtonText)
 	
-	self.modularExoCostText = GUIManager:CreateTextItem()
+	self.modularExoCostText = self:CreateAnimatedTextItem()
 	table.insert(self.modularExoGraphicItemsToDestroyList, self.modularExoCostText)
+	self.modularExoCostText:SetIsScaling(false)
 	self.modularExoCostText:SetAnchor(GUIItem.Right, GUIItem.Center)
 	self.modularExoCostText:SetPosition(Vector(-kPadding * 7, 0, 0))
 	self.modularExoCostText:SetFontName(kFont)
@@ -277,32 +284,38 @@ function GUIMarineBuyMenu:_InitializeExoModularButtons()
 	self.modularExoCostText:SetText("69")
 	self.modularExoCostText:SetFontIsBold(true)
 	self.modularExoCostText:SetColor(kTextColor)
+	self.modularExoCostText:SetOptionFlag(GUIItem.CorrectScaling)
+	GUIMakeFontScale(self.modularExoCostText, "kAgencyFB", kFontSize)
 	self.modularExoBuyButton:AddChild(self.modularExoCostText)
 	
-	self.modularExoCostIcon = GUIManager:CreateGraphicItem()
+	self.modularExoCostIcon = self:CreateAnimatedGraphicItem()
 	table.insert(self.modularExoGraphicItemsToDestroyList, self.modularExoCostIcon)
+	self.modularExoCostIcon:SetIsScaling(false)
 	self.modularExoCostIcon:SetSize(Vector(kResourceIconWidth * 0.8, kResourceIconHeight * 0.8, 0))
 	self.modularExoCostIcon:SetAnchor(GUIItem.Right, GUIItem.Center)
 	self.modularExoCostIcon:SetPosition(Vector(-kPadding * 11, -kResourceIconHeight * 0.4, 0))
 	self.modularExoCostIcon:SetTexture(kResourceIconTexture)
 	self.modularExoCostIcon:SetColor(kTextColor)
+	self.modularExoCostIcon:SetOptionFlag(GUIItem.CorrectScaling)
 	self.modularExoBuyButton:AddChild(self.modularExoCostIcon)
 	
 	
 	--BUY/UPGRADE BUTTON ENDS HERE
 	
 	for slotType, slotGUIDetails in pairs(GUIMarineBuyMenu.kExoSlotData) do
-		local panelBackground = GUIManager:CreateGraphicItem()
+		local panelBackground = self:CreateAnimatedGraphicItem()
 		table.insert(self.modularExoGraphicItemsToDestroyList, panelBackground)
+		panelBackground:SetIsScaling(false)
 		panelBackground:SetTexture(kButtonTexture)
 		panelBackground:SetColor(kSlotPanelBackgroundColor)
-		panelBackground:SetAnchor(GUIItem.Left, GUIItem.Top)
-		local panelSize    = nil
+		panelBackground:SetOptionFlag(GUIItem.CorrectScaling)
+		local panelSize
 		
 		local slotTypeData = kExoModuleSlotsData[slotType]
 		
-		local panelTitle   = GetGUIManager():CreateTextItem()
+		local panelTitle   =  self:CreateAnimatedTextItem()
 		table.insert(self.modularExoGraphicItemsToDestroyList, panelTitle)
+		panelTitle:SetIsScaling(false)
 		panelTitle:SetFontName(kFont)
 		panelTitle:SetFontIsBold(true)
 		panelTitle:SetPosition(Vector(kPadding * 2, kPadding, 0))
@@ -310,10 +323,11 @@ function GUIMarineBuyMenu:_InitializeExoModularButtons()
 		panelTitle:SetTextAlignmentX(GUIItem.Align_Min)
 		panelTitle:SetTextAlignmentY(GUIItem.Align_Min)
 		panelTitle:SetColor(kTextColor)
+		panelTitle:SetOptionFlag(GUIItem.CorrectScaling)
 		panelTitle:SetText(slotGUIDetails.label)--(Locale.ResolveString("BUY"))
+		GUIMakeFontScale(panelTitle, "kAgencyFB", kFontSize)
 		panelBackground:AddChild(panelTitle)
 		
-		local buttonCount      = 0
 		local startOffsetX     = kPadding * 1
 		local startOffsetY     = kPanelTitleHeight
 		local offsetX, offsetY = startOffsetX, startOffsetY
@@ -341,10 +355,10 @@ function GUIMarineBuyMenu:_InitializeExoModularButtons()
 		end
 		
 		if offsetY == startOffsetY then
-			offsetY = kSmallModuleButtonSize.y
-			panelTitle:SetPosition(Vector(0, 0, 0))
+			offsetY = kSmallModuleButtonSize.y+kPadding*1
+			panelTitle:SetPosition(Vector(50, -20, 0))
 		end
-		panelSize = Vector(kWideModuleButtonSize.x + kPadding * 1.5, offsetY + kPadding * 1, 0)
+		panelSize = Vector(offsetX+kPadding*1.5, offsetY+kPadding*1, 0)
 		
 		panelBackground:SetSize(panelSize)
 		local panelX = slotGUIDetails.xp * kConfigAreaWidth
@@ -354,7 +368,7 @@ function GUIMarineBuyMenu:_InitializeExoModularButtons()
 		end
 		
 		panelBackground:SetPosition(Vector(
-				0 + 0,
+            kConfigAreaXOffset+panelX ,
 				kConfigAreaYOffset + panelY, 0
 		))
 		self.rightSideRoot:AddChild(panelBackground)
@@ -363,48 +377,59 @@ end
 
 function GUIMarineBuyMenu:MakeWeaponModuleButton(moduleType, moduleTypeData, offsetX, offsetY, slotType)
 	local moduleTypeGUIDetails = GUIMarineBuyMenu.kExoModuleData[moduleType]
-	
-	local buttonGraphic        = GUIManager:CreateGraphicItem()
+	local kFontSize = 30
+	local buttonGraphic        = self:CreateAnimatedGraphicItem()
 	table.insert(self.modularExoGraphicItemsToDestroyList, buttonGraphic)
-	buttonGraphic:SetSize(kWideModuleButtonSize)
+	buttonGraphic:SetIsScaling(false)
+	buttonGraphic:SetSize(kWideModuleButtonSize*1.05)
 	buttonGraphic:SetAnchor(GUIItem.Left, GUIItem.Top)
-	buttonGraphic:SetPosition(Vector(0, offsetY, 0))
+    buttonGraphic:SetPosition(Vector(offsetX, offsetY, 0))
 	buttonGraphic:SetTexture(kMenuSelectionTexture)
+	buttonGraphic:SetOptionFlag(GUIItem.CorrectScaling)
 	
-	local weaponLabel = GetGUIManager():CreateTextItem()
+	local weaponLabel = self:CreateAnimatedTextItem()
 	table.insert(self.modularExoGraphicItemsToDestroyList, weaponLabel)
+	weaponLabel:SetIsScaling(false)
 	weaponLabel:SetFontName(kFont)
-	weaponLabel:SetPosition(Vector(0, 0, 0))
+    weaponLabel:SetPosition(Vector(kModuleButtonGap*3.2+0.5, kModuleButtonGap, 0))
 	weaponLabel:SetAnchor(GUIItem.Left, GUIItem.Top)
-	--weaponLabel:SetTextAlignmentX(GUIItem.Align_Min)
-	--weaponLabel:SetTextAlignmentY(GUIItem.Align_Min)
+    weaponLabel:SetTextAlignmentX(GUIItem.Align_Min)
+    weaponLabel:SetTextAlignmentY(GUIItem.Align_Min)
 	weaponLabel:SetColor(kTextColor)
 	weaponLabel:SetText(tostring(moduleTypeGUIDetails.label))--(Locale.ResolveString("BUY"))
+	weaponLabel:SetOptionFlag(GUIItem.CorrectScaling)
+	GUIMakeFontScale(weaponLabel, "kAgencyFB", kFontSize)
 	buttonGraphic:AddChild(weaponLabel)
 	
-	local weaponImage = GUIManager:CreateGraphicItem()
+	local weaponImage = self:CreateAnimatedGraphicItem()
 	table.insert(self.modularExoGraphicItemsToDestroyList, weaponImage)
-	weaponImage:SetPosition(Vector(0, kWeaponImageSize.y * -1, 0))
+	weaponImage:SetIsScaling(false)
+	weaponImage:SetPosition(Vector(kWeaponImageSize.x*-0.9, kWeaponImageSize.y*-1, 0))
 	weaponImage:SetSize(kWeaponImageSize)
 	weaponImage:SetAnchor(GUIItem.Right, GUIItem.Bottom)
 	weaponImage:SetTexture(moduleTypeGUIDetails.image)
 	weaponImage:SetTexturePixelCoordinates(unpack(moduleTypeGUIDetails.imageTexCoords))
 	weaponImage:SetColor(Color(1, 1, 1, 1))
+	weaponImage:SetOptionFlag(GUIItem.CorrectScaling)
 	buttonGraphic:AddChild(weaponImage)
 	
-	local powerCostLabel = GetGUIManager():CreateTextItem()
+	local powerCostLabel = self:CreateAnimatedTextItem()
 	table.insert(self.modularExoGraphicItemsToDestroyList, powerCostLabel)
-	powerCostLabel:SetPosition(Vector(0, -kPadding * 0.5, 0))
+	powerCostLabel:SetIsScaling(false)
+	powerCostLabel:SetPosition(Vector(kModuleButtonGap*3.2, -kPadding*0.5, 0))
 	powerCostLabel:SetFontName(kFont)
 	powerCostLabel:SetAnchor(GUIItem.Left, GUIItem.Bottom)
 	powerCostLabel:SetTextAlignmentX(GUIItem.Align_Min)
 	powerCostLabel:SetTextAlignmentY(GUIItem.Align_Max)
 	powerCostLabel:SetColor(kTextColor)
 	powerCostLabel:SetText(tostring(moduleTypeData.resourceCost))--(Locale.ResolveString("BUY"))
+	powerCostLabel:SetOptionFlag(GUIItem.CorrectScaling)
+	GUIMakeFontScale(powerCostLabel, "kAgencyFB", kFontSize)
 	buttonGraphic:AddChild(powerCostLabel)
 	
-	local powerIcon = GUIManager:CreateGraphicItem()
+	local powerIcon = self:CreateAnimatedGraphicItem()
 	table.insert(self.modularExoGraphicItemsToDestroyList, powerIcon)
+	powerIcon:SetIsScaling(false)
 	powerIcon:SetPosition(Vector(0, -kPadding * 0.5 + kResourceIconHeight * -0.8, 0))
 	powerIcon:SetSize(Vector(kResourceIconWidth * 0.8, kResourceIconHeight * 0.8, 0))
 	powerIcon:SetAnchor(GUIItem.Left, GUIItem.Bottom)
@@ -412,6 +437,7 @@ function GUIMarineBuyMenu:MakeWeaponModuleButton(moduleType, moduleTypeData, off
 	--local iconX, iconY = GetMaterialXYOffset(kTechId.PowerSurge)
 	--powerIcon:SetTexturePixelCoordinates(iconX*80, iconY*80, iconX*80+80, iconY*80+80)
 	powerIcon:SetColor(kTextColor)
+	powerIcon:SetOptionFlag(GUIItem.CorrectScaling)
 	buttonGraphic:AddChild(powerIcon)
 	
 	table.insert(self.modularExoModuleButtonList, {
@@ -430,16 +456,19 @@ end
 
 function GUIMarineBuyMenu:MakeUtilityModuleButton(moduleType, moduleTypeData, offsetX, offsetY, slotType)
 	local moduleTypeGUIDetails = GUIMarineBuyMenu.kExoModuleData[moduleType]
-	
-	local buttonGraphic        = GUIManager:CreateGraphicItem()
+	local kFontSize = 30
+	local buttonGraphic        = self:CreateAnimatedGraphicItem()
 	table.insert(self.modularExoGraphicItemsToDestroyList, buttonGraphic)
+	buttonGraphic:SetIsScaling(false)
 	buttonGraphic:SetSize(kMediumModuleButtonSize)
 	buttonGraphic:SetAnchor(GUIItem.Left, GUIItem.Top)
 	buttonGraphic:SetPosition(Vector(25 + offsetX, kPadding, 0))
 	buttonGraphic:SetTexture(kMenuSelectionTexture)
+	buttonGraphic:SetOptionFlag(GUIItem.CorrectScaling)
 	
-	local utilityLabel = GetGUIManager():CreateTextItem()
+	local utilityLabel = self:CreateAnimatedTextItem()
 	table.insert(self.modularExoGraphicItemsToDestroyList, utilityLabel)
+	utilityLabel:SetIsScaling(false)
 	utilityLabel:SetFontName(kFont)
 	utilityLabel:SetPosition(Vector(kModuleButtonGap * 2, 5.5, 0))
 	utilityLabel:SetAnchor(GUIItem.Left, GUIItem.Top)
@@ -447,20 +476,25 @@ function GUIMarineBuyMenu:MakeUtilityModuleButton(moduleType, moduleTypeData, of
 	utilityLabel:SetTextAlignmentY(GUIItem.Align_Min)
 	utilityLabel:SetColor(kTextColor)
 	utilityLabel:SetText(tostring(moduleTypeGUIDetails.label))--(Locale.ResolveString("BUY"))
+	utilityLabel:SetOptionFlag(GUIItem.CorrectScaling)
+	GUIMakeFontScale(utilityLabel, "kAgencyFB", kFontSize)
 	buttonGraphic:AddChild(utilityLabel)
 	
-	local utilityImage = GUIManager:CreateGraphicItem()
+	local utilityImage = self:CreateAnimatedGraphicItem()
 	table.insert(self.modularExoGraphicItemsToDestroyList, utilityImage)
+	utilityImage:SetIsScaling(false)
 	utilityImage:SetPosition(Vector(kWeaponImageSize.x * -0.45, kWeaponImageSize.y * -1, 0))
 	utilityImage:SetSize(kUtilityImageSize)
 	utilityImage:SetAnchor(GUIItem.Right, GUIItem.Bottom)
 	utilityImage:SetTexture(moduleTypeGUIDetails.image)
 	utilityImage:SetTexturePixelCoordinates(unpack(moduleTypeGUIDetails.imageTexCoords))
 	utilityImage:SetColor(Color(1, 1, 1, 1))
+	utilityImage:SetOptionFlag(GUIItem.CorrectScaling)
 	buttonGraphic:AddChild(utilityImage)
 	
-	local powerCostLabel = GetGUIManager():CreateTextItem()
+	local powerCostLabel = self:CreateAnimatedTextItem()
 	table.insert(self.modularExoGraphicItemsToDestroyList, powerCostLabel)
+	powerCostLabel:SetIsScaling(false)
 	powerCostLabel:SetPosition(Vector(kModuleButtonGap * 2.3, -kPadding * 0.5, 0))
 	powerCostLabel:SetFontName(kFont)
 	powerCostLabel:SetAnchor(GUIItem.Left, GUIItem.Bottom)
@@ -468,10 +502,13 @@ function GUIMarineBuyMenu:MakeUtilityModuleButton(moduleType, moduleTypeData, of
 	powerCostLabel:SetTextAlignmentY(GUIItem.Align_Max)
 	powerCostLabel:SetColor(kTextColor)
 	powerCostLabel:SetText(tostring(moduleTypeData.resourceCost or "0"))--(Locale.ResolveString("BUY"))
+	powerCostLabel:SetOptionFlag(GUIItem.CorrectScaling)
+	GUIMakeFontScale(powerCostLabel, "kAgencyFB", kFontSize)
 	buttonGraphic:AddChild(powerCostLabel)
 	
-	local powerIcon = GUIManager:CreateGraphicItem()
+	local powerIcon = self:CreateAnimatedGraphicItem()
 	table.insert(self.modularExoGraphicItemsToDestroyList, powerIcon)
+	powerIcon:SetIsScaling(false)
 	powerIcon:SetPosition(Vector(kModuleButtonGap * 4.3, -kPadding * 0.5 + kResourceIconHeight * -0.8, 0))
 	powerIcon:SetSize(Vector(kResourceIconWidth * 0.8, kResourceIconHeight * 0.8, 0))
 	powerIcon:SetAnchor(GUIItem.Left, GUIItem.Bottom)
@@ -479,6 +516,7 @@ function GUIMarineBuyMenu:MakeUtilityModuleButton(moduleType, moduleTypeData, of
 	--local iconX, iconY = GetMaterialXYOffset(kTechId.PowerSurge)
 	--powerIcon:SetTexturePixelCoordinates(iconX*80, iconY*80, iconX*80+80, iconY*80+80)
 	powerIcon:SetColor(kTextColor)
+	powerIcon:SetOptionFlag(GUIItem.CorrectScaling)
 	buttonGraphic:AddChild(powerIcon)
 	
 	table.insert(self.modularExoModuleButtonList, {
@@ -584,7 +622,7 @@ function GUIMarineBuyMenu:_RefreshExoModularButtons()
 	local isValid, badReason, resourceCost, powerSupply, powerCost, texturePath = ModularExo_GetIsConfigValid(self.exoConfig)
 	resourceCost                                                                = resourceCost or 0
 	self.exoConfigResourceCost                                                  = resourceCost
-	self.modularExoCostText:SetText(tostring(resourceCost - self.activeExoConfigResCost))
+		self.modularExoCostText:SetText(tostring(resourceCost - self.activeExoConfigResCost))
 	
 	for buttonI, buttonData in ipairs(self.modularExoModuleButtonList) do
 		local current   = self.exoConfig[buttonData.slotType]
