@@ -7,12 +7,10 @@ ModLoader.SetupFileHook( "lua/Globals.lua", "lua/ModularExos/Globals.lua", "post
 
 ModLoader.SetupFileHook( "lua/MarineTeam.lua", "lua/ModularExos/MarineTeam.lua", "post" )
 ModLoader.SetupFileHook( "lua/Marine.lua", "lua/ModularExos/Marine.lua", "post" )
+-- NetworkMessages is called from Shared.lua
 --ModLoader.SetupFileHook( "lua/NetworkMessages.lua", "lua/ModularExos/NetworkMessages.lua", "post" )
 
-
--- Load new Exosuit weapons through Entity.lua
-ModLoader.SetupFileHook( "lua/Entity.lua", "lua/ModularExos/Entity.lua", "post" )
-
+-- disable minigun balances
 ModLoader.SetupFileHook( "lua/Weapons/Marine/Minigun.lua", "lua/ModularExos/ExoWeapons/Minigun.lua", "post" )
 ModLoader.SetupFileHook( "lua/Weapons/Marine/Railgun.lua", "lua/ModularExos/ExoWeapons/Railgun.lua", "post" )
 
@@ -24,6 +22,7 @@ ModLoader.SetupFileHook( "lua/Weapons/DotMarker.lua", "lua/ModularExos/ExoWeapon
 ModLoader.SetupFileHook( "lua/ReadyRoomExo.lua", "lua/ModularExos/ReadyRoomExo.lua", "post" )
 ModLoader.SetupFileHook( "lua/Player_Client.lua", "lua/ModularExos/Player_Client.lua", "post" )
 ModLoader.SetupFileHook( "lua/GUIExoThruster.lua", "lua/ModularExos/GUI/GUIExoThruster.lua", "post" )
+ModLoader.SetupFileHook( "lua/ExoVariantMixin.lua", "lua/ModularExos/ExoVariantMixin.lua", "post" )
 
 
 

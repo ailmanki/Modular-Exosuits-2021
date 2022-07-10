@@ -1,17 +1,21 @@
 local oldBuildTechData = BuildTechData
 function BuildTechData()
-    
+
     local techData = oldBuildTechData()
-							
-	table.insert(techData,{ 
-	
+
+	table.insert(techData,{
+
             [kTechDataId] = kTechId.ExoWelder } )
-	
-	
-	table.insert(techData,{ 
-	
+
+
+	table.insert(techData,{
+
             [kTechDataId] = kTechId.ExoFlamer } )
-   
+
+	table.insert(techData,{
+
+            [kTechDataId] = kTechId.ExoShield } )
+
     return techData
 
 end
@@ -27,7 +31,7 @@ local function TechDataChanges(techData)
             record[kTechDataSupply] = kSentryBatterySupply
 		end]]--[[
     end
-	
+
 end
 
 local oldBuildTechData = BuildTechData

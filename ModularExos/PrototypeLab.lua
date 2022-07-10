@@ -10,5 +10,5 @@ end
 
 function PrototypeLab:GetTechButtons(techId)
     return { kTechId.JetpackTech, kTechId.None, kTechId.None, kTechId.None, 
-             kTechId.ExosuitTech, kTechId.None, kTechId.None, kTechId.None } // kTechId.DualRailgunTech
+             kTechId.ExosuitTech, kTechId.None, kTechId.None, kTechId.None } -- kTechId.DualRailgunTech
 end
