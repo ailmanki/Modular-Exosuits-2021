@@ -3,7 +3,8 @@ local kExoBuyMessage =
     leftArmModuleType = "enum kExoModuleTypes",
     rightArmModuleType = "enum kExoModuleTypes",
     powerModuleType = "enum kExoModuleTypes",
-    utilityModuleType = "enum kExoModuleTypes"
+    utilityModuleType = "enum kExoModuleTypes",
+    abilityModuleType = "enum kExoModuleTypes"
 
 }
 

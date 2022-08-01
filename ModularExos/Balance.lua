@@ -2,33 +2,37 @@ kPrototypeLabCost = 25
 kJetpackTechResearchCost = 35
 
 -- Module pricing
-kExoWelderCost = 20
-kRailgunCost = 30
+kExoWelderCost = 25
+kRailgunCost = 40
 
-kMinigunCost = 35
-kExoFlamerCost = 30
-kExoShieldCost = 35
-kClawCost = 10
+kMinigunCost = 40
+kExoFlamerCost = 40
+kExoShieldCost = 25
+kClawCost = 0
 kPhaseModuleCost = 15
-kThrustersCost = 15
+kThrustersCost = 20
 kArmorModuleCost = 15
-kNanoModuleCost = 10
+kNanoModuleCost = 25
+kNanoShieldCost = 25
+kCatPackCost = 25
 
 
 kMinigunMovementSlowdown = 1
 kRailgunMovementSlowdown = 1
 
-
-
+kNanoShieldPlayerDuration = 6
+kCatPackDuration = 6
 --Exo
 
 Exo.kExosuitArmor = kExosuitArmor
 Exo.kExosuitArmorPerUpgradeLevel = kExosuitArmorPerUpgradeLevel
 Exo.kVertThrust = 0
-Exo.kHorizThrust = 50
+Exo.kHorizThrust = 250
 Exo.kMaxSpeed = 6
-Exo.kThrustersCooldownTime = 2.5
-Exo.kThrusterDuration = 5
+Exo.kThrustersCooldownTime = 0
+Exo.kThrusterDuration = 1
+
+-- FUEL USAGE
 
 kExoThrusterMinFuel = 0.3
 kExoThrusterFuelUsageRate = 1.5
@@ -38,15 +42,17 @@ kExoThrusterMaxSpeed = 5
 
 kExoShieldMinFuel = 0.99
 kExoShieldDamageReductionScalar = 0.75
-kExoShieldFuelUsageRate = 2
+kExoShieldFuelUsageRate = 6
 
 kExoRepairMinFuel = 0.1
 kExoRepairPerSecond = 15
-kExoRepairFuelUsageRate = 25
+kExoRepairFuelUsageRate = 10
 kExoRepairInterval = 0.5
 
 kExoFuelRechargeRate = 10
 
+kExoCatPackMinFuel = 1
+kExoCatPackFuelUsageRate = 6
 
 --Tech Research
 
@@ -78,9 +84,9 @@ Railgun.kRailgunChargeTime = 1.4
 Railgun.kRailgunDamage = 30]]
 
 
-kRailgunWeight = 0.08
+kRailgunWeight = 0.05
 kRailgunDamage = 35
-kRailgunChargeDamage = 175
+--kRailgunChargeDamage = 140
 
 -- CLAW
 kClawWeight = 0.00
@@ -88,30 +94,33 @@ kClawDamage = 50 --Default 50
 
 -- MINIGUN --
 
-kMinigunDamage = 10 -- original value 6 but only a dual minigun is available
+kMinigunDamage = 8 -- original value 6 but only a dual minigun is available
 kMinigunDamageType = kDamageType.Heavy --original heavy
 kMinigunWeight = 0.15
+Minigun.kHeatUpRate = 0.15
+Minigun.kCoolDownRate = 0.20
 
 -- FLAMETHROWER --
-kExoFlamerWeight = 0.12
+kExoFlamerWeight = 0.15
 
-ExoFlamer.kConeWidth = 0.17
-ExoFlamer.kCoolDownRate = 0.20
-ExoFlamer.kDualGunHeatUpRate = 0.03
-ExoFlamer.kHeatUpRate = 0.1
+ExoFlamer.kConeWidth = 0.30
+ExoFlamer.kCoolDownRate = 0.15
+ExoFlamer.kDualGunHeatUpRate = 0.10
+ExoFlamer.kHeatUpRate = 0.10
 ExoFlamer.kFireRate = 1/3
-ExoFlamer.kTrailLength = 15.5
-ExoFlamer.kExoFlamerDamage = 15
-kExoFlamerRange = 15
+ExoFlamer.kTrailLength = 10.5
+ExoFlamer.kExoFlamerDamage = 20
+kExoFlamerRange = 10
+ExoFlamer.kDamageRadius = 1.8
 
 -- WELDER --
-kExoWelderWeight = 0.05
+kExoWelderWeight = 0.02
 ExoWelder.kWeldRange = 4
 ExoWelder.kWelderEffectRate = 0.45
 ExoWelder.kHealScoreAdded = 2
 ExoWelder.kAmountHealedForPoints = 600
 ExoWelder.kWelderFireDelay = 0.2
-ExoWelder.kWelderDamagePerSecond = 30
+ExoWelder.kWelderDamagePerSecond = 15
 ExoWelder.kSelfWeldAmount = 3
 ExoWelder.kPlayerWeldRate = 30
 ExoWelder.kStructureWeldRate = 60
@@ -156,3 +165,7 @@ ExoShield.kShieldEffectOffDelay = 0.6
 kThrustersWeight = 0.05
 kPhaseModuleWeight = 0.1
 kArmorModuleWeight = 0.15
+kNanoRepairWeight = 0.05
+kNanoShieldWeight = 0.05
+kCatPackWeight = 0.05
+kNanoRepairWeight = 0.05

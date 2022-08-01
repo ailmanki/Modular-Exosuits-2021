@@ -1,9 +1,9 @@
 function Minigun:GetIsAffectedByWeaponUpgrades()
-    return false
+    return true
 end
 
 local Shoot = debug.getupvaluex(Minigun.OnTag, "Shoot")
-local kMinigunSpread = Math.Radians(20)
+local kMinigunSpread = Math.Radians(5)
 debug.setupvaluex(Shoot, "kMinigunSpread", kMinigunSpread)
 
 -- minigun overheat old technology
@@ -15,3 +15,5 @@ local function UpdateOverheated(self, player)
     end
 end
 debug.setupvaluex(Minigun.ProcessMoveOnWeapon, "UpdateOverheated", UpdateOverheated)
+
+

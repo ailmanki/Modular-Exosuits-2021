@@ -1,8 +1,8 @@
 function Railgun:GetIsAffectedByWeaponUpgrades()
-    return false
+    return true
 end 
 
-local kChargeTime = 0.5
+local kChargeTime = 2
 -- The Railgun will automatically shoot if it is charged for too long.
 local kChargeForceShootTime = 2.2
 local kRailgunRange = 400

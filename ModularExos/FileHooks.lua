@@ -28,6 +28,8 @@ ModLoader.SetupFileHook( "lua/ExoVariantMixin.lua", "lua/ModularExos/ExoVariantM
 
 ModLoader.SetupFileHook( "lua/MarineWeaponEffects.lua", "lua/ModularExos/MarineWeaponEffects.lua", "post" )
 ModLoader.SetupFileHook( "lua/NanoShieldMixin.lua", "lua/ModularExos/NanoShieldMixin.lua", "post" )
+ModLoader.SetupFileHook( "lua/CatPackMixin.lua", "lua/ModularExos/CatPackMixin.lua", "post" )
+--ModLoader.SetupFileHook( "lua/AutoWeldMixin.lua", "lua/ModularExos/AutoWeldMixin.lua", "post" )
 
 
 -- Structure overrides

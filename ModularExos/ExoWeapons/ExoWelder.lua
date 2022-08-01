@@ -90,7 +90,7 @@ end
 
 	
 function ExoWelder:GetIsAffectedByWeaponUpgrades()
-    return false
+    return true
 end
 
 function ExoWelder:OnPrimaryAttack(player)

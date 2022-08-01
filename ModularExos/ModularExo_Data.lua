@@ -2,6 +2,7 @@ kExoModuleCategories = enum{
     "PowerSupply",
     "Weapon",
     "Utility",
+    "Ability",
 }
 -- The slots that modules go in
 kExoModuleSlots = enum{
@@ -9,6 +10,7 @@ kExoModuleSlots = enum{
     "RightArm",
     "LeftArm",
     "Utility",
+    "Ability",
 }
 
 -- Slot data
@@ -28,6 +30,10 @@ kExoModuleSlotsData = {
     [kExoModuleSlots.Utility] = {
         category = kExoModuleCategories.Utility,
         required = false,
+    },   
+	[kExoModuleSlots.Ability] = {
+        category = kExoModuleCategories.Ability,
+        required = false,
     },
 }
 
@@ -42,9 +48,11 @@ kExoModuleTypes = enum{
     "Minigun",
     "Flamethrower",
     "Armor",
-	"NanoModule",
+	"NanoRepair",
+	"NanoShield",
     "Thrusters",
     "PhaseModule",
+    "CatPack",
 }
 
 -- Information to decide which model to use for weapon combos
@@ -144,18 +152,33 @@ kExoModuleTypesData = {
         category = kExoModuleCategories.Utility,
         powerCost = 0,
 		resourceCost = kArmorModuleCost,
-        armorBonus = 150,
+        armorBonus = 250,
         weight = kArmorModuleWeight,
 		requiredTechId = Exo.ArmorModuleTech
 
     },
-	--	[kExoModuleTypes.NanoModule] = {
-    --    category = kExoModuleCategories.Utility,
-    --    powerCost = 0,
-	--	resourceCost = kNanoModuleCost,
+		[kExoModuleTypes.NanoRepair] = {
+        category = kExoModuleCategories.Utility,
+        powerCost = 0,
+		resourceCost = kNanoModuleCost,
+        weight = kNanoRepairWeight,
 
-   -- },
+    },		
+	
+	[kExoModuleTypes.NanoShield] = {
+        category = kExoModuleCategories.Ability,
+        powerCost = 0,
+		resourceCost = kNanoShieldCost,
+        weight = kNanoShieldWeight,
 
+    },
+	[kExoModuleTypes.CatPack] = {
+        category = kExoModuleCategories.Ability,
+        powerCost = 0,
+		resourceCost = kCatPackCost,
+        weight = kCatPackWeight,
+
+    },
     
     [kExoModuleTypes.None] = { },
 }

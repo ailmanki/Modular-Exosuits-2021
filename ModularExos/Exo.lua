@@ -13,28 +13,21 @@ Exo.kDualAnimationGraph = PrecacheAsset("models/marine/exosuit/exosuit_mm.animat
 Exo.kDualRailgunModelName = PrecacheAsset("models/marine/exosuit/exosuit_rr.model")
 Exo.kDualRailgunAnimationGraph = PrecacheAsset("models/marine/exosuit/exosuit_rr.animation_graph")
 
-local kMaxSpeed = 7.5
+local kMaxSpeed = 8
 
 
+--kExoThrusterMinFuel = 0.3
+kExoThrusterFuelUsageRate = 0.5
+--kExoThrusterLateralAccel = 1
+--kExoThrusterVerticleAccel = 1
+--kExoThrusterMaxSpeed = 15
+local kHorizontalThrusterAddSpeed = 10
+local kThrusterHorizontalAcceleration = 200
+local kThrusterUpwardsAcceleration = 0
 
-kExoThrusterMinFuel = 0.3
-kExoThrusterFuelUsageRate = 1.5
-kExoThrusterLateralAccel = 50
-kExoThrusterVerticleAccel = 8
-kExoThrusterMaxSpeed = 5
-
-kExoShieldMinFuel = 0.99
-kExoShieldDamageReductionScalar = 0.75
-kExoShieldFuelUsageRate = 2
-
-kExoRepairMinFuel = 0.1
-kExoRepairPerSecond = 15
-kExoRepairFuelUsageRate = 25
-kExoRepairInterval = 0.5
-
-kExoFuelRechargeRate = 10
 kMinigunFuelUsageScalar = 1
-kRailgunFuelUsageScalar = 1.5
+kRailgunFuelUsageScalar = 1
+
 local kExoDeployDuration = 1.4
 
 local networkVars = {
@@ -42,10 +35,15 @@ local networkVars = {
 	rightArmModuleType = "enum kExoModuleTypes",
 	leftArmModuleType  = "enum kExoModuleTypes",
     utilityModuleType  = "enum kExoModuleTypes",
+    abilityModuleType  = "enum kExoModuleTypes",
 	repairActive = "boolean",
 	shieldActive = "boolean",
+	catpackActive = "boolean",
 	hasThrusters = "boolean",
 	hasPhaseModule = "boolean",
+	hasNanoRepair = "boolean",
+	hasNanoShield = "boolean",
+	hasCatPack = "boolean",
     armorBonus = "float (0 to 2045 by 1)",
 	inventoryWeight = "float",
 
@@ -103,19 +101,25 @@ function Exo:OnInitialized()
     self.leftArmModuleType = self.leftArmModuleType or kExoModuleTypes.Claw
     self.rightArmModuleType = self.rightArmModuleType or kExoModuleTypes.Minigun
     self.utilityModuleType = self.utilityModuleType or kExoModuleTypes.None
+    self.abilityModuleType = self.abilityModuleType or kExoModuleTypes.None
     
     local armorModuleData = kExoModuleTypesData[self.utilityModuleType]
     self.armorBonus = armorModuleData and armorModuleData.armorBonus or 0
     self.hasPhaseModule = (self.utilityModuleType == kExoModuleTypes.PhaseModule)
     self.hasThrusters = (self.utilityModuleType == kExoModuleTypes.Thrusters)
-	
+    self.hasNanoRepair = (self.utilityModuleType == kExoModuleTypes.NanoRepair)
+    self.hasNanoShield = (self.abilityModuleType == kExoModuleTypes.NanoShield)
+    self.hasCatPack = (self.abilityModuleType == kExoModuleTypes.CatPack)
+
     orig_Exo_OnInitialized(self)
 	
 	self.shieldActive = false
 	self.repairActive = false
+	self.catpackActive = false
 	self.timeAutoRepairHealed = 0
 	self.lastActivatedRepair = 0
-	self.lastActivatedShield = 0
+	self.lastActivatedShield = 0	
+	self.lastActivatedCatPack = 0
 	
 	if Server then
 		-- Prevent people from ejecting to get fuel back instantly
@@ -123,6 +127,21 @@ function Exo:OnInitialized()
 	end	
 end
  
+function Exo:GetHasThrusters()
+	return self.hasThrusters and Exo.GetHasThrusters
+end
+
+function Exo:GetHasShield()
+	return self.hasNanoShield
+end
+
+function Exo:GetHasRepair()
+	return self.hasNanoRepair
+end
+
+function Exo:GetHasCatPack()
+	return self.hasCatPack
+end
 
 function Exo:GetCanPhase()
 	return self.hasPhaseModule and PhaseGateUserMixin.GetCanPhase(self)
@@ -144,7 +163,7 @@ debug.setupvaluex(Exo.GetMaxSpeed, "kMaxSpeed", kMaxSpeed)
 
 local orig_Exo_GetIsThrusterAllowed = Exo.GetIsThrusterAllowed
 function Exo:GetIsThrusterAllowed()
-	return (not self.shieldActive or not self.repairActive) and (self.hasThrusters and orig_Exo_GetIsThrusterAllowed(self))
+	return (not self.shieldActive or not self.repairActive or not self.catpackActive) and (self.hasThrusters and orig_Exo_GetIsThrusterAllowed(self))
 end
 
 function Exo:GetSlowOnLand()
@@ -182,6 +201,10 @@ function Exo:ProcessExoModularBuyAction(message)
     ModularExo_HandleExoModularBuy(self, message)
 end
 
+function Exo:GetCanSelfWeld()
+	return false
+end
+
 if Server then
     local orig_Exo_PerformEject = Exo.PerformEject
     function Exo:PerformEject()
@@ -192,6 +215,7 @@ if Server then
                 rightArmModuleType = self.rightArmModuleType,
                 leftArmModuleType  = self.leftArmModuleType ,
                 utilityModuleType  = self.utilityModuleType ,
+                abilityModuleType  = self.abilityModuleType ,
             })
             exosuit:SetCoords(self:GetCoords())
             exosuit:SetMaxArmor(self:GetMaxArmor())
@@ -229,6 +253,7 @@ if Server then
     end 
 end
 
+ 
 if Client then
     function Exo:BuyMenu(structure)
         if self:GetTeamNumber() ~= 0 and Client.GetLocalPlayer() == self then
@@ -247,12 +272,12 @@ end
 
 -- New Exo energy system.
 function Exo:ConsumingFuel()
-    return self.thrustersActive or self.shieldActive or self.repairActive
+    return self.thrustersActive or self.shieldActive or self.repairActive or self.catpackActive
 end
 
 function Exo:GetFuel()
-    if self:ConsumingFuel() then
-        return Clamp(self.fuelAtChange - (Shared.GetTime() - self.timeFuelChanged) / self:GetFuelUsageRate(), 0, 1)
+	if self:ConsumingFuel() then
+	   return Clamp(self.fuelAtChange - (Shared.GetTime() - self.timeFuelChanged) / self:GetFuelUsageRate(), 0, 1)
     else
         return Clamp(self.fuelAtChange + (Shared.GetTime() - self.timeFuelChanged) / self:GetFuelRechargeRate(), 0, 1)
     end
@@ -263,51 +288,121 @@ function Exo:GetFuelRechargeRate()
 end
 
 function Exo:GetFuelUsageRate()
-    local usageScalar = self:GetHasMinigun() and kMinigunFuelUsageScalar or kRailgunFuelUsageScalar
+    --local usageScalar = self:GetHasMinigun() and kMinigunFuelUsageScalar or kRailgunFuelUsageScalar
     if self.thrustersActive then
-    	return kExoThrusterFuelUsageRate * usageScalar
+    	return kExoThrusterFuelUsageRate --* usageScalar
     elseif self.repairActive then
-    	return kExoRepairFuelUsageRate * usageScalar
+    	return kExoRepairFuelUsageRate --* usageScalar
 	elseif self.shieldActive then
-    	return kExoShieldFuelUsageRate * usageScalar
+    	return kExoShieldFuelUsageRate --* usageScalarelse
+	elseif self.catpackActive then
+    	return kExoCatPackFuelUsageRate --* usageScalar
     else
     	return 1
     end
 end
 
+function Exo:GetCatPackAllowed()
+    return self.hasCatPack and not (self.thrustersActive or  self.repairActive or self.shieldActive) 
+end
+
 function Exo:GetShieldAllowed()
-    return not self.thrustersActive or not self.repairActive 
+    return self.hasNanoShield and not (self.thrustersActive or  self.repairActive or self.catpackActive) 
 end
 
 function Exo:GetRepairAllowed()
-    return not self.thrustersActive or self.shieldActive
+    return self.hasNanoRepair and not (self.thrustersActive or self.shieldActive or self.catpackActive)
+end
+
+function Exo:TriggerNanoShield()    
+
+    local entities = GetEntitiesWithMixinForTeamWithinRange("NanoShieldAble", self:GetTeamNumber(),  self:GetOrigin(), 6)
+	Shared.PlayPrivateSound(self, MarineCommander.kTriggerNanoShieldSound, nil, 1.0, self:GetOrigin())
+	for _, entity in ipairs(entities) do
+	
+		if not entity:isa("Exo") then
+			entity:ActivateNanoShield()
+		end
+	end
+
+end
+
+function Exo:StopNanoShield()    
+
+    local entities = GetEntitiesWithMixinForTeamWithinRange("NanoShieldAble", self:GetTeamNumber(),  self:GetOrigin(), 6)
+	Shared.PlayPrivateSound(self, MarineCommander.kTriggerNanoShieldSound, nil, 1.0, self:GetOrigin())
+	for _, entity in ipairs(entities) do
+	
+		if  entity:GetIsNanoShielded() then
+			entity:DeactivateNanoShield()
+		end
+	end
+
+end
+
+function Exo:TriggerCatPack()    
+
+    local entities = GetEntitiesWithMixinForTeamWithinRange("CatPack", self:GetTeamNumber(),  self:GetOrigin(), 6)
+	for _, entity in ipairs(entities) do
+	
+		if HasMixin(entity, "CatPack") then
+			entity:ApplyCatPack()
+			entity:TriggerEffects("catpack_pickup", { effecthostcoords = entity:GetCoords() })
+
+		end
+	end
+
 end
 
 
 function Exo:UpdateShields(input)
 
-    local buttonPressed = bit.band(input.commands, Move.Use) ~= 0
+    local buttonPressed = bit.band(input.commands, Move.Reload) ~= 0
     if buttonPressed and self:GetShieldAllowed() then
 
         if self:GetFuel() >= kExoShieldMinFuel and not self.shieldActive and self.lastActivatedShield + 1 < Shared.GetTime() then
         	self:SetFuel(self:GetFuel())
             self.shieldActive = true
             self.lastActivatedShield = Shared.GetTime()
-            self:ActivateNanoShield()
+			self:TriggerNanoShield()
+			
         end
     end
 
     if self.shieldActive and (self:GetFuel() == 0 or not buttonPressed) then
     	self:SetFuel(self:GetFuel())
-        self:DeactivateNanoShield()
+        self:StopNanoShield()
         self.shieldActive = false
+    end
+
+end
+
+function Exo:UpdateCatPack(input)
+
+    local buttonPressed = bit.band(input.commands, Move.Reload) ~= 0
+    if buttonPressed and self:GetCatPackAllowed() then
+
+        if self:GetFuel() >= kExoCatPackMinFuel and not self.catpackActive and self.lastActivatedCatPack + 1 < Shared.GetTime() then
+        	self:SetFuel(self:GetFuel())
+            self.catpackActive = true
+            self.lastActivatedCatPack = Shared.GetTime()
+			self:TriggerCatPack()
+		
+        end
+    end
+
+    if self.catpackActive and (self:GetFuel() == 0 or not buttonPressed) then
+    	self:SetFuel(self:GetFuel())
+        self.catpackActive = false
+		self.catpackboost = false
+		self:ClearCatPackMixin()
     end
 
 end
 
 function Exo:UpdateRepairs(input)
 
-    local buttonPressed = bit.band(input.commands, Move.Reload) ~= 0
+    local buttonPressed = bit.band(input.commands, Move.MovementModifier) ~= 0
     local repairDesired = self:GetArmor() < self:GetMaxArmor()
     if buttonPressed and self:GetRepairAllowed() and repairDesired then
 
@@ -349,6 +444,7 @@ function Exo:HandleButtons(input)
     self:UpdateThrusters(input)
     self:UpdateRepairs(input)
     self:UpdateShields(input)
+    self:UpdateCatPack(input)
 
     if bit.band(input.commands, Move.Drop) ~= 0 then
        self:EjectExo()
@@ -360,7 +456,101 @@ function Exo:CalculateWeight()
     return ModularExo_GetConfigWeight(ModularExo_ConvertNetMessageToConfig(self))
 end
 
+local kMinFuelForThrusterActivation = 0.1
+local kThrusterDuration = 0.1
+local kMinTimeBetweenThrusterActivations = 0.5
 
+
+
+function Exo:UpdateThrusters(input)
+
+    local lastThrustersActive = self.thrustersActive
+    local jumpPressed = bit.band(input.commands, Move.Jump) ~= 0
+    local movementSpecialPressed = bit.band(input.commands, Move.MovementModifier) ~= 0
+    local thrusterDesired = (movementSpecialPressed) and self:GetIsThrusterAllowed()
+    
+    if thrusterDesired ~= lastThrustersActive then
+    
+        if thrusterDesired then
+                
+            local desiredMode = 
+                jumpPressed and kExoThrusterMode.Vertical 
+                or input.move.x < 0 and kExoThrusterMode.StrafeLeft 
+                or input.move.x > 0 and kExoThrusterMode.StrafeRight
+                or input.move.z < 0 and kExoThrusterMode.DodgeBack 
+                or input.move.z > 0 and kExoThrusterMode.Horizontal
+                or nil
+                
+            local now = Shared.GetTime()
+            if desiredMode and self:GetFuel() >= kMinFuelForThrusterActivation and
+                    now >= self.timeThrustersEnded + kMinTimeBetweenThrusterActivations then
+
+                self:HandleThrusterStart(desiredMode)
+            end
+
+        else
+            self:HandleThrusterEnd()
+        end
+        
+    end
+    
+    if self.thrustersActive and self:GetFuel() == 0 then
+        self:HandleThrusterEnd()
+    end
+
+end
+
+local kUpVector = Vector(0, 1, 0)
+function Exo:ModifyVelocity(input, velocity, deltaTime)
+
+    if self.thrustersActive then
+    
+        if self.thrusterMode == kExoThrusterMode.Vertical then   
+        
+            velocity:Add(kUpVector * kThrusterUpwardsAcceleration * deltaTime)
+            velocity.y = math.min(1.5, velocity.y)
+            
+        elseif self:GetIsOnGround()  then
+        
+            input.move.y = 0
+        
+            local maxSpeed,wishDir
+            maxSpeed = self:GetMaxSpeed() + kHorizontalThrusterAddSpeed
+			
+			
+            if self.thrusterMode == kExoThrusterMode.StrafeLeft then
+                input.move.x = -1
+            elseif self.thrusterMode == kExoThrusterMode.StrafeRight then
+                input.move.x = 1
+            elseif self.thrusterMode == kExoThrusterMode.DodgeBack then
+                -- strafe buttons should have less effect when going forwards/backwards, should be more based on your look direction
+                input.move.z = -2
+            else
+                -- strafe buttons should have less effect when going forwards/backwards, should be more based on your look direction
+                input.move.z = 2 
+            end
+            
+            wishDir = self:GetViewCoords():TransformVector( input.move )
+            wishDir.y = 0
+            wishDir:Normalize()
+            
+            wishDir = wishDir * maxSpeed
+            
+            -- force should help correct velocity towards wishDir, this makes turning more responsive
+            local forceDir = wishDir - velocity
+            local forceLength = forceDir:GetLengthXZ()
+            forceDir:Normalize()
+            
+            local accelSpeed = kThrusterHorizontalAcceleration * deltaTime               
+            accelSpeed = math.min(forceLength, accelSpeed)
+            velocity:Add(forceDir * accelSpeed)
+            
+        
+        end
+        
+    end
+    
+end
 
 --ReplaceLocals(Exo.UpdateThrusters, { kThrusterMinimumFuel = kExoThrusterMinFuel })
 --ReplaceLocals(Exo.ModifyVelocity, { kHorizontalThrusterAddSpeed = kExoThrusterMaxSpeed })

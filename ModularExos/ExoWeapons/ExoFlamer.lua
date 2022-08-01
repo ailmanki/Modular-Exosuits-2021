@@ -14,13 +14,6 @@ class 'ExoFlamer' (Entity)
 
 ExoFlamer.kMapName = "exoflamer"
 
-local kConeWidth = 0.17
-local kFireRate = 1/3
-local kCoolDownRate = 0.4
-local kDualGunHeatUpRate = 0.03
-local kHeatUpRate = 0.17
-
-
 if Client then
    Script.Load("lua/ModularExos/ExoWeapons/ExoFlamer_Client.lua")
 end
@@ -48,8 +41,6 @@ local networkVars =
 
 }
 
-ExoFlamer.kConeWidth = kFlamethrowerConeWidth
-ExoFlamer.kDamageRadius = kFlamethrowerDamageRadius
 
 AddMixinNetworkVars(ExoWeaponSlotMixin, networkVars)
 AddMixinNetworkVars(LiveMixin, networkVars)
@@ -141,7 +132,7 @@ function ExoFlamer:ModifyMaxSpeed(maxSpeedTable)
 end
 
 function ExoFlamer:GetIsAffectedByWeaponUpgrades()
-    return false
+    return true
 end
 
 function ExoFlamer:CreatePrimaryAttackEffect(player)

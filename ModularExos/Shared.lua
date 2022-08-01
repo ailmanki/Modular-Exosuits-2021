@@ -13,6 +13,7 @@ function ModularExo_ConvertNetMessageToConfig(message)
         [kExoModuleSlots.LeftArm    ] = message.leftArmModuleType  or kExoModuleTypes.None,
         [kExoModuleSlots.RightArm   ] = message.rightArmModuleType or kExoModuleTypes.None,
         [kExoModuleSlots.Utility    ] = message.utilityModuleType  or kExoModuleTypes.None,
+        [kExoModuleSlots.Ability    ] = message.abilityModuleType  or kExoModuleTypes.None,
     }
 end
 
@@ -22,6 +23,7 @@ function ModularExo_ConvertConfigToNetMessage(config)
         leftArmModuleType  = config[kExoModuleSlots.LeftArm    ] or kExoModuleTypes.None,
         rightArmModuleType = config[kExoModuleSlots.RightArm   ] or kExoModuleTypes.None,
         utilityModuleType  = config[kExoModuleSlots.Utility    ] or kExoModuleTypes.None,
+        abilityModuleType  = config[kExoModuleSlots.Ability    ] or kExoModuleTypes.None,
     }
 end
 

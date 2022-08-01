@@ -15,6 +15,7 @@ local kActiveColor = Color(0,1,0,1)
 local kRepairTechId = kTechId.NanoArmor
 local kShieldTechId = kTechId.NanoShield
 local kThrustersTechId = kTechId.Jetpack
+local kCatPackTechId = kTechId.CatPack
 
 -- BAH
 local kBackgroundOffset
@@ -63,29 +64,76 @@ function GUIExoThruster:Initialize()
     self.shieldIconText:SetAnchor(GUIItem.Right, GUIItem.Bottom)
     self.shieldIconText:SetTextAlignmentX(GUIItem.Align_Center)
     self.shieldIconText:SetTextAlignmentY(GUIItem.Align_Center)
-    self.shieldIconText:SetText(BindingsUI_GetInputValue("Use"))
+    self.shieldIconText:SetText(BindingsUI_GetInputValue("Reload"))
     self.shieldIconText:SetPosition(Vector(0, -kTextOffset, 0))
     self.shieldIconText:SetColor( Color(0.8, 0.8, 1, 0.8) )
     self.background:AddChild(self.shieldIconText)
 
-    self.thrustersIcon = GetGUIManager():CreateGraphicItem()
-    self.thrustersIcon:SetTexture(kIconTexture)
-    self.thrustersIcon:SetAnchor(GUIItem.Middle, GUIItem.Bottom)
-    self.thrustersIcon:SetSize(kIconSize)
-    self.thrustersIcon:SetPosition(Vector(-kIconSize.x/2, -kIconOffset, 0))
-    textureCoords = GetTextureCoordinatesForIcon(kThrustersTechId, true)
-    self.thrustersIcon:SetTexturePixelCoordinates(GUIUnpackCoords(textureCoords))
-    self.background:AddChild(self.thrustersIcon)
+	local hasShield = PlayerUI_GetHasNanoShield()
+	if hasShield then
+		self.shieldIcon:SetIsVisible(true)
+		self.shieldIconText:SetIsVisible(true)
+	else
+		self.shieldIcon:SetIsVisible(false)
+		self.shieldIconText:SetIsVisible(false)
+	end
 
-    self.thrustersIconText = GetGUIManager():CreateTextItem()
-    self.thrustersIconText:SetFontName(Fonts.kAgencyFB_Small)
-    self.thrustersIconText:SetAnchor(GUIItem.Middle, GUIItem.Bottom)
-    self.thrustersIconText:SetTextAlignmentX(GUIItem.Align_Center)
-    self.thrustersIconText:SetTextAlignmentY(GUIItem.Align_Center)
-    self.thrustersIconText:SetText(BindingsUI_GetInputValue("MovementModifier"))
-    self.thrustersIconText:SetPosition(Vector(0, -kTextOffset, 0))
-    self.thrustersIconText:SetColor( Color(0.8, 0.8, 1, 0.8) )
-    self.background:AddChild(self.thrustersIconText)
+    self.catpackIcon = GetGUIManager():CreateGraphicItem()
+    self.catpackIcon:SetTexture(kIconTexture)
+    self.catpackIcon:SetAnchor(GUIItem.Right, GUIItem.Bottom)
+    self.catpackIcon:SetSize(kIconSize)
+    self.catpackIcon:SetPosition(Vector(-kIconSize.x/2, -kIconOffset, 0))
+    local textureCoords = GetTextureCoordinatesForIcon(kCatPackTechId, true)
+    self.catpackIcon:SetTexturePixelCoordinates(GUIUnpackCoords(textureCoords))
+    self.background:AddChild(self.catpackIcon)
+
+    self.catpackIconText = GetGUIManager():CreateTextItem()
+    self.catpackIconText:SetFontName(Fonts.kAgencyFB_Small)
+    self.catpackIconText:SetAnchor(GUIItem.Right, GUIItem.Bottom)
+    self.catpackIconText:SetTextAlignmentX(GUIItem.Align_Center)
+    self.catpackIconText:SetTextAlignmentY(GUIItem.Align_Center)
+    self.catpackIconText:SetText(BindingsUI_GetInputValue("Reload"))
+    self.catpackIconText:SetPosition(Vector(0, -kTextOffset, 0))
+    self.catpackIconText:SetColor( Color(0.8, 0.8, 1, 0.8) )
+    self.background:AddChild(self.catpackIconText)
+
+	local hasCatPack = PlayerUI_GetHasCatPack()
+	if hasCatPack then
+		self.catpackIcon:SetIsVisible(true)
+		self.catpackIconText:SetIsVisible(true)
+	else
+		self.catpackIcon:SetIsVisible(false)
+		self.catpackIconText:SetIsVisible(false)
+	end
+
+	self.thrustersIcon = GetGUIManager():CreateGraphicItem()
+	self.thrustersIcon:SetTexture(kIconTexture)
+	self.thrustersIcon:SetAnchor(GUIItem.Middle, GUIItem.Bottom)
+	self.thrustersIcon:SetSize(kIconSize)
+	self.thrustersIcon:SetPosition(Vector(-kIconSize.x/2, -kIconOffset, 0))
+	textureCoords = GetTextureCoordinatesForIcon(kThrustersTechId, true)
+	self.thrustersIcon:SetTexturePixelCoordinates(GUIUnpackCoords(textureCoords))
+	self.background:AddChild(self.thrustersIcon)
+
+	self.thrustersIconText = GetGUIManager():CreateTextItem()
+	self.thrustersIconText:SetFontName(Fonts.kAgencyFB_Small)
+	self.thrustersIconText:SetAnchor(GUIItem.Middle, GUIItem.Bottom)
+	self.thrustersIconText:SetTextAlignmentX(GUIItem.Align_Center)
+	self.thrustersIconText:SetTextAlignmentY(GUIItem.Align_Center)
+	self.thrustersIconText:SetText(BindingsUI_GetInputValue("MovementModifier"))
+	self.thrustersIconText:SetPosition(Vector(0, -kTextOffset, 0))
+	self.thrustersIconText:SetColor( Color(0.8, 0.8, 1, 0.8) )
+	self.background:AddChild(self.thrustersIconText)
+
+    local hasThrusters = PlayerUI_GetHasThrusters()
+	if hasThrusters then
+		self.thrustersIcon:SetIsVisible(true)
+		self.thrustersIconText:SetIsVisible(true)
+	else
+		self.thrustersIcon:SetIsVisible(false)
+		self.thrustersIconText:SetIsVisible(false)
+	end
+	
 
     self.repairIcon = GetGUIManager():CreateGraphicItem()
     self.repairIcon:SetTexture(kIconTexture)
@@ -101,11 +149,19 @@ function GUIExoThruster:Initialize()
     self.repairIconText:SetAnchor(GUIItem.Left, GUIItem.Bottom)
     self.repairIconText:SetTextAlignmentX(GUIItem.Align_Center)
     self.repairIconText:SetTextAlignmentY(GUIItem.Align_Center)
-    self.repairIconText:SetText(BindingsUI_GetInputValue("Reload"))
+    self.repairIconText:SetText(BindingsUI_GetInputValue("MovementModifier"))
     self.repairIconText:SetPosition(Vector(0, -kTextOffset, 0))
     self.repairIconText:SetColor( Color(0.8, 0.8, 1, 0.8) )
     self.background:AddChild(self.repairIconText)
-    
+	
+    local hasNanoRepair = PlayerUI_GetHasNanoRepair()
+	if hasNanoRepair then
+		self.repairIcon:SetIsVisible(true)
+		self.repairIconText:SetIsVisible(true)
+	else
+		self.repairIcon:SetIsVisible(false)
+		self.repairIconText:SetIsVisible(false)
+	end
 end
 
 function GUIExoThruster:UpdateExoThrusters(thrustersAvailable, thrustersReady, thrustersActive)
@@ -144,6 +200,17 @@ function GUIExoThruster:UpdateExoShield(shieldAvailable, shieldReady, shieldActi
     end
 end
 
+function GUIExoThruster:UpdateExoCatPack(catpackAvailable, catpackReady, catpackActive)
+    if catpackActive then
+        self.catpackIcon:SetColor(kActiveColor)
+    elseif catpackReady then
+        self.catpackIcon:SetColor(kReadyColor)
+    elseif catpackAvailable then
+        self.catpackIcon:SetColor(kNotReadyColor)
+    else
+        self.catpackIcon:SetColor(kNotAvailableColor)
+    end
+end
 
 local oldGUIExoThrusterUpdate = GUIExoThruster.Update
 function GUIExoThruster:Update(deltaTime)
@@ -151,7 +218,8 @@ function GUIExoThruster:Update(deltaTime)
 
     local thrustersAvailable, thrustersReady, thrustersActive = PlayerUI_GetExoThrustersAvailable()
     local repairAvailable, repairReady, repairActive = PlayerUI_GetExoRepairAvailable()
-   -- local shieldAvailable, shieldReady, shieldActive = PlayerUI_GetExoShieldAvailable()
+    local shieldAvailable, shieldReady, shieldActive = PlayerUI_GetExoShieldAvailable()
+    local catpackAvailable, catpackReady, catpackActive = PlayerUI_GetExoCatPackAvailable()
 
     if thrustersAvailable ~= self.lastThrustersAvailable or thrustersReady ~= self.lastThrustersReady or self.lastThrustersActive ~= thrustersActive then
     
@@ -171,10 +239,49 @@ function GUIExoThruster:Update(deltaTime)
 
     if shieldAvailable ~= self.lastShieldAvailable or shieldReady ~= self.lastShieldReady or self.lastShieldActive ~= shieldActive then
     
-        --self:UpdateExoShield(shieldAvailable, shieldReady, shieldActive)
+        self:UpdateExoShield(shieldAvailable, shieldReady, shieldActive)
         self.lastShieldAvailable = shieldAvailable
         self.lastShieldReady = shieldReady
         self.lastShieldActive = shieldActive
     end
 
+    if catpackAvailable ~= self.lastcatpackAvailable or catpackReady ~= self.lastcatpackReady or self.lastcatpackActive ~= catpackActive then
+    
+        self:UpdateExoCatPack(catpackAvailable, catpackReady, catpackActive)
+        self.lastcatpackAvailable = catpackAvailable
+        self.lastcatpackReady = catpackReady
+        self.lastcatpackActive = catpackActive
+    end
+
+	if PlayerUI_GetHasNanoShield() then
+		self.shieldIcon:SetIsVisible(true)
+		self.shieldIconText:SetIsVisible(true)
+	else
+		self.shieldIcon:SetIsVisible(false)
+		self.shieldIconText:SetIsVisible(false)
+	end
+
+	if PlayerUI_GetHasNanoRepair() then
+		self.repairIcon:SetIsVisible(true)
+		self.repairIconText:SetIsVisible(true)
+	else
+		self.repairIcon:SetIsVisible(false)
+		self.repairIconText:SetIsVisible(false)
+	end
+	
+	if PlayerUI_GetHasThrusters() then
+		self.thrustersIcon:SetIsVisible(true)
+		self.thrustersIconText:SetIsVisible(true)
+	else
+		self.thrustersIcon:SetIsVisible(false)
+		self.thrustersIconText:SetIsVisible(false)
+	end
+	
+	if PlayerUI_GetHasCatPack() then
+		self.catpackIcon:SetIsVisible(true)
+		self.catpackIconText:SetIsVisible(true)
+	else
+		self.catpackIcon:SetIsVisible(false)
+		self.catpackIconText:SetIsVisible(false)
+	end
 end
