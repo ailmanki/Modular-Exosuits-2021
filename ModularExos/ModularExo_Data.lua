@@ -53,6 +53,7 @@ kExoModuleTypes = enum{
     "Thrusters",
     "PhaseModule",
     "CatPack",
+	"MarineStructureAbility"
 }
 
 -- Information to decide which model to use for weapon combos
@@ -128,7 +129,15 @@ kExoModuleTypesData = {
         weight = kExoShieldWeight,
 		requiredTechId = Exo.ExoShieldTech
     },
-    
+	--[kExoModuleTypes.MarineStructureAbility] = {
+   --     category = kExoModuleCategories.Weapon,
+   --     powerCost = 0,
+	--	resourceCost = kExoBuilderCost,
+   --     mapName = MarineStructureAbility.kMapName,
+   --     armType = kExoArmTypes.Claw,
+   --     weight = kExoBuilderWeight,
+   -- },
+
     
     
     -- Utility modules

@@ -1,5 +1,6 @@
 Script.Load("lua/Mixins/JumpMoveMixin.lua")
 Script.Load("lua/PhaseGateUserMixin.lua")
+Script.Load("lua/ModularExos/ExoWeapons/MarineStructureAbility.lua")
 
 Exo.kModelName = PrecacheAsset("models/marine/exosuit/exosuit_cm.model")
 Exo.kAnimationGraph = PrecacheAsset("models/marine/exosuit/exosuit_cm.animation_graph")
@@ -515,7 +516,7 @@ function Exo:ModifyVelocity(input, velocity, deltaTime)
             input.move.y = 0
         
             local maxSpeed,wishDir
-            maxSpeed = self:GetMaxSpeed() + kHorizontalThrusterAddSpeed
+            maxSpeed = self:GetMaxSpeed() + kHorizontalThrusterAddSpeed * self:GetInventorySpeedScalar()
 			
 			
             if self.thrusterMode == kExoThrusterMode.StrafeLeft then
@@ -552,6 +553,63 @@ function Exo:ModifyVelocity(input, velocity, deltaTime)
     
 end
 
+if Client then
+
+   function Exo:UpdateGhostModel()
+
+		self.currentTechId = nil
+		self.ghostStructureCoords = nil
+		self.ghostStructureValid = false
+		self.showGhostModel = false
+
+		local weapon = self:GetActiveWeapon()
+
+		if weapon then
+			if weapon:isa("MarineStructureAbility") then
+
+				self.currentTechId = weapon:GetGhostModelTechId()
+				self.ghostStructureCoords = weapon:GetGhostModelCoords()
+				self.ghostStructureValid = weapon:GetIsPlacementValid()
+				self.showGhostModel = weapon:GetShowGhostModel()
+
+				return weapon:GetShowGhostModel()
+
+
+			end
+		end
+	end
+
+
+	function Exo:GetShowGhostModel()
+		return self.showGhostModel
+	end
+
+	function Exo:GetGhostModelTechId()
+		return self.currentTechId
+	end
+
+	function Exo:GetGhostModelCoords()
+		return self.ghostStructureCoords
+	end
+
+	function Exo:GetIsPlacementValid()
+		return self.ghostStructureValid
+	end
+
+end
+
+function Exo:OverrideInput(input)
+
+	-- Always let the MarineStructureAbility override input, since it handles client-side-only build menu
+	local buildAbility = self:GetWeapon(MarineStructureAbility.kMapName)
+
+	if buildAbility then
+		input = buildAbility:OverrideInput(input)
+	end
+
+	return Player.OverrideInput(self, input)
+
+end
 --ReplaceLocals(Exo.UpdateThrusters, { kThrusterMinimumFuel = kExoThrusterMinFuel })
 --ReplaceLocals(Exo.ModifyVelocity, { kHorizontalThrusterAddSpeed = kExoThrusterMaxSpeed })
 --ReplaceLocals(Exo.ModifyVelocity, { kThrusterHorizontalAcceleration = kExoThrusterLateralAccel })

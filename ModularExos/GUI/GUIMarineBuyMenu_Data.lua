@@ -165,6 +165,11 @@ GUIMarineBuyMenu.kExoModuleData = {
         image = kInventoryIconsTexture,
         imageTexCoords = {GetSmallIconPixelCoordinates(kTechId.PulseGrenade)},
     },
+	--[kExoModuleTypes.MarineStructureAbility] = {
+    --    label = "Builder", tooltip = "EXO_WEAPON_SHIELD_TOOLTIP",
+    --    image = kInventoryIconsTexture,
+    --    imageTexCoords = {GetSmallIconPixelCoordinates(kTechId.Welder)},
+    --},
 	[kExoModuleTypes.Railgun]      = {
 		label          = "Railgun", tooltip = "EXO_WEAPON_RAILGUN_TOOLTIP",
 		image          = kInventoryIconsTexture,
@@ -186,14 +191,14 @@ GUIMarineBuyMenu.kExoModuleData = {
 	
 	[kExoModuleTypes.Armor]        = {
 		label          = "Armour", tooltip = "Extra armour at the cost of speed",
-		image          = kInventoryIconsTexture,
-		imageTexCoords = { GetSmallIconPixelCoordinates(kTechId.Axe) },
+		image          = "ui/buildmenu.dds",
+		imageTexCoords = { GetBuildIconPixelCoords(kTechId.Armor1) },
 	},
 	
 	[kExoModuleTypes.Thrusters]    = {
 		label          = "Thrusters", tooltip = "EXO_UTILITY_SCANNER_TOOLTIP",
 		image          = "ui/buildmenu.dds",
-		imageTexCoords = { GetBuildIconPixelCoords(kTechId.RootMenu) },
+		imageTexCoords = { GetBuildIconPixelCoords(kTechId.Jetpack) },
 	},
 	[kExoModuleTypes.PhaseModule]  = {
 		label          = "Phase", tooltip = "EXO_UTILITY_SCANNER_TOOLTIP",
@@ -208,13 +213,13 @@ GUIMarineBuyMenu.kExoModuleData = {
 		[kExoModuleTypes.NanoRepair] = {
 	    label = "Nano Repair", tooltip = "EXO_UTILITY_SCANNER_TOOLTIP",
      image = "ui/buildmenu.dds",
-	    imageTexCoords = {GetBuildIconPixelCoords(kTechId.Scan)},
+	    imageTexCoords = {GetBuildIconPixelCoords(kTechId.Welder)},
 	 },
 	 	 
 	[kExoModuleTypes.CatPack] = {
 	label = "Catpack", tooltip = "EXO_UTILITY_SCANNER_TOOLTIP",
 	image = "ui/buildmenu.dds",
-	imageTexCoords = {GetBuildIconPixelCoords(kTechId.Scan)},
+		imageTexCoords = {GetBuildIconPixelCoords(kTechId.CatPack)},
 	 },
 	 
 	[kExoModuleTypes.None]         = {

@@ -1,20 +1,18 @@
-kPrototypeLabCost = 25
-kJetpackTechResearchCost = 35
 
 -- Module pricing
-kExoWelderCost = 25
-kRailgunCost = 40
+kExoWelderCost = 15
+kRailgunCost = 30
 
-kMinigunCost = 40
-kExoFlamerCost = 40
-kExoShieldCost = 25
-kClawCost = 0
+kMinigunCost = 30
+kExoFlamerCost = 30
+kExoShieldCost = 15
+kClawCost = 5
 kPhaseModuleCost = 15
 kThrustersCost = 20
 kArmorModuleCost = 15
-kNanoModuleCost = 25
-kNanoShieldCost = 25
-kCatPackCost = 25
+kNanoModuleCost = 20
+kNanoShieldCost = 20
+kCatPackCost = 20
 
 
 kMinigunMovementSlowdown = 1
@@ -29,7 +27,7 @@ Exo.kExosuitArmorPerUpgradeLevel = kExosuitArmorPerUpgradeLevel
 Exo.kVertThrust = 0
 Exo.kHorizThrust = 250
 Exo.kMaxSpeed = 6
-Exo.kThrustersCooldownTime = 0
+Exo.kThrustersCooldownTime = 0.5
 Exo.kThrusterDuration = 1
 
 -- FUEL USAGE
@@ -49,7 +47,7 @@ kExoRepairPerSecond = 15
 kExoRepairFuelUsageRate = 10
 kExoRepairInterval = 0.5
 
-kExoFuelRechargeRate = 10
+kExoFuelRechargeRate = 20
 
 kExoCatPackMinFuel = 1
 kExoCatPackFuelUsageRate = 6
@@ -85,7 +83,7 @@ Railgun.kRailgunDamage = 30]]
 
 
 kRailgunWeight = 0.05
-kRailgunDamage = 35
+kRailgunDamage = 30
 --kRailgunChargeDamage = 140
 
 -- CLAW
@@ -165,7 +163,17 @@ ExoShield.kShieldEffectOffDelay = 0.6
 kThrustersWeight = 0.05
 kPhaseModuleWeight = 0.1
 kArmorModuleWeight = 0.15
-kNanoRepairWeight = 0.05
-kNanoShieldWeight = 0.05
-kCatPackWeight = 0.05
-kNanoRepairWeight = 0.05
+kNanoRepairWeight = 0.1
+kNanoShieldWeight = 0.1
+kCatPackWeight = 0.1
+kNanoRepairWeight = 0.1
+kExoBuilderWeight = 0.01
+
+-- Exo Building
+kExoBuilderCost = 15
+kWeaponCacheHealth = 600
+kWeaponCacheArmor = 150
+kWeaponCachePointValue = 100
+kNumArmoriesPerPlayer = 1
+kMarineBuildRadius = 3
+kNumSentriesPerPlayer = 1

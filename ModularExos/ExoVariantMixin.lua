@@ -4,9 +4,9 @@ if Client then
 
         if self:isa("Exosuit") or self:isa("ReadyRoomExo") then
             local modelName = self:GetModelName()   --hacks
-            if StringEndsWith( modelName, "_mm.model" ) then
+            if StringEndsWith( modelName, "_mm.model" ) or StringEndsWith( modelName, "_cm.model" ) then
                 return "Minigun"
-            elseif StringEndsWith( modelName, "_rr.model" ) or StringEndsWith( modelName, "_cr.model" ) or StringEndsWith( modelName, "_cm.model" ) then
+            elseif StringEndsWith( modelName, "_rr.model" ) or StringEndsWith( modelName, "_cr.model" )  then
                 return "Railgun"
             end
         else

@@ -2,6 +2,8 @@
 Script.Load("lua/ModularExos/ExoWeapons/ExoWelder.lua")
 Script.Load("lua/ModularExos/ExoWeapons/ExoFlamer.lua")
 Script.Load("lua/ModularExos/ExoWeapons/ExoShield.lua")
+Script.Load("lua/ModularExos/WeaponCache.lua")
+Script.Load("lua/ModularExos/ExoWeapons/MarineStructureAbility.lua")
 Script.Load("lua/ModularExos/Balance.lua" )
 
 Script.Load("lua/ModularExos/ModularExo_Data.lua")

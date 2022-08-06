@@ -1,4 +1,5 @@
 debug.appendtoenum(kTechId, "ExoWelder")
 debug.appendtoenum(kTechId, "ExoFlamer")
 debug.appendtoenum(kTechId, "ExoShield")
-
+debug.appendtoenum(kTechId, "WeaponCache")
+debug.appendtoenum(kTechId, "MarineStructureAbility")
