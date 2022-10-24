@@ -41,7 +41,7 @@ ModLoader.SetupFileHook( "lua/PrototypeLab.lua", "lua/ModularExos/PrototypeLab.l
 ModLoader.SetupFileHook( "lua/PhysicsGroups.lua", "lua/ModularExos/PhysicsGroups.lua", "post" )
 
 --ModLoader.SetupFileHook( "lua/Weapons/Alien/Bomb.lua", "lua/ModularExos/ExoWeapons/Bomb.lua", "post" )
-ModLoader.SetupFileHook( "lua/Weapons/Marine/Grenade.lua", "lua/ModularExos/ExoWeapons/Grenade.lua", "post" )
+--ModLoader.SetupFileHook( "lua/Weapons/Marine/Grenade.lua", "lua/ModularExos/ExoWeapons/Grenade.lua", "post" )
 
 -- Exos
 ModLoader.SetupFileHook( "lua/Exosuit.lua", "lua/ModularExos/Exosuit.lua", "post" )
