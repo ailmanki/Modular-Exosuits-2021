@@ -11,8 +11,8 @@ kPhaseModuleCost = 15
 kThrustersCost = 20
 kArmorModuleCost = 15
 kNanoModuleCost = 20
-kNanoShieldCost = 20
-kCatPackCost = 20
+kExoNanoShieldCost = 20
+kExoCatPackCost = 20
 
 
 kMinigunMovementSlowdown = 1

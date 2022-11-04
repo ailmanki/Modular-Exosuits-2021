@@ -177,14 +177,14 @@ kExoModuleTypesData = {
 	[kExoModuleTypes.NanoShield] = {
         category = kExoModuleCategories.Ability,
         powerCost = 0,
-		resourceCost = kNanoShieldCost,
+		resourceCost = kExoNanoShieldCost,
         weight = kNanoShieldWeight,
 
     },
 	[kExoModuleTypes.CatPack] = {
         category = kExoModuleCategories.Ability,
         powerCost = 0,
-		resourceCost = kCatPackCost,
+		resourceCost = kExoCatPackCost,
         weight = kCatPackWeight,
 
     },
