@@ -202,14 +202,14 @@ GUIMarineBuyMenu.kExoSlotData = {
     },
     
     [kExoModuleSlots.Utility]  = {
-        label      = "Utility", --label = "EXO_MODULESLOT_UTILITY",
+        label      = "Core Module", --label = "EXO_MODULESLOT_UTILITY",
         xp         = 0.17, yp = 0.65, anchorX = GUIItem.Left, gap = kModuleButtonGap * 0.4,
         makeButton = function(self, moduleType, moduleTypeData, offsetX, offsetY)
             return self:MakeUtilityModuleButton(moduleType, moduleTypeData, offsetX, offsetY)
         end,
     },
     [kExoModuleSlots.Ability]  = {
-        label      = "Support Ability", --label = "EXO_MODULESLOT_ABILITY",
+        label      = "Squad Support", --label = "EXO_MODULESLOT_ABILITY",
         xp         = 1.00, yp = 0.65, anchorX = GUIItem.Right, gap = kModuleButtonGap * 0.4,
         makeButton = function(self, moduleType, moduleTypeData, offsetX, offsetY)
             return self:MakeAbilityModuleButton(moduleType, moduleTypeData, offsetX, offsetY)
