@@ -16,8 +16,8 @@ kExoCatPackCost = 20
 kMinigunMovementSlowdown = 1
 kRailgunMovementSlowdown = 1
 
-kNanoShieldPlayerDuration = 6
-kCatPackDuration = 6
+-- kNanoShieldPlayerDuration = 6
+-- kCatPackDuration = 6
 --Exo
 
 Exo.kExosuitArmor = kExosuitArmor
@@ -76,21 +76,21 @@ Railgun.kRailgunChargeTime = 1.4
 Railgun.kRailgunDamage = 30]]
 
 
-kRailgunWeight = 0.05
-kRailgunDamage = 30
---kRailgunChargeDamage = 140
+kRailgunWeight = 0.045 -- default 0.045
+kRailgunDamage = 10 -- default 10
+kRailgunChargeDamage = 140 -- default 140
 
 -- CLAW
-kClawWeight = 0.00
-kClawDamage = 50 --Default 50
+kClawWeight = 0.01 -- default 0.01
+kClawDamage = 50 -- default 50
 
 -- MINIGUN --
 
-kMinigunDamage = 8 -- original value 6 but only a dual minigun is available
+kMinigunDamage = 6 -- default 6
 kMinigunDamageType = kDamageType.Heavy --original heavy
-kMinigunWeight = 0.15
-Minigun.kHeatUpRate = 0.15
-Minigun.kCoolDownRate = 0.20
+kMinigunWeight = 0.06 -- default 0.06
+Minigun.kHeatUpRate = 0.3 -- default 0.3
+Minigun.kCoolDownRate = 0.4 -- default 0.4
 
 ---- FLAMETHROWER --
 --kExoFlamerWeight = 0.15

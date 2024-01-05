@@ -13,9 +13,9 @@ ModLoader.SetupFileHook("lua/Marine.lua", "lua/ModularExos/Marine.lua", "post")
 --ModLoader.SetupFileHook( "lua/NetworkMessages.lua", "lua/ModularExos/NetworkMessages.lua", "post" )
 
 -- disable minigun balances
-ModLoader.SetupFileHook("lua/Weapons/Marine/Minigun.lua", "lua/ModularExos/ExoWeapons/Minigun.lua", "post")
-ModLoader.SetupFileHook("lua/Weapons/Marine/Railgun.lua", "lua/ModularExos/ExoWeapons/Railgun.lua", "post")
-ModLoader.SetupFileHook("lua/Sentry.lua", "lua/ModularExos/Sentry.lua", "post")
+-- ModLoader.SetupFileHook("lua/Weapons/Marine/Minigun.lua", "lua/ModularExos/ExoWeapons/Minigun.lua", "post")
+-- ModLoader.SetupFileHook("lua/Weapons/Marine/Railgun.lua", "lua/ModularExos/ExoWeapons/Railgun.lua", "post")
+-- ModLoader.SetupFileHook("lua/Sentry.lua", "lua/ModularExos/Sentry.lua", "post")
 
 -- Weapon Overrides Marine and Alien
 ModLoader.SetupFileHook("lua/Weapons/Marine/ExoWeaponHolder.lua", "lua/ModularExos/ExoWeapons/ExoWeaponHolder.lua", "post")
