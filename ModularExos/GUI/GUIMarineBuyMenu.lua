@@ -187,14 +187,14 @@ GUIMarineBuyMenu.kExoSlotData                = {
 	
 	
 	[kExoModuleSlots.RightArm] = {
-		label      = "Right Arm", --label = "EXO_MODULESLOT_RIGHT_ARM",
+		label      = "Secondary Weapon", --label = "EXO_MODULESLOT_RIGHT_ARM",
         xp = 0.15, yp = 0.0, anchorX = GUIItem.Left, gap = kModuleButtonGap*0.4,
 		makeButton = function(self, moduleType, moduleTypeData, offsetX, offsetY)
 			return self:MakeWeaponModuleButton(moduleType, moduleTypeData, offsetX, offsetY, kExoModuleSlots.RightArm)
 		end,
 	},
 	[kExoModuleSlots.LeftArm]  = {
-		label      = "Left Arm", --label = "EXO_MODULESLOT_LEFT_ARM",
+		label      = "Primary Weapon", --label = "EXO_MODULESLOT_LEFT_ARM",
 		xp         = 1.0, yp = 0.0, anchorX = GUIItem.Right, gap = kModuleButtonGap * 0.4,
 		makeButton = function(self, moduleType, moduleTypeData, offsetX, offsetY)
 			return self:MakeWeaponModuleButton(moduleType, moduleTypeData, offsetX, offsetY, kExoModuleSlots.LeftArm)
