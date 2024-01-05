@@ -39,7 +39,7 @@ Script.Load("lua/SupplyUserMixin.lua")
 Script.Load("lua/IdleMixin.lua")
 Script.Load("lua/ParasiteMixin.lua")
 
-class 'WeaponCache' (ScriptActor)
+class 'WeaponCache'(ScriptActor)
 
 WeaponCache.kMapName = "weapon_cache"
 
@@ -69,11 +69,10 @@ elseif Client then
 end
 
 PrecacheAsset("models/marine/armory/health_indicator.surface_shader")
-    
-local networkVars =
-{
+
+local networkVars = {
     -- How far out the arms are for animation (0-1)
-    loggedIn     = "boolean",
+    loggedIn = "boolean",
 }
 
 AddMixinNetworkVars(BaseModelMixin, networkVars)
@@ -99,7 +98,7 @@ AddMixinNetworkVars(IdleMixin, networkVars)
 AddMixinNetworkVars(ParasiteMixin, networkVars)
 
 function WeaponCache:OnCreate()
-
+    
     ScriptActor.OnCreate(self)
     
     InitMixin(self, BaseModelMixin)
@@ -125,9 +124,9 @@ function WeaponCache:OnCreate()
     InitMixin(self, ParasiteMixin)
     
     --if Client then
-      --  InitMixin(self, CommanderGlowMixin)
+    --  InitMixin(self, CommanderGlowMixin)
     --end
-
+    
     self:SetLagCompensated(false)
     self:SetPhysicsType(PhysicsType.Kinematic)
     self:SetPhysicsGroup(PhysicsGroup.BigStructuresGroup)
@@ -157,40 +156,40 @@ end
 
 -- Check if friendly players are nearby and facing armory and heal/resupply them
 local function LoginAndResupply(self)
-
+    
     self:UpdateLoggedIn()
     
     -- Make sure players are still close enough, alive, marines, etc.
     -- Give health and ammo to nearby players.
     
-   -- if GetIsUnitActive(self) then Messes up the animation for some reason, Well, probably because
-   -- unitedactive asks if the structure has power. In which case, it doesn't, but becaause we don't want the armory to
-   --require power. It stills allows this, but the animation is in't sync.
-   
-     if GetIsUnitActive(self) then
+    -- if GetIsUnitActive(self) then Messes up the animation for some reason, Well, probably because
+    -- unitedactive asks if the structure has power. In which case, it doesn't, but becaause we don't want the armory to
+    --require power. It stills allows this, but the animation is in't sync.
+    
+    if GetIsUnitActive(self) then
         self:ResupplyPlayers()
     end
     
     return true
-    
+
 end
 
 function WeaponCache:OnInitialized()
-
+    
     ScriptActor.OnInitialized(self)
     
     self:SetModel(WeaponCache.kModelName, WeaponCache.kAnimationGraph)
     
     InitMixin(self, WeldableMixin)
     InitMixin(self, NanoShieldMixin)
-
-    if Server then    
     
+    if Server then
+        
         self.loggedInArray = { false, false, false, false }
         
         -- Use entityId as index, store time last resupplied
         self.resuppliedPlayers = { }
-
+        
         self:AddTimedCallback(LoginAndResupply, kLoginAndResupplyTime)
         
         -- This Mixin must be inited inside this OnInitialized() function.
@@ -201,36 +200,36 @@ function WeaponCache:OnInitialized()
         InitMixin(self, StaticTargetMixin)
         InitMixin(self, InfestationTrackerMixin)
         InitMixin(self, SupplyUserMixin)
-        
-    elseif Client then
     
-        self:OnInitClient()        
+    elseif Client then
+        
+        self:OnInitClient()
         InitMixin(self, UnitStatusMixin)
         InitMixin(self, HiveVisionMixin)
-        
+    
     end
     
     InitMixin(self, IdleMixin)
-    
+
 end
 
 function WeaponCache:GetCanBeUsed(player, useSuccessTable)
-
-    --if player:isa("Exo") then
-        useSuccessTable.useSuccess = false
-    --end
     
+    --if player:isa("Exo") then
+    useSuccessTable.useSuccess = false
+    --end
+
 end
 
 function WeaponCache:GetCanBeUsedConstructed()
     return false
-end        
+end
 function WeaponCache:GetRequiresPower()
-return true
+    return true
 end
 
 function WeaponCache:GetTechIfResearched(buildId, researchId)
-
+    
     local techTree = nil
     if Server then
         techTree = self:GetTeam():GetTechTree()
@@ -244,31 +243,31 @@ function WeaponCache:GetTechIfResearched(buildId, researchId)
     ASSERT(researchNode ~= nil)
     ASSERT(researchNode:GetIsResearch())
     return ConditionalValue(researchNode:GetResearched(), buildId, researchId)
-    
+
 end
 
 function WeaponCache:GetTechButtons(techId)
-
+    
     local techButtons = nil
-
+    
     techButtons = { kTechId.ShotgunTech, kTechId.MinesTech, kTechId.GrenadeTech, kTechId.None,
                     kTechId.None, kTechId.None, kTechId.None, kTechId.None }
-
+    
     -- Show button to upgraded to advanced armory
     --if self:GetTechId() == kTechId.WeaponCache and self:GetResearchingId() ~= kTechId.AdvancedArmoryUpgrade then
-        --techButtons[kMarineUpgradeButtonIndex] = kTechId.AdvancedArmoryUpgrade
+    --techButtons[kMarineUpgradeButtonIndex] = kTechId.AdvancedArmoryUpgrade
     --end
-
-    return techButtons
     
+    return techButtons
+
 end
 
 function WeaponCache:GetTechAllowed(techId, techNode, player)
-
+    
     local allowed, canAfford = ScriptActor.GetTechAllowed(self, techId, techNode, player)
     
     --if techId == kTechId.HeavyRifleTech then
-        --allowed = allowed and self:GetTechId() == kTechId.AdvancedArmory
+    --allowed = allowed and self:GetTechId() == kTechId.AdvancedArmory
     --end
     
     return allowed, canAfford
@@ -276,10 +275,10 @@ function WeaponCache:GetTechAllowed(techId, techNode, player)
 end
 
 function WeaponCache:OnUpdatePoseParameters()
-
+    
     --if GetIsUnitActive(self) < - Checks for power, doesn't sync correctly when we want it to work without power.
     --self:GetIsBuilt()
-         if GetIsUnitActive(self) and self.deployed then
+    if GetIsUnitActive(self) and self.deployed then
         
         if self.loginNorthAmount then
             self:SetPoseParam("log_n", self.loginNorthAmount)
@@ -298,58 +297,58 @@ function WeaponCache:OnUpdatePoseParameters()
         end
         
         if self.scannedParamValue then
-        
+            
             for extension, value in pairs(self.scannedParamValue) do
                 self:SetPoseParam("scan_" .. extension, value)
             end
-            
-        end
         
-    end
+        end
     
+    end
+
 end
 
 local function UpdateArmoryAnim(self, extension, loggedIn, scanTime, timePassed)
---[[
-    local loggedInName = "log_" .. extension
-    local loggedInParamValue = ConditionalValue(loggedIn, 1, 0)
-
-    if extension == "n" then
-        self.loginNorthAmount = Clamp(Slerp(self.loginNorthAmount, loggedInParamValue, timePassed * 2), 0, 1)
-    elseif extension == "s" then
-        self.loginSouthAmount = Clamp(Slerp(self.loginSouthAmount, loggedInParamValue, timePassed * 2), 0, 1)
-    elseif extension == "e" then
-        self.loginEastAmount = Clamp(Slerp(self.loginEastAmount, loggedInParamValue, timePassed * 2), 0, 1)
-    elseif extension == "w" then
-        self.loginWestAmount = Clamp(Slerp(self.loginWestAmount, loggedInParamValue, timePassed * 2), 0, 1)
-    end
+    --[[
+        local loggedInName = "log_" .. extension
+        local loggedInParamValue = ConditionalValue(loggedIn, 1, 0)
     
-    local scannedName = "scan_" .. extension
-    self.scannedParamValue = self.scannedParamValue or { }
-    self.scannedParamValue[extension] = ConditionalValue(scanTime == 0 or (Shared.GetTime() > scanTime + 3), 0, 1)
-    ]]--
+        if extension == "n" then
+            self.loginNorthAmount = Clamp(Slerp(self.loginNorthAmount, loggedInParamValue, timePassed * 2), 0, 1)
+        elseif extension == "s" then
+            self.loginSouthAmount = Clamp(Slerp(self.loginSouthAmount, loggedInParamValue, timePassed * 2), 0, 1)
+        elseif extension == "e" then
+            self.loginEastAmount = Clamp(Slerp(self.loginEastAmount, loggedInParamValue, timePassed * 2), 0, 1)
+        elseif extension == "w" then
+            self.loginWestAmount = Clamp(Slerp(self.loginWestAmount, loggedInParamValue, timePassed * 2), 0, 1)
+        end
+        
+        local scannedName = "scan_" .. extension
+        self.scannedParamValue = self.scannedParamValue or { }
+        self.scannedParamValue[extension] = ConditionalValue(scanTime == 0 or (Shared.GetTime() > scanTime + 3), 0, 1)
+        ]]--
 end
 
 function WeaponCache:OnUpdate(deltaTime)
-
+    
     if Client then
         self:UpdateArmoryWarmUp()
     end
     
     --if GetIsUnitActive(self) <- Checks for power. We want the armory to work without power!
     --self:GetIsBuilt() <-- does not check for power
-       if GetIsUnitActive(self) and self.deployed then
-    
-        -- Set pose parameters according to if we're logged in or not
-       -- UpdateArmoryAnim(self, "e", self.loggedInEast, self.timeScannedEast, deltaTime)
-       -- UpdateArmoryAnim(self, "n", self.loggedInNorth, self.timeScannedNorth, deltaTime)
-       -- UpdateArmoryAnim(self, "w", self.loggedInWest, self.timeScannedWest, deltaTime)
-     --   UpdateArmoryAnim(self, "s", self.loggedInSouth, self.timeScannedSouth, deltaTime)
+    if GetIsUnitActive(self) and self.deployed then
         
+        -- Set pose parameters according to if we're logged in or not
+        -- UpdateArmoryAnim(self, "e", self.loggedInEast, self.timeScannedEast, deltaTime)
+        -- UpdateArmoryAnim(self, "n", self.loggedInNorth, self.timeScannedNorth, deltaTime)
+        -- UpdateArmoryAnim(self, "w", self.loggedInWest, self.timeScannedWest, deltaTime)
+        --   UpdateArmoryAnim(self, "s", self.loggedInSouth, self.timeScannedSouth, deltaTime)
+    
     end
     
     ScriptActor.OnUpdate(self, deltaTime)
-    
+
 end
 
 function WeaponCache:GetReceivesStructuralDamage()
@@ -362,45 +361,45 @@ end
 
 function WeaponCache:GetItemList(forPlayer)
     
-    local itemList = {   
-        kTechId.LayMines, 
+    local itemList = {
+        kTechId.LayMines,
         kTechId.Shotgun,
         kTechId.Welder,
         kTechId.ClusterGrenade,
         kTechId.GasGrenade,
         kTechId.PulseGrenade
     }
-   --[[ 
-    if self:GetTechId() == kTechId.AdvancedArmory then
-    
-        itemList = {   
-            kTechId.LayMines,
-            kTechId.Shotgun,
-            kTechId.Welder,
-            kTechId.ClusterGrenade,
-            kTechId.GasGrenade,
-            kTechId.PulseGrenade,
-            kTechId.GrenadeLauncher,
-            kTechId.Flamethrower,
-        }
-        
-    end
-    ]]--
+    --[[
+     if self:GetTechId() == kTechId.AdvancedArmory then
+     
+         itemList = {
+             kTechId.LayMines,
+             kTechId.Shotgun,
+             kTechId.Welder,
+             kTechId.ClusterGrenade,
+             kTechId.GasGrenade,
+             kTechId.PulseGrenade,
+             kTechId.GrenadeLauncher,
+             kTechId.Flamethrower,
+         }
+         
+     end
+     ]]--
     return itemList
-    
+
 end
 
 function WeaponCache:GetHealthbarOffset()
     return gWeaponCacheHealthHeight
-end 
+end
 
 if Server then
---[[     not used anymore since all animation are now client side
-    function Armory:OnTag(tagName)
-        if tagName == "deploy_end" then
-            self.deployed = true
-        end
-    end]]
+    --[[     not used anymore since all animation are now client side
+        function Armory:OnTag(tagName)
+            if tagName == "deploy_end" then
+                self.deployed = true
+            end
+        end]]
 
 
 end

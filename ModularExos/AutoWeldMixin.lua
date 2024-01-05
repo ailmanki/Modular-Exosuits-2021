@@ -14,13 +14,11 @@ AutoWeldMixin.type = "AutoWeld"
 AutoWeldMixin.kWeldArmorPerSecond = 8
 AutoWeldMixin.kWeldInterval = 0.2 -- weld hits 5x per second.
 
-AutoWeldMixin.expectedMixins =
-{
+AutoWeldMixin.expectedMixins = {
     Weldable = "Required to weld self.",
 }
 
-AutoWeldMixin.networkVars =
-{
+AutoWeldMixin.networkVars = {
 }
 
 local function GetIsInCombat_WithoutCombatMixin(self, time)
@@ -44,26 +42,26 @@ function AutoWeldMixin:__initmixin()
         else
             self.__GetIsInCombatForAutoRepair = GetIsInCombat_WithoutCombatMixin
         end
-        
-    end
     
+    end
+
 end
 
 if Server then
     
     local function SharedUpdate(self)
-    
+        
         -- Don't auto weld if in combat or took damage too recently.
         local now = Shared.GetTime()
         if self:__GetIsInCombatForAutoRepair(now) then
             return
         end
-    
+        
         -- Don't auto weld if not enough time has passed yet.
         if now < self.timeNextWeld then
             return
         end
-    
+        
         -- Update the cooldown for the next weld.
         self.timeNextWeld = now + AutoWeldMixin.kWeldInterval
         
@@ -83,5 +81,5 @@ if Server then
     function AutoWeldMixin:GetCanSelfWeld()
         return true
     end
-    
+
 end

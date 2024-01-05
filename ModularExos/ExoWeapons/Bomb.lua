@@ -1,4 +1,3 @@
-
 if Server then
     Bomb.kBileBombDotIntervall = Bomb.kBileBombDotIntervall or GetLocal(Bomb.ProcessHit, "kBileBombDotIntervall")
     
@@ -16,7 +15,7 @@ end
 GetEffectManager():AddEffectData("ModularExo_ExoShield_Bomb_Absorb", {
     bomb_absorb = {
         effects = {
-            {cinematic = "cinematics/marine/arc/hit_med.cinematic"},      
+            { cinematic = "cinematics/marine/arc/hit_med.cinematic" },
         },
     },
 })

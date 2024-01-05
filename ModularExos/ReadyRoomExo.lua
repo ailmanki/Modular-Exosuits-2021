@@ -2,5 +2,5 @@ function ReadyRoomExo:PerformEject()
 end
 
 function ReadyRoomExo:InitExoModel()
-	Exo.InitExoModel(self)
+    Exo.InitExoModel(self)
 end

@@ -4,35 +4,35 @@ Script.Load("lua/ModularExos/ExoWeapons/ExoFlamer.lua")
 Script.Load("lua/ModularExos/ExoWeapons/ExoShield.lua")
 Script.Load("lua/ModularExos/WeaponCache.lua")
 Script.Load("lua/ModularExos/ExoWeapons/MarineStructureAbility.lua")
-Script.Load("lua/ModularExos/Balance.lua" )
+Script.Load("lua/ModularExos/Balance.lua")
 
 Script.Load("lua/ModularExos/ModularExo_Data.lua")
 Script.Load("lua/ModularExos/NetworkMessages.lua")
 
 function ModularExo_ConvertNetMessageToConfig(message)
     return {
-       -- [kExoModuleSlots.PowerSupply] = message.powerModuleType    or kExoModuleTypes.None,
-        [kExoModuleSlots.LeftArm    ] = message.leftArmModuleType  or kExoModuleTypes.None,
-        [kExoModuleSlots.RightArm   ] = message.rightArmModuleType or kExoModuleTypes.None,
-        [kExoModuleSlots.Utility    ] = message.utilityModuleType  or kExoModuleTypes.None,
-        [kExoModuleSlots.Ability    ] = message.abilityModuleType  or kExoModuleTypes.None,
+        -- [kExoModuleSlots.PowerSupply] = message.powerModuleType    or kExoModuleTypes.None,
+        [kExoModuleSlots.LeftArm]  = message.leftArmModuleType or kExoModuleTypes.None,
+        [kExoModuleSlots.RightArm] = message.rightArmModuleType or kExoModuleTypes.None,
+        [kExoModuleSlots.Utility]  = message.utilityModuleType or kExoModuleTypes.None,
+        [kExoModuleSlots.Ability]  = message.abilityModuleType or kExoModuleTypes.None,
     }
 end
 
 function ModularExo_ConvertConfigToNetMessage(config)
     return {
-       -- powerModuleType    = config[kExoModuleSlots.PowerSupply] or kExoModuleTypes.None,
-        leftArmModuleType  = config[kExoModuleSlots.LeftArm    ] or kExoModuleTypes.None,
-        rightArmModuleType = config[kExoModuleSlots.RightArm   ] or kExoModuleTypes.None,
-        utilityModuleType  = config[kExoModuleSlots.Utility    ] or kExoModuleTypes.None,
-        abilityModuleType  = config[kExoModuleSlots.Ability    ] or kExoModuleTypes.None,
+        -- powerModuleType    = config[kExoModuleSlots.PowerSupply] or kExoModuleTypes.None,
+        leftArmModuleType  = config[kExoModuleSlots.LeftArm] or kExoModuleTypes.None,
+        rightArmModuleType = config[kExoModuleSlots.RightArm] or kExoModuleTypes.None,
+        utilityModuleType  = config[kExoModuleSlots.Utility] or kExoModuleTypes.None,
+        abilityModuleType  = config[kExoModuleSlots.Ability] or kExoModuleTypes.None,
     }
 end
 
 function ModularExo_GetIsConfigValid(config)
     local resourceCost = 0
- --   local powerCost = 0
-  --  local powerSupply = nil -- We don't know yet
+    --   local powerCost = 0
+    --  local powerSupply = nil -- We don't know yet
     local leftArmType = nil
     local rightArmType = nil
     for slotType, slotTypeData in pairs(kExoModuleSlotsData) do
@@ -52,15 +52,15 @@ function ModularExo_GetIsConfigValid(config)
                 -- For example, an armor module in a weapon slot
                 return false, "wrong slot type" -- not a valid config
             end
-			
-			--if kMarineTeamType and moduleTypeData.requiredTechId and not GetIsTechResearched(kMarineTeamType, moduleTypeData.requiredTechId) then 
-            --     return false, "tech not researched"
-		    --end
             
-			if moduleTypeData.resourceCost then
-					resourceCost = resourceCost + moduleTypeData.resourceCost
-			end
-           
+            --if kMarineTeamType and moduleTypeData.requiredTechId and not GetIsTechResearched(kMarineTeamType, moduleTypeData.requiredTechId) then
+            --     return false, "tech not researched"
+            --end
+            
+            if moduleTypeData.resourceCost then
+                resourceCost = resourceCost + moduleTypeData.resourceCost
+            end
+            
             if slotType == kExoModuleSlots.LeftArm then
                 leftArmType = moduleTypeData.armType
             elseif slotType == kExoModuleSlots.RightArm then
@@ -69,7 +69,7 @@ function ModularExo_GetIsConfigValid(config)
         end
     end
     -- Ok, we've iterated over certain module types and it seems OK
-
+    
     local exoTexturePath = nil
     local modelDataForRightArmType = kExoWeaponRightLeftComboModels[rightArmType]
     if not modelDataForRightArmType.isValid then
@@ -87,9 +87,8 @@ function ModularExo_GetIsConfigValid(config)
         end
     end
     
-    
-    if GetGameInfoEntity and GetGameInfoEntity() and GetGameInfoEntity():GetWarmUpActive() then 
-        resourceCost = 0 
+    if GetGameInfoEntity and GetGameInfoEntity() and GetGameInfoEntity():GetWarmUpActive() then
+        resourceCost = 0
     end
     
     -- This config is valid
@@ -99,7 +98,6 @@ function ModularExo_GetIsConfigValid(config)
     return true, nil, resourceCost, exoTexturePath
 end
 
-
 function ModularExo_GetConfigWeight(config)
     local weight = 0
     for slotType, slotTypeData in pairs(kExoModuleSlotsData) do
@@ -107,7 +105,7 @@ function ModularExo_GetConfigWeight(config)
         if moduleType and moduleType ~= kExoModuleTypes.None then
             local moduleTypeData = kExoModuleTypesData[moduleType]
             if moduleTypeData then
-                weight = weight+(moduleTypeData.weight or 0)
+                weight = weight + (moduleTypeData.weight or 0)
             end
         end
     end
@@ -115,13 +113,13 @@ function ModularExo_GetConfigWeight(config)
 end
 
 function ModularExo_GetConfigArmor(config)
-    local armorBonus = 0 
+    local armorBonus = 0
     for slotType, slotTypeData in pairs(kExoModuleSlotsData) do
         local moduleType = config[slotType]
         if moduleType and moduleType ~= kExoModuleTypes.None then
             local moduleTypeData = kExoModuleTypesData[moduleType]
             if moduleTypeData then
-                armorBonus = armorBonus+(moduleTypeData.armorValue or 0)
+                armorBonus = armorBonus + (moduleTypeData.armorValue or 0)
             end
         end
     end

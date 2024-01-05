@@ -23,37 +23,37 @@ local time = 0
 local kTexture = "models/marine/exosuit/exosuit_view_panel_mini2.dds"
 
 function UpdateOverHeat(dt, heatAmount)
-
+    
     PROFILE("GUILeftMinigunDisplay:Update")
     
     foregroundMask:SetSize(Vector(242, 720 * (1 - heatAmount), 0))
     
     local alertColor = Color(1, 1, 1, 1)
     if heatAmount > 0.5 then
-    
+        
         animHeatAmount = animHeatAmount + ((animHeatDir * dt) * 10 * heatAmount)
         if animHeatAmount > 1 then
-        
+            
             animHeatAmount = 1
             animHeatDir = -1
-            
-        elseif animHeatAmount < 0 then
         
+        elseif animHeatAmount < 0 then
+            
             animHeatAmount = 0
             animHeatDir = 1
-            
+        
         end
         alertColor = Color(heatAmount, animHeatAmount * (1 - ((heatAmount - 0.5) / 0.5)), 0, 1)
-        
+    
     end
     alertLight:SetColor(alertColor)
     
     time = time + dt
-    
+
 end
 
 function Initialize()
-
+    
     GUI.SetSize(242, 720)
     
     background = GUI.CreateItem()
@@ -85,7 +85,7 @@ function Initialize()
     
     background:AddChild(foregroundMask)
     background:AddChild(alertLight)
-    
+
 end
 
 Initialize()

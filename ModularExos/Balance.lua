@@ -1,4 +1,3 @@
-
 -- Module pricing
 kExoWelderCost = 15
 kRailgunCost = 30
@@ -13,7 +12,6 @@ kArmorModuleCost = 15
 kNanoModuleCost = 20
 kExoNanoShieldCost = 20
 kExoCatPackCost = 20
-
 
 kMinigunMovementSlowdown = 1
 kRailgunMovementSlowdown = 1
@@ -102,7 +100,7 @@ ExoFlamer.kConeWidth = 0.30
 ExoFlamer.kCoolDownRate = 0.15
 ExoFlamer.kDualGunHeatUpRate = 0.10
 ExoFlamer.kHeatUpRate = 0.10
-ExoFlamer.kFireRate = 1/3
+ExoFlamer.kFireRate = 1 / 3
 ExoFlamer.kTrailLength = 10.5
 ExoFlamer.kExoFlamerDamage = 20
 kExoFlamerRange = 10

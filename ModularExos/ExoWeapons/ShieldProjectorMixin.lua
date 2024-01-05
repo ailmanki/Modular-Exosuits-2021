@@ -9,11 +9,11 @@ ShieldProjectorMixin.expectedMixins = {
     --EntityChangeMixin = "For nearby shield entities.",
 }
 ShieldProjectorMixin.expectedCallbacks = {
-    GetIsShieldActive = "Returns true if entity's shield is currently active.",
-    GetShieldTeam = "Returns the index of the shielded team.",
+    GetIsShieldActive             = "Returns true if entity's shield is currently active.",
+    GetShieldTeam                 = "Returns the index of the shielded team.",
     GetShieldProjectorCoordinates = "Returns coordinates representing the position and orientation of the shield PROJECTOR (i.e: the claw).",
-    GetShieldDistance = "Returns the distance of the shield from the projector.",
-    GetShieldAngleExtents = "Returns two angles representing angular extents left and right (use 180 for both for full circular shield).",
+    GetShieldDistance             = "Returns the distance of the shield from the projector.",
+    GetShieldAngleExtents         = "Returns two angles representing angular extents left and right (use 180 for both for full circular shield).",
 }
 ShieldProjectorMixin.optionalCallbacks = {
     GetShieldableEntitySearchDistance = "Returns the distance to search for nearby shieldable entities.",
@@ -21,7 +21,7 @@ ShieldProjectorMixin.optionalCallbacks = {
 }
 
 ShieldProjectorMixin.networkVars = {
-    
+
 }
 
 function IsEntityShielded(doer, entity)
@@ -47,7 +47,7 @@ function ShieldProjectorMixin:OnDestroy()
     if Server then
         for nearbyEntityI, nearbyEntityId in ipairs(self.nearbyShieldableEntityIdList) do
             local nearbyEntity = Shared.GetEntity(nearbyEntityId)
-            nearbyEntity.nearShieldCount = nearbyEntity.nearShieldCount-1
+            nearbyEntity.nearShieldCount = nearbyEntity.nearShieldCount - 1
             local shieldI = nearbyEntity.nearShieldIdMap[self:GetId()]
             table.remove(nearbyEntity.nearShieldList, shieldI)
             nearbyEntity.nearShieldIdMap[self:GetId()] = nil
@@ -56,43 +56,48 @@ function ShieldProjectorMixin:OnDestroy()
 end
 
 function ShieldProjectorMixin:GetShieldableEntitySearchDistance()
-    return self:GetShieldDistance()*2 -- this must be bigger to account for fast moving objects
+    return self:GetShieldDistance() * 2 -- this must be bigger to account for fast moving objects
 end
 function ShieldProjectorMixin:GetShieldableEntitySearchInterval()
     return 0.2
 end
 
 function ShieldProjectorMixin:GetIsEntityShieldedFromDoer(entity, doer)
-    if entity == self then return false end
+    if entity == self then
+        return false
+    end
     if self:GetIsShieldActive() then
         local projectorCoords = self:GetShieldProjectorCoordinates()
-        local projectorOrigin2d = projectorCoords.origin projectorOrigin2d.y = 0
-        local entityOrigin2d = entity:GetOrigin() entityOrigin2d.y = 0
-        local dist2d = (projectorOrigin2d-entityOrigin2d):GetLength()
-        if dist2d <= self:GetShieldDistance()*0.2 then
+        local projectorOrigin2d = projectorCoords.origin
+        projectorOrigin2d.y = 0
+        local entityOrigin2d = entity:GetOrigin()
+        entityOrigin2d.y = 0
+        local dist2d = (projectorOrigin2d - entityOrigin2d):GetLength()
+        if dist2d <= self:GetShieldDistance() * 0.2 then
             return true
-        elseif dist2d <= self:GetShieldDistance()*1.2 then
+        elseif dist2d <= self:GetShieldDistance() * 1.2 then
             local projectorDir2d = GetNormalizedVectorXZ(projectorCoords.zAxis)
-            local doerOrigin2d = doer:GetOrigin() doerOrigin2d.y = 0
+            local doerOrigin2d = doer:GetOrigin()
+            doerOrigin2d.y = 0
             
             local doesIntersect, intersectCount, intersectPointA, intersectPointB = intersectCircleAndLineSegment(doerOrigin2d, entityOrigin2d, projectorOrigin2d, self:GetShieldDistance())
             if doesIntersect then
                 local leftMaxAngle, rightMaxAngle = self:GetShieldAngleExtents()
                 for intersectI = 1, intersectCount do
                     local intersectPoint = (intersectCount == 1 and intersectPointA or intersectPointB)
-                    local dir = GetNormalizedVector(intersectPoint-projectorOrigin2d)
+                    local dir = GetNormalizedVector(intersectPoint - projectorOrigin2d)
                     local isLeft = (projectorDir2d:CrossProduct(dir).y > 0)
                     local maxAngle = (isLeft and leftMaxAngle or rightMaxAngle)
                     local isWithinAngle = (projectorDir2d:DotProduct(dir) > math.cos(maxAngle))
-                 
+                    
                     if isWithinAngle then
-                        intersectPoint.y = doer:GetOrigin().y+0.4
+                        intersectPoint.y = doer:GetOrigin().y + 0.4
                         DebugLine(doer:GetOrigin(), intersectPoint, 1, 0, 1, 0, 1)
                         DebugLine(intersectPoint, entity:GetOrigin(), 1, 0, 1, 0, 1)
                         intersectPoint.y = 0
                         return true
                     else
-                        intersectPoint.y = doer:GetOrigin().y+0.4
+                        intersectPoint.y = doer:GetOrigin().y + 0.4
                         DebugLine(doer:GetOrigin(), intersectPoint, 1, 1, 0, 0, 1)
                         DebugLine(intersectPoint, entity:GetOrigin(), 1, 1, 0, 0, 1)
                         intersectPoint.y = 0
@@ -113,9 +118,9 @@ function ShieldProjectorMixin:OnEntityChange(oldId)
 end
 
 function ShieldProjectorMixin:UpdateShieldProjectorMixin(deltaTime)
-	PROFILE("ShieldProjectorMixin:UpdateShieldProjectorMixin")
+    PROFILE("ShieldProjectorMixin:UpdateShieldProjectorMixin")
     if Server then
-        if Shared.GetTime() > self.lastSearchTime+self:GetShieldableEntitySearchInterval() then
+        if Shared.GetTime() > self.lastSearchTime + self:GetShieldableEntitySearchInterval() then
             self.lastSearchTime = Shared.GetTime()
             local projectorCoords = self:GetShieldProjectorCoordinates()
             local nearbyEntityIdMap = {}
@@ -126,7 +131,7 @@ function ShieldProjectorMixin:UpdateShieldProjectorMixin(deltaTime)
                     if not self.nearbyShieldableEntityIdMap[nearbyEntity:GetId()] then
                         --  Print("New entity %s (%s) in range", nearbyEntity:GetId(), nearbyEntity:GetClassName())
                         
-                        local entityI = #self.nearbyShieldableEntityIdList+1
+                        local entityI = #self.nearbyShieldableEntityIdList + 1
                         self.nearbyShieldableEntityIdList[entityI] = nearbyEntity:GetId()
                         self.nearbyShieldableEntityIdMap[nearbyEntity:GetId()] = entityI
                         
@@ -135,8 +140,8 @@ function ShieldProjectorMixin:UpdateShieldProjectorMixin(deltaTime)
                             nearbyEntity.nearShieldList = {}
                             nearbyEntity.nearShieldIdMap = {}
                         end
-                        nearbyEntity.nearShieldCount = nearbyEntity.nearShieldCount+1
-                        local shieldI = #nearbyEntity.nearShieldList+1
+                        nearbyEntity.nearShieldCount = nearbyEntity.nearShieldCount + 1
+                        local shieldI = #nearbyEntity.nearShieldList + 1
                         nearbyEntity.nearShieldList[shieldI] = self
                         nearbyEntity.nearShieldIdMap[self:GetId()] = shieldI
                     end
@@ -148,12 +153,12 @@ function ShieldProjectorMixin:UpdateShieldProjectorMixin(deltaTime)
                 local shouldRemove = false
                 if not nearbyEntityIdMap[nearbyEntityId] then
                     local nearbyEntity = Shared.GetEntity(nearbyEntityId)
-                   // Print("Entity %s (%s) out of range", nearbyEntityId, nearbyEntity:GetClassName())
+                            // Print("Entity %s (%s) out of range", nearbyEntityId, nearbyEntity:GetClassName())
                     shouldRemove = true
                     
                     self.nearbyShieldableEntityIdMap[nearbyEntity:GetId()] = nil
-                        
-                    nearbyEntity.nearShieldCount = nearbyEntity.nearShieldCount-1
+                    
+                    nearbyEntity.nearShieldCount = nearbyEntity.nearShieldCount - 1
                     local shieldI = nearbyEntity.nearShieldIdMap[self:GetId()]
                     table.remove(nearbyEntity.nearShieldList, shieldI)
                     nearbyEntity.nearShieldIdMap[self:GetId()] = nil
@@ -161,7 +166,7 @@ function ShieldProjectorMixin:UpdateShieldProjectorMixin(deltaTime)
                 if shouldRemove then
                     table.remove(self.nearbyShieldableEntityIdList, nearbyEntityI)
                 else
-                    nearbyEntityI = nearbyEntityI+1
+                    nearbyEntityI = nearbyEntityI + 1
                 end
             end
         end

@@ -1,4 +1,3 @@
-
 Script.Load("lua/LiveMixin.lua")
 
 ShieldedMixin = CreateMixin(ShieldedMixin)
@@ -10,13 +9,13 @@ ShieldedMixin.expectedMixins = {
     LiveMixin = "Entity must be able to take damage to be shielded from taking damage.",
 }
 ShieldedMixin.expectedCallbacks = {
-    GetIsShieldActive = "Returns true if entity's shield is currently active.",
+    GetIsShieldActive             = "Returns true if entity's shield is currently active.",
     GetShieldProjectorCoordinates = "Returns coordinates representing the position and orientation of the shield PROJECTOR (i.e: the claw).",
-    GetShieldDistance = "Returns the distance of the shield from the projector.",
-    GetShieldAngleExtents = "Returns four angles representing extents: left, right, up, down.",
+    GetShieldDistance             = "Returns the distance of the shield from the projector.",
+    GetShieldAngleExtents         = "Returns four angles representing extents: left, right, up, down.",
 }
 ShieldedMixin.optionalCallbacks = {
-    
+
 }
 
 ShieldedMixin.networkVars = {

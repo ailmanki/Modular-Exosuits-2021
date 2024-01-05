@@ -9,22 +9,22 @@ Server.HookNetworkMessage("ExoModularBuy", OnMessageExoModularBuy)
 function ModularExo_FindExoSpawnPoint(self)
     local maxAttempts = 100
     for index = 1, maxAttempts do
-    
+        
         -- Find open area nearby to place the big guy.
         local capsuleHeight, capsuleRadius = self:GetTraceCapsule()
         local extents = Vector(Exo.kXZExtents, Exo.kYExtents, Exo.kXZExtents)
-
-        local spawnPoint        
+        
+        local spawnPoint
         local checkPoint = self:GetOrigin() + Vector(0, 0.02, 0)
         
         if GetHasRoomForCapsule(extents, checkPoint + Vector(0, extents.y, 0), CollisionRep.Move, PhysicsMask.Evolve, self) then
             spawnPoint = checkPoint
         else
             spawnPoint = GetRandomSpawnForCapsule(extents.y, extents.x, checkPoint, 0.5, 5, EntityFilterOne(self))
-        end    
-            
-        local weapons 
-
+        end
+        
+        local weapons
+        
         if spawnPoint then
             return spawnPoint
         end
@@ -41,10 +41,10 @@ function ModularExo_HandleExoModularBuy(self, message)
     end
     
     local isValid, badReason, resCost = ModularExo_GetIsConfigValid(exoConfig)
-    resCost = resCost-discount
+    resCost = resCost - discount
     --if resCost < 0 then
-       -- Print("Invalid exo config: no refunds!")
-   -- end
+    -- Print("Invalid exo config: no refunds!")
+    -- end
     if not isValid or resCost > self:GetResources() then
         Print("Invalid exo config: %s", badReason)
         return
@@ -58,12 +58,12 @@ function ModularExo_HandleExoModularBuy(self, message)
     end
     
     local weapons = self:GetWeapons()
-    for i = 1, #weapons do            
-        weapons[i]:SetParent(nil)            
+    for i = 1, #weapons do
+        weapons[i]:SetParent(nil)
     end
     local exoVariables = message
     
-    local exo = self:Replace(Exo.kMapName, self:GetTeamNumber(), false, spawnPoint, exoVariables)     
+    local exo = self:Replace(Exo.kMapName, self:GetTeamNumber(), false, spawnPoint, exoVariables)
     
     if not exo then
         Print("Could make replacement exo entity")
@@ -83,7 +83,7 @@ function ModularExo_HandleExoModularBuy(self, message)
     end
     
     exo:TriggerEffects("spawn_exo")
-    
+
 end
 
 

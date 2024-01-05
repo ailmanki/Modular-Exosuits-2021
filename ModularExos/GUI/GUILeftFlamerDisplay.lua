@@ -11,7 +11,7 @@
 -- Global state that can be externally set to adjust the display.
 heatAmountleft = 0
 
-function Update(dt)  
+function Update(dt)
     UpdateOverHeat(dt, heatAmountleft)
 end
 

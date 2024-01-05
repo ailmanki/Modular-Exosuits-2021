@@ -2,24 +2,23 @@ local kAnimationGraphSpawnOnly = PrecacheAsset("models/marine/exosuit/exosuit_sp
 local kAnimationGraphEject = PrecacheAsset("models/marine/exosuit/exosuit_spawn_animated.animation_graph")
 
 local networkVars = {
-    
+
 }
 -- Refactor this 
-local kLayoutModels =
-{
+local kLayoutModels = {
     ["MinigunMinigun"] = PrecacheAsset("models/marine/exosuit/exosuit_mm.model"),
     ["RailgunRailgun"] = PrecacheAsset("models/marine/exosuit/exosuit_rr.model"),
-	["ClawRailgun"] = PrecacheAsset("models/marine/exosuit/exosuit_cr.model"),
-	["ClawMinigun"] = PrecacheAsset("models/marine/exosuit/exosuit_cr.model"),
-
-
+    ["ClawRailgun"]    = PrecacheAsset("models/marine/exosuit/exosuit_cr.model"),
+    ["ClawMinigun"]    = PrecacheAsset("models/marine/exosuit/exosuit_cr.model"),
+    
+    
 }
 
 function Exosuit:SetLayout(layout)
     local model = kLayoutModels[layout] or Exosuit.kModelName
     self:SetModel(model, kAnimationGraphEject)
     self.layout = layout
-    
+
 end
 
 local orig_Exosuit_OnInitialized = Exosuit.OnInitialized
@@ -31,42 +30,42 @@ function Exosuit:OnInitialized()
 end
 
 if Server then
-
--- Refactor onusedeffered
-	function Exosuit:OnUseDeferred()
+    
+    -- Refactor onusedeffered
+    function Exosuit:OnUseDeferred()
         
-        local player = self.useRecipient 
+        local player = self.useRecipient
         self.useRecipient = nil
         
         if player and not player:GetIsDestroyed() and self:GetIsValidRecipient(player) then
-
+            
             local weapons = player:GetWeapons()
-            for i = 1, #weapons do            
-                weapons[i]:SetParent(nil)            
+            for i = 1, #weapons do
+                weapons[i]:SetParent(nil)
             end
-
+            
             local exoPlayer
             if self.layout == "MinigunMinigun" then
                 exoPlayer = player:GiveDualExo(nil, true)
             elseif self.layout == "RailgunRailgun" then
                 exoPlayer = player:GiveDualRailgunExo(nil, true)
- 
+            
             else
                 exoPlayer = player:GiveExo(nil, true)
             end
-
+            
             if exoPlayer then
-                           
+                
                 for i = 1, #weapons do
                     exoPlayer:StoreWeapon(weapons[i])
-                end 
-
-                exoPlayer:SetMaxArmor(self:GetMaxArmor())  
+                end
+                
+                exoPlayer:SetMaxArmor(self:GetMaxArmor())
                 exoPlayer:SetArmor(self:GetArmor())
                 exoPlayer:SetFlashlightOn(self:GetFlashlightOn())
                 exoPlayer:TransferParasite(self)
                 exoPlayer:TransferExoVariant(self)
-    
+                
                 -- Set the auto-weld cooldown of the player exo to match the cooldown of the dropped
                 -- exo.
                 local now = Shared.GetTime()
@@ -85,36 +84,36 @@ if Server then
                 exoPlayer:SetCoords(self:GetCoords())
                 
                 player:TriggerEffects("pickup", { effectshostcoords = self:GetCoords() })
-
-                DestroyEntity(self)
                 
-            end
+                DestroyEntity(self)
             
+            end
+        
         end
     
     end
-
+    
     function Exosuit:OnUse(player, elapsedTime, useSuccessTable)
         if self:GetIsValidRecipient(player) then
             local weapons = player:GetWeapons()
-            for i = 1, #weapons do            
+            for i = 1, #weapons do
                 weapons[i]:SetParent(nil)
             end
             local exoPlayer = player:Replace(Exo.kMapName, player:GetTeamNumber(), false, spawnPoint, {
                 rightArmModuleType = self.rightArmModuleType,
-                leftArmModuleType  = self.leftArmModuleType ,
-                utilityModuleType  = self.utilityModuleType ,
-				abilityModuleType  = self.abilityModuleType ,
+                leftArmModuleType  = self.leftArmModuleType,
+                utilityModuleType  = self.utilityModuleType,
+                abilityModuleType  = self.abilityModuleType,
             })
             exoPlayer.prevPlayerMapName = player:GetMapName()
             exoPlayer.prevPlayerHealth = player:GetHealth()
             exoPlayer.prevPlayerMaxArmor = player:GetMaxArmor()
-            exoPlayer.prevPlayerArmor = player:GetArmor()  
+            exoPlayer.prevPlayerArmor = player:GetArmor()
             if exoPlayer then
                 for i = 1, #weapons do
                     exoPlayer:StoreWeapon(weapons[i])
                 end
-                exoPlayer:SetMaxArmor(self:GetMaxArmor())  
+                exoPlayer:SetMaxArmor(self:GetMaxArmor())
                 exoPlayer:SetArmor(self:GetArmor())
                 
                 local newAngles = player:GetViewAngles()

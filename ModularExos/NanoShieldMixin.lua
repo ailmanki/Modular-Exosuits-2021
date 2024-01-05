@@ -5,7 +5,7 @@
 
 
 function NanoShieldMixin:ComputeDamageOverrideMixin(attacker, damage, damageType, time)
-
+    
     if self.nanoShielded == true then
         if self.NanoShieldDamageReductionOverride then
             return damage * self:NanoShieldDamageReductionOverride(), damageType
@@ -14,10 +14,10 @@ function NanoShieldMixin:ComputeDamageOverrideMixin(attacker, damage, damageType
     end
     
     return damage
-    
+
 end
 
 local ClearNanoShield = debug.getupvaluex(NanoShieldMixin.OnDestroy, "ClearNanoShield")
 function NanoShieldMixin:DeactivateNanoShield()
-	ClearNanoShield(self, true)
+    ClearNanoShield(self, true)
 end

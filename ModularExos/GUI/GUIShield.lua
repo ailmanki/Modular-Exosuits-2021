@@ -1,4 +1,3 @@
-
 local animHeatAmount = 0
 local animHeatDir = 1
 
@@ -29,7 +28,7 @@ local overheatCol2 = Color(1, 1, 0, 1)
 local overheatPulseRate = 0.3
 
 function UpdateOverHeat(dt, heatAmount, idleHeatAmount, shieldStatus)
-
+    
     PROFILE("GUILeftMinigunDisplay:Update")
     
     --heatAmount = math.max(0.4, heatAmount)
@@ -39,18 +38,18 @@ function UpdateOverHeat(dt, heatAmount, idleHeatAmount, shieldStatus)
     local flash = false
     local alertColor = (
             shieldStatus == "off" and offcol
-        or  (shieldStatus == "on" or shieldStatus == "combat") and (heatAmount < warningPoint and onCol or warningCol)
-        or  shieldStatus == "overheat" and ((time%overheatPulseRate) < overheatPulseRate/2 and overheatCol1 or overheatCol2)
-        or  Color(1, 0.6, 0.6, 1)
+                    or (shieldStatus == "on" or shieldStatus == "combat") and (heatAmount < warningPoint and onCol or warningCol)
+                    or shieldStatus == "overheat" and ((time % overheatPulseRate) < overheatPulseRate / 2 and overheatCol1 or overheatCol2)
+                    or Color(1, 0.6, 0.6, 1)
     )
     alertLight:SetColor(alertColor)
     
     local foregroundColor = (
             shieldStatus == "off" and heatOffCol
-        or  shieldStatus == "on" and heatOnCol
-        or  shieldStatus == "combat" and heatCombatCol
-        or  shieldStatus == "overheat" and ((time%overheatPulseRate) < overheatPulseRate/2 and overheatCol1 or overheatCol2)
-        or  Color(1, 0.6, 0.6, 1)
+                    or shieldStatus == "on" and heatOnCol
+                    or shieldStatus == "combat" and heatCombatCol
+                    or shieldStatus == "overheat" and ((time % overheatPulseRate) < overheatPulseRate / 2 and overheatCol1 or overheatCol2)
+                    or Color(1, 0.6, 0.6, 1)
     )
     foreground:SetColor(foregroundColor)
     
@@ -60,7 +59,7 @@ function UpdateOverHeat(dt, heatAmount, idleHeatAmount, shieldStatus)
 end
 
 function Initialize()
-
+    
     GUI.SetSize(242, 720)
     
     background = GUI.CreateItem()
@@ -100,7 +99,7 @@ function Initialize()
     background:AddChild(foregroundMask)
     background:AddChild(alertLight)
     background:AddChild(idleArrow)
-    
+
 end
 
 Initialize()

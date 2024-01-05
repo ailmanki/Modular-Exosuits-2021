@@ -1,6 +1,6 @@
 function Railgun:GetIsAffectedByWeaponUpgrades()
     return true
-end 
+end
 
 local kChargeTime = 2
 -- The Railgun will automatically shoot if it is charged for too long.
@@ -17,15 +17,15 @@ function Railgun:OnPrimaryAttack(player)
     
     local exoWeaponHolder = player:GetActiveWeapon()
     local otherSlotWeapon = self:GetExoWeaponSlot() == ExoWeaponHolder.kSlotNames.Left and exoWeaponHolder:GetRightSlotWeapon() or exoWeaponHolder:GetLeftSlotWeapon()
-    if  self.timeOfLastShot + kRailgunChargeTime <= Shared.GetTime() then
-
+    if self.timeOfLastShot + kRailgunChargeTime <= Shared.GetTime() then
+        
         if not self.railgunAttacking then
-            self.timeChargeStarted = Shared.GetTime()           
+            self.timeChargeStarted = Shared.GetTime()
         end
         self.railgunAttacking = true
-        
-    end
     
+    end
+
 end
 
 debug.setupvaluex(Railgun.GetChargeAmount, "kChargeTime", kChargeTime)
