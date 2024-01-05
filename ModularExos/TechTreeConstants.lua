@@ -1,5 +1,16 @@
-debug.appendtoenum(kTechId, "ExoWelder")
-debug.appendtoenum(kTechId, "ExoFlamer")
-debug.appendtoenum(kTechId, "ExoShield")
-debug.appendtoenum(kTechId, "WeaponCache")
-debug.appendtoenum(kTechId, "MarineStructureAbility")
+if not EnumUtils then
+    Script.Load("lua/ModularExos/EnumUtils.lua")
+end
+
+local newTechIds = {
+    "ExoWelder",
+    "ExoFlamer",
+    'ExoShield',
+
+    "WeaponCache",
+    "MarineStructureAbility",
+}
+
+for _,v in ipairs(newTechIds) do
+    EnumUtils.AppendToEnum(kTechId, v)
+end
