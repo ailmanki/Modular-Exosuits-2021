@@ -96,12 +96,41 @@ end
 local orig_Exo_OnInitialized = Exo.OnInitialized
 function Exo:OnInitialized()
     -- self.powerModuleType = self.powerModuleType or kExoModuleTypes.Power1
-    self.leftArmModuleType = self.leftArmModuleType or kExoModuleTypes.Claw
-    self.rightArmModuleType = self.rightArmModuleType or kExoModuleTypes.Minigun
-    self.utilityModuleType = self.utilityModuleType or kExoModuleTypes.None
-    self.abilityModuleType = self.abilityModuleType or kExoModuleTypes.None
+    if kExoModuleTypesData[self.leftArmModuleType] == nil then
+        if self.layout == "MinigunMinigun" then
+            self.leftArmModuleType = kExoModuleTypes.Minigun
+        elseif self.layout == "RailgunRailgun" then
+            self.leftArmModuleType = kExoModuleTypes.Railgun
+        else
+            self.leftArmModuleType = kExoModuleTypes.Claw
+        end
+    else
+        self.leftArmModuleType = self.leftArmModuleType
+    end
+    if kExoModuleTypesData[self.rightArmModuleType] == nil then
+        if self.layout == "MinigunMinigun" then
+            self.rightArmModuleType = kExoModuleTypes.Minigun
+        elseif self.layout == "RailgunRailgun" then
+            self.rightArmModuleType = kExoModuleTypes.Railgun
+        else
+            self.rightArmModuleType = kExoModuleTypes.Minigun
+        end
+    else
+        self.rightArmModuleType = self.rightArmModuleType
+    end
     
-    local armorModuleData = kExoModuleTypesData[self.utilityModuleType]
+    if kExoModuleTypesData[self.utilityModuleType] == nil then
+        self.utilityModuleType = kExoModuleTypes.None
+    else
+        self.utilityModuleType = self.utilityModuleType
+    end
+    if kExoModuleTypesData[self.abilityModuleType] == nil then
+        self.abilityModuleType = kExoModuleTypes.None
+    else
+        self.abilityModuleType = self.abilityModuleType
+    end
+    
+    --local armorModuleData = kExoModuleTypesData[self.utilityModuleType]
     self.armorBonus = self:CalculateArmor()
     --   self.armorBonus = armorModuleData and armorModuleData.armorBonus or 0
     -- self.hasPhaseModule = (self.utilityModuleType == kExoModuleTypes.PhaseModule)
