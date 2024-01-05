@@ -217,7 +217,7 @@ function GUIExoThruster:Update(deltaTime)
     
     local thrustersAvailable, thrustersReady, thrustersActive = PlayerUI_GetExoThrustersAvailable()
     local repairAvailable, repairReady, repairActive = PlayerUI_GetExoRepairAvailable()
-    --local shieldAvailable, shieldReady, shieldActive = PlayerUI_GetExoShieldAvailable()
+    local shieldAvailable, shieldReady, shieldActive = PlayerUI_GetExoShieldAvailable()
     local catpackAvailable, catpackReady, catpackActive = PlayerUI_GetExoCatPackAvailable()
     
     if thrustersAvailable ~= self.lastThrustersAvailable or thrustersReady ~= self.lastThrustersReady or self.lastThrustersActive ~= thrustersActive then
@@ -236,13 +236,13 @@ function GUIExoThruster:Update(deltaTime)
         self.lastRepairActive = repairActive
     end
     
-    --if shieldAvailable ~= self.lastShieldAvailable or shieldReady ~= self.lastShieldReady or self.lastShieldActive ~= shieldActive then
-    --
-    --    self:UpdateExoShield(shieldAvailable, shieldReady, shieldActive)
-    --    self.lastShieldAvailable = shieldAvailable
-    --    self.lastShieldReady = shieldReady
-    --    self.lastShieldActive = shieldActive
-    --end
+    if shieldAvailable ~= self.lastShieldAvailable or shieldReady ~= self.lastShieldReady or self.lastShieldActive ~= shieldActive then
+
+        self:UpdateExoShield(shieldAvailable, shieldReady, shieldActive)
+        self.lastShieldAvailable = shieldAvailable
+        self.lastShieldReady = shieldReady
+        self.lastShieldActive = shieldActive
+    end
     
     if catpackAvailable ~= self.lastcatpackAvailable or catpackReady ~= self.lastcatpackReady or self.lastcatpackActive ~= catpackActive then
         
