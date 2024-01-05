@@ -58,7 +58,7 @@ function GUIExoThruster:Initialize()
     local textureCoords = GetTextureCoordinatesForIcon(kShieldTechId, true)
     self.shieldIcon:SetTexturePixelCoordinates(GUIUnpackCoords(textureCoords))
     self.background:AddChild(self.shieldIcon)
-    
+
     self.shieldIconText = GetGUIManager():CreateTextItem()
     self.shieldIconText:SetFontName(Fonts.kAgencyFB_Small)
     self.shieldIconText:SetAnchor(GUIItem.Right, GUIItem.Bottom)
@@ -68,7 +68,7 @@ function GUIExoThruster:Initialize()
     self.shieldIconText:SetPosition(Vector(0, -kTextOffset, 0))
     self.shieldIconText:SetColor(Color(0.8, 0.8, 1, 0.8))
     self.background:AddChild(self.shieldIconText)
-    
+
     local hasShield = PlayerUI_GetHasNanoShield()
     if hasShield then
         self.shieldIcon:SetIsVisible(true)
@@ -83,7 +83,7 @@ function GUIExoThruster:Initialize()
     self.catpackIcon:SetAnchor(GUIItem.Right, GUIItem.Bottom)
     self.catpackIcon:SetSize(kIconSize)
     self.catpackIcon:SetPosition(Vector(-kIconSize.x / 2, -kIconOffset, 0))
-    local textureCoords = GetTextureCoordinatesForIcon(kCatPackTechId, true)
+    textureCoords = GetTextureCoordinatesForIcon(kCatPackTechId, true)
     self.catpackIcon:SetTexturePixelCoordinates(GUIUnpackCoords(textureCoords))
     self.background:AddChild(self.catpackIcon)
     
@@ -217,7 +217,7 @@ function GUIExoThruster:Update(deltaTime)
     
     local thrustersAvailable, thrustersReady, thrustersActive = PlayerUI_GetExoThrustersAvailable()
     local repairAvailable, repairReady, repairActive = PlayerUI_GetExoRepairAvailable()
-    local shieldAvailable, shieldReady, shieldActive = PlayerUI_GetExoShieldAvailable()
+    --local shieldAvailable, shieldReady, shieldActive = PlayerUI_GetExoShieldAvailable()
     local catpackAvailable, catpackReady, catpackActive = PlayerUI_GetExoCatPackAvailable()
     
     if thrustersAvailable ~= self.lastThrustersAvailable or thrustersReady ~= self.lastThrustersReady or self.lastThrustersActive ~= thrustersActive then
@@ -236,13 +236,13 @@ function GUIExoThruster:Update(deltaTime)
         self.lastRepairActive = repairActive
     end
     
-    if shieldAvailable ~= self.lastShieldAvailable or shieldReady ~= self.lastShieldReady or self.lastShieldActive ~= shieldActive then
-        
-        self:UpdateExoShield(shieldAvailable, shieldReady, shieldActive)
-        self.lastShieldAvailable = shieldAvailable
-        self.lastShieldReady = shieldReady
-        self.lastShieldActive = shieldActive
-    end
+    --if shieldAvailable ~= self.lastShieldAvailable or shieldReady ~= self.lastShieldReady or self.lastShieldActive ~= shieldActive then
+    --
+    --    self:UpdateExoShield(shieldAvailable, shieldReady, shieldActive)
+    --    self.lastShieldAvailable = shieldAvailable
+    --    self.lastShieldReady = shieldReady
+    --    self.lastShieldActive = shieldActive
+    --end
     
     if catpackAvailable ~= self.lastcatpackAvailable or catpackReady ~= self.lastcatpackReady or self.lastcatpackActive ~= catpackActive then
         

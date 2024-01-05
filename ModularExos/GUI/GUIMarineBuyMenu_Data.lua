@@ -148,16 +148,16 @@ GUIMarineBuyMenu.kExoModuleData = {
         image          = kInventoryIconsTexture,
         imageTexCoords = { GetSmallIconPixelCoordinates(kTechId.Claw) },
     },
-    [kExoModuleTypes.Welder]       = {
-        label          = "Welder", tooltip = "EXO_WEAPON_WELDER_TOOLTIP",
-        image          = kInventoryIconsTexture,
-        imageTexCoords = { GetSmallIconPixelCoordinates(kTechId.Welder) },
-    },
-    [kExoModuleTypes.Shield]       = {
-        label          = "Shield", tooltip = "EXO_WEAPON_SHIELD_TOOLTIP",
-        image          = kInventoryIconsTexture,
-        imageTexCoords = { GetSmallIconPixelCoordinates(kTechId.PulseGrenade) },
-    },
+    --[kExoModuleTypes.Welder]       = {
+    --    label          = "Welder", tooltip = "EXO_WEAPON_WELDER_TOOLTIP",
+    --    image          = kInventoryIconsTexture,
+    --    imageTexCoords = { GetSmallIconPixelCoordinates(kTechId.Welder) },
+    --},
+    --[kExoModuleTypes.Shield]       = {
+    --    label          = "Shield", tooltip = "EXO_WEAPON_SHIELD_TOOLTIP",
+    --    image          = kInventoryIconsTexture,
+    --    imageTexCoords = { GetSmallIconPixelCoordinates(kTechId.PulseGrenade) },
+    --},
     --[kExoModuleTypes.MarineStructureAbility] = {
     --    label = "Builder", tooltip = "EXO_WEAPON_SHIELD_TOOLTIP",
     --    image = kInventoryIconsTexture,
@@ -174,11 +174,11 @@ GUIMarineBuyMenu.kExoModuleData = {
         imageTexCoords = { GetSmallIconPixelCoordinates(kTechId.Exosuit) },
     },
     
-    [kExoModuleTypes.Flamethrower] = {
-        label          = "Flamethrower", tooltip = "EXO_WEAPON_FLAMETHROWER_TOOLTIP",
-        image          = kInventoryIconsTexture,
-        imageTexCoords = { GetSmallIconPixelCoordinates(kTechId.Flamethrower) },
-    },
+    --[kExoModuleTypes.Flamethrower] = {
+    --    label          = "Flamethrower", tooltip = "EXO_WEAPON_FLAMETHROWER_TOOLTIP",
+    --    image          = kInventoryIconsTexture,
+    --    imageTexCoords = { GetSmallIconPixelCoordinates(kTechId.Flamethrower) },
+    --},
     
     -- Utility modules
     
@@ -193,11 +193,11 @@ GUIMarineBuyMenu.kExoModuleData = {
         image          = "ui/buildmenu.dds",
         imageTexCoords = { GetBuildIconPixelCoords(kTechId.Jetpack) },
     },
-    [kExoModuleTypes.PhaseModule]  = {
-        label          = "Phase", tooltip = "EXO_UTILITY_SCANNER_TOOLTIP",
-        image          = "ui/buildmenu.dds",
-        imageTexCoords = { GetBuildIconPixelCoords(kTechId.PhaseGate) },
-    },
+    --[kExoModuleTypes.PhaseModule]  = {
+    --    label          = "Phase", tooltip = "EXO_UTILITY_SCANNER_TOOLTIP",
+    --    image          = "ui/buildmenu.dds",
+    --    imageTexCoords = { GetBuildIconPixelCoords(kTechId.PhaseGate) },
+    --},
     [kExoModuleTypes.NanoShield]   = {
         label          = "Nano Shield", tooltip = "EXO_UTILITY_SCANNER_TOOLTIP",
         image          = "ui/buildmenu.dds",

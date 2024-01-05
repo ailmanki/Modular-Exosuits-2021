@@ -1,9 +1,11 @@
 ModLoader.SetupFileHook("lua/Server.lua", "lua/ModularExos/Server.lua", "post")
 ModLoader.SetupFileHook("lua/Shared.lua", "lua/ModularExos/Shared.lua", "post")
-ModLoader.SetupFileHook("lua/TechTreeConstants.lua", "lua/ModularExos/TechTreeConstants.lua", "post")
-ModLoader.SetupFileHook("lua/TechData.lua", "lua/ModularExos/TechData.lua", "post")
+-- TechTreeConstants and TechData is for ExoWelder ExoFlamer, ExoShield, WeaponCache, MarineStructureAbility
+-- ModLoader.SetupFileHook("lua/TechTreeConstants.lua", "lua/ModularExos/TechTreeConstants.lua", "post")
+-- ModLoader.SetupFileHook("lua/TechData.lua", "lua/ModularExos/TechData.lua", "post")
 ModLoader.SetupFileHook("lua/Globals.lua", "lua/ModularExos/Globals.lua", "post")
-ModLoader.SetupFileHook("lua/NS2Utility.lua", "lua/ModularExos/NS2Utility.lua", "post")
+-- realted to weaponcache - not in use
+-- ModLoader.SetupFileHook("lua/NS2Utility.lua", "lua/ModularExos/NS2Utility.lua", "post")
 
 ModLoader.SetupFileHook("lua/MarineTeam.lua", "lua/ModularExos/MarineTeam.lua", "post")
 ModLoader.SetupFileHook("lua/Marine.lua", "lua/ModularExos/Marine.lua", "post")
@@ -25,7 +27,8 @@ ModLoader.SetupFileHook("lua/Player_Client.lua", "lua/ModularExos/Player_Client.
 ModLoader.SetupFileHook("lua/GUIExoThruster.lua", "lua/ModularExos/GUI/GUIExoThruster.lua", "post")
 ModLoader.SetupFileHook("lua/ExoVariantMixin.lua", "lua/ModularExos/ExoVariantMixin.lua", "post")
 
-ModLoader.SetupFileHook("lua/MarineWeaponEffects.lua", "lua/ModularExos/MarineWeaponEffects.lua", "post")
+-- MarineWeaponEffects is for welder/flamethrower
+-- ModLoader.SetupFileHook("lua/MarineWeaponEffects.lua", "lua/ModularExos/MarineWeaponEffects.lua", "post")
 ModLoader.SetupFileHook("lua/NanoShieldMixin.lua", "lua/ModularExos/NanoShieldMixin.lua", "post")
 ModLoader.SetupFileHook("lua/CatPackMixin.lua", "lua/ModularExos/CatPackMixin.lua", "post")
 --ModLoader.SetupFileHook( "lua/AutoWeldMixin.lua", "lua/ModularExos/AutoWeldMixin.lua", "post" )
@@ -35,7 +38,7 @@ ModLoader.SetupFileHook("lua/CatPackMixin.lua", "lua/ModularExos/CatPackMixin.lu
 ModLoader.SetupFileHook("lua/PrototypeLab.lua", "lua/ModularExos/PrototypeLab.lua", "post")
 
 -- Shield Related 
-ModLoader.SetupFileHook("lua/PhysicsGroups.lua", "lua/ModularExos/PhysicsGroups.lua", "post")
+--ModLoader.SetupFileHook("lua/PhysicsGroups.lua", "lua/ModularExos/PhysicsGroups.lua", "post")
 
 --ModLoader.SetupFileHook( "lua/Weapons/Alien/Bomb.lua", "lua/ModularExos/ExoWeapons/Bomb.lua", "post" )
 --ModLoader.SetupFileHook( "lua/Weapons/Marine/Grenade.lua", "lua/ModularExos/ExoWeapons/Grenade.lua", "post" )

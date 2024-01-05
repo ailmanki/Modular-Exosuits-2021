@@ -42,18 +42,18 @@ kExoModuleTypes = enum {
     "None",
     "Power1",
     "Claw",
-    "Welder",
-    "Shield",
+    --"Welder",
+    --"Shield",
     "Railgun",
     "Minigun",
-    "Flamethrower",
+    --"Flamethrower",
     "Armor",
     "NanoRepair",
     "NanoShield",
     "Thrusters",
-    "PhaseModule",
+    --"PhaseModule",
     "CatPack",
-    "MarineStructureAbility"
+    --"MarineStructureAbility"
 }
 
 -- Information to decide which model to use for weapon combos

@@ -1,6 +1,6 @@
 Script.Load("lua/Mixins/JumpMoveMixin.lua")
-Script.Load("lua/PhaseGateUserMixin.lua")
-Script.Load("lua/ModularExos/ExoWeapons/MarineStructureAbility.lua")
+--Script.Load("lua/PhaseGateUserMixin.lua")
+--Script.Load("lua/ModularExos/ExoWeapons/MarineStructureAbility.lua")
 
 Exo.kModelName = PrecacheAsset("models/marine/exosuit/exosuit_cm.model")
 Exo.kAnimationGraph = PrecacheAsset("models/marine/exosuit/exosuit_cm.animation_graph")
@@ -38,16 +38,15 @@ local networkVars = {
     utilityModuleType  = "enum kExoModuleTypes",
     abilityModuleType  = "enum kExoModuleTypes",
     repairActive       = "boolean",
-    shieldActive       = "boolean",
+--    shieldActive       = "boolean",
     catpackActive      = "boolean",
     hasThrusters       = "boolean",
-    hasPhaseModule     = "boolean",
+--    hasPhaseModule     = "boolean",
     hasNanoRepair      = "boolean",
     hasNanoShield      = "boolean",
     hasCatPack         = "boolean",
     armorBonus         = "float (0 to 2045 by 1)",
     inventoryWeight    = "float",
-    
 }
 
 function Exo:InitExoModel(overrideAnimGraph)
@@ -82,7 +81,7 @@ function Exo:InitWeapons()
     StartSoundEffectForPlayer(kDeploy2DSound, self)
 end
 
-AddMixinNetworkVars(PhaseGateUserMixin, networkVars)
+--AddMixinNetworkVars(PhaseGateUserMixin, networkVars)
 AddMixinNetworkVars(JumpMoveMixin, networkVars)
 
 local orig_Exo_OnCreate = Exo.OnCreate
@@ -90,7 +89,7 @@ function Exo:OnCreate()
     orig_Exo_OnCreate(self)
     self.inventoryWeight = 0
     
-    InitMixin(self, PhaseGateUserMixin)
+    --InitMixin(self, PhaseGateUserMixin)
     InitMixin(self, JumpMoveMixin)
 end
 
@@ -105,7 +104,7 @@ function Exo:OnInitialized()
     local armorModuleData = kExoModuleTypesData[self.utilityModuleType]
     self.armorBonus = self:CalculateArmor()
     --   self.armorBonus = armorModuleData and armorModuleData.armorBonus or 0
-    self.hasPhaseModule = (self.utilityModuleType == kExoModuleTypes.PhaseModule)
+    -- self.hasPhaseModule = (self.utilityModuleType == kExoModuleTypes.PhaseModule)
     self.hasThrusters = (self.utilityModuleType == kExoModuleTypes.Thrusters)
     self.hasNanoRepair = (self.utilityModuleType == kExoModuleTypes.NanoRepair)
     self.hasNanoShield = (self.abilityModuleType == kExoModuleTypes.NanoShield)
@@ -113,12 +112,12 @@ function Exo:OnInitialized()
     
     orig_Exo_OnInitialized(self)
     
-    self.shieldActive = false
+    -- self.shieldActive = false
     self.repairActive = false
     self.catpackActive = false
     self.timeAutoRepairHealed = 0
     self.lastActivatedRepair = 0
-    self.lastActivatedShield = 0
+    -- self.lastActivatedShield = 0
     self.lastActivatedCatPack = 0
     
     if Server then
@@ -131,9 +130,9 @@ function Exo:GetHasThrusters()
     return self.hasThrusters and Exo.GetHasThrusters
 end
 
-function Exo:GetHasShield()
-    return self.hasNanoShield
-end
+--function Exo:GetHasShield()
+--    return self.hasNanoShield
+--end
 
 function Exo:GetHasRepair()
     return self.hasNanoRepair
@@ -143,12 +142,13 @@ function Exo:GetHasCatPack()
     return self.hasCatPack
 end
 
-function Exo:GetCanPhase()
-    return self.hasPhaseModule and PhaseGateUserMixin.GetCanPhase(self)
-end
-
+--function Exo:GetCanPhase()
+--    return self.hasPhaseModule and PhaseGateUserMixin.GetCanPhase(self)
+--end
+--
 function Exo:GetIsBeaconable(obsEnt, toOrigin)
-    return self.hasPhaseModule
+    return false
+--    return self.hasPhaseModule
 end
 
 function Exo:GetInventorySpeedScalar(player)
@@ -163,7 +163,9 @@ debug.setupvaluex(Exo.GetMaxSpeed, "kMaxSpeed", kMaxSpeed)
 
 local orig_Exo_GetIsThrusterAllowed = Exo.GetIsThrusterAllowed
 function Exo:GetIsThrusterAllowed()
-    return (not self.shieldActive or not self.repairActive or not self.catpackActive) and (self.hasThrusters and orig_Exo_GetIsThrusterAllowed(self))
+    return (
+            -- not self.shieldActive or
+                    not self.repairActive or not self.catpackActive) and (self.hasThrusters and orig_Exo_GetIsThrusterAllowed(self))
 end
 
 function Exo:GetSlowOnLand()
@@ -302,12 +304,13 @@ function Exo:GetFuelUsageRate()
 end
 
 function Exo:GetCatPackAllowed()
-    return self.hasCatPack and not (self.thrustersActive or self.repairActive or self.shieldActive)
+    return self.hasCatPack and not (self.thrustersActive or self.repairActive)
+            --or self.shieldActive)
 end
 
-function Exo:GetShieldAllowed()
-    return self.hasNanoShield and not (self.thrustersActive or self.repairActive or self.catpackActive)
-end
+--function Exo:GetShieldAllowed()
+--    return self.hasNanoShield and not (self.thrustersActive or self.repairActive or self.catpackActive)
+--end
 
 function Exo:GetRepairAllowed()
     return self.hasNanoRepair and not (self.thrustersActive or self.shieldActive or self.catpackActive)
@@ -353,27 +356,27 @@ function Exo:TriggerCatPack()
 
 end
 
-function Exo:UpdateShields(input)
-    
-    local buttonPressed = bit.band(input.commands, Move.Reload) ~= 0
-    if buttonPressed and self:GetShieldAllowed() then
-        
-        if self:GetFuel() >= kExoShieldMinFuel and not self.shieldActive and self.lastActivatedShield + 1 < Shared.GetTime() then
-            self:SetFuel(self:GetFuel())
-            self.shieldActive = true
-            self.lastActivatedShield = Shared.GetTime()
-            self:TriggerNanoShield()
-        
-        end
-    end
-    
-    if self.shieldActive and (self:GetFuel() == 0 or not buttonPressed) then
-        self:SetFuel(self:GetFuel())
-        self:StopNanoShield()
-        self.shieldActive = false
-    end
-
-end
+--function Exo:UpdateShields(input)
+--
+--    local buttonPressed = bit.band(input.commands, Move.Reload) ~= 0
+--    if buttonPressed and self:GetShieldAllowed() then
+--
+--        if self:GetFuel() >= kExoShieldMinFuel and not self.shieldActive and self.lastActivatedShield + 1 < Shared.GetTime() then
+--            self:SetFuel(self:GetFuel())
+--            self.shieldActive = true
+--            self.lastActivatedShield = Shared.GetTime()
+--            self:TriggerNanoShield()
+--
+--        end
+--    end
+--
+--    if self.shieldActive and (self:GetFuel() == 0 or not buttonPressed) then
+--        self:SetFuel(self:GetFuel())
+--        self:StopNanoShield()
+--        self.shieldActive = false
+--    end
+--
+--end
 
 function Exo:UpdateCatPack(input)
     
@@ -441,7 +444,7 @@ function Exo:HandleButtons(input)
     
     self:UpdateThrusters(input)
     self:UpdateRepairs(input)
-    self:UpdateShields(input)
+    --self:UpdateShields(input)
     self:UpdateCatPack(input)
     
     if bit.band(input.commands, Move.Drop) ~= 0 then
@@ -459,7 +462,7 @@ function Exo:CalculateArmor()
 end
 
 local kMinFuelForThrusterActivation = 0.1
-local kThrusterDuration = 0.1
+--local kThrusterDuration = 0.1
 local kMinTimeBetweenThrusterActivations = 0.5
 
 function Exo:UpdateThrusters(input)
@@ -559,21 +562,21 @@ if Client then
         self.ghostStructureValid = false
         self.showGhostModel = false
         
-        local weapon = self:GetActiveWeapon()
-        
-        if weapon then
-            if weapon:isa("MarineStructureAbility") then
-                
-                self.currentTechId = weapon:GetGhostModelTechId()
-                self.ghostStructureCoords = weapon:GetGhostModelCoords()
-                self.ghostStructureValid = weapon:GetIsPlacementValid()
-                self.showGhostModel = weapon:GetShowGhostModel()
-                
-                return weapon:GetShowGhostModel()
-            
-            
-            end
-        end
+        --local weapon = self:GetActiveWeapon()
+        --
+        --if weapon then
+        --    if weapon:isa("MarineStructureAbility") then
+        --
+        --        self.currentTechId = weapon:GetGhostModelTechId()
+        --        self.ghostStructureCoords = weapon:GetGhostModelCoords()
+        --        self.ghostStructureValid = weapon:GetIsPlacementValid()
+        --        self.showGhostModel = weapon:GetShowGhostModel()
+        --
+        --        return weapon:GetShowGhostModel()
+        --
+        --
+        --    end
+        --end
     end
     
     function Exo:GetShowGhostModel()
@@ -594,18 +597,18 @@ if Client then
 
 end
 
-function Exo:OverrideInput(input)
-    
-    -- Always let the MarineStructureAbility override input, since it handles client-side-only build menu
-    local buildAbility = self:GetWeapon(MarineStructureAbility.kMapName)
-    
-    if buildAbility then
-        input = buildAbility:OverrideInput(input)
-    end
-    
-    return Player.OverrideInput(self, input)
-
-end
+--function Exo:OverrideInput(input)
+--
+--    -- Always let the MarineStructureAbility override input, since it handles client-side-only build menu
+--    local buildAbility = self:GetWeapon(MarineStructureAbility.kMapName)
+--
+--    if buildAbility then
+--        input = buildAbility:OverrideInput(input)
+--    end
+--
+--    return Player.OverrideInput(self, input)
+--
+--end
 --ReplaceLocals(Exo.UpdateThrusters, { kThrusterMinimumFuel = kExoThrusterMinFuel })
 --ReplaceLocals(Exo.ModifyVelocity, { kHorizontalThrusterAddSpeed = kExoThrusterMaxSpeed })
 --ReplaceLocals(Exo.ModifyVelocity, { kThrusterHorizontalAcceleration = kExoThrusterLateralAccel })
