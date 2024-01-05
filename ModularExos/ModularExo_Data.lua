@@ -84,15 +84,15 @@ kExoModuleTypesData = {
         armType = kExoArmTypes.Claw,
         weight = kClawWeight,
     },
-    [kExoModuleTypes.Welder] = {
-        category = kExoModuleCategories.Weapon,
-        powerCost = 0,
-		resourceCost = kExoWelderCost,
-        mapName = ExoWelder.kMapName,
-        armType = kExoArmTypes.Railgun,
-        weight = kExoWelderWeight,
-		requiredTechId = Exo.ExoWelderTech
-    }, 
+    --[kExoModuleTypes.Welder] = {
+    --    category = kExoModuleCategories.Weapon,
+    --    powerCost = 0,
+	--	resourceCost = kExoWelderCost,
+    --    mapName = ExoWelder.kMapName,
+    --    armType = kExoArmTypes.Railgun,
+    --    weight = kExoWelderWeight,
+	--	requiredTechId = Exo.ExoWelderTech
+    --},
 	[kExoModuleTypes.Minigun] = {
         category = kExoModuleCategories.Weapon,
         powerCost = 0,
@@ -111,24 +111,24 @@ kExoModuleTypesData = {
         weight = kRailgunWeight,
 		requiredTechId = Exo.RailgunTech
     },
-    [kExoModuleTypes.Flamethrower] = {
-        category = kExoModuleCategories.Weapon,
-        powerCost = 0,
-		resourceCost = kExoFlamerCost,
-        mapName = ExoFlamer.kMapName,
-        armType = kExoArmTypes.Railgun,
-        weight = 0.12,
-		requiredTechId = Exo.ExoFlamerTech
-    },
-    [kExoModuleTypes.Shield] = {
-        category = kExoModuleCategories.Weapon,
-        powerCost = 0,
-		resourceCost = kExoShieldCost,
-        mapName = ExoShield.kMapName,
-        armType = kExoArmTypes.Claw,
-        weight = kExoShieldWeight,
-		requiredTechId = Exo.ExoShieldTech
-    },
+    --[kExoModuleTypes.Flamethrower] = {
+    --    category = kExoModuleCategories.Weapon,
+    --    powerCost = 0,
+	--	resourceCost = kExoFlamerCost,
+    --    mapName = ExoFlamer.kMapName,
+    --    armType = kExoArmTypes.Railgun,
+    --    weight = 0.12,
+	--	requiredTechId = Exo.ExoFlamerTech
+    --},
+    --[kExoModuleTypes.Shield] = {
+    --    category = kExoModuleCategories.Weapon,
+    --    powerCost = 0,
+	--	resourceCost = kExoShieldCost,
+    --    mapName = ExoShield.kMapName,
+    --    armType = kExoArmTypes.Claw,
+    --    weight = kExoShieldWeight,
+	--	requiredTechId = Exo.ExoShieldTech
+    --},
 	--[kExoModuleTypes.MarineStructureAbility] = {
    --     category = kExoModuleCategories.Weapon,
    --     powerCost = 0,
@@ -149,14 +149,14 @@ kExoModuleTypesData = {
 		requiredTechId = Exo.ThrusterModuleTech
 	
     },
-		[kExoModuleTypes.PhaseModule] = {
-        category = kExoModuleCategories.Utility,
-        powerCost = 0,
-		resourceCost = kPhaseModuleCost,
-        weight = kPhaseModuleWeight,
-		requiredTechId = Exo.PhaseModuleTech
-
-    },
+	--	[kExoModuleTypes.PhaseModule] = {
+    --    category = kExoModuleCategories.Utility,
+    --    powerCost = 0,
+	--	resourceCost = kPhaseModuleCost,
+    --    weight = kPhaseModuleWeight,
+	--	requiredTechId = Exo.PhaseModuleTech
+    --
+    --},
 	    [kExoModuleTypes.Armor] = {
         category = kExoModuleCategories.Utility,
         powerCost = 0,
