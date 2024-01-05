@@ -32,7 +32,7 @@ kRailgunFuelUsageScalar = 1
 local kExoDeployDuration = 1.4
 
 local networkVars = {
-    powerModuleType    = "enum kExoModuleTypes",
+    --powerModuleType    = "enum kExoModuleTypes",
 	rightArmModuleType = "enum kExoModuleTypes",
 	leftArmModuleType  = "enum kExoModuleTypes",
     utilityModuleType  = "enum kExoModuleTypes",
@@ -98,14 +98,15 @@ end
 
 local orig_Exo_OnInitialized = Exo.OnInitialized
 function Exo:OnInitialized()
-    self.powerModuleType = self.powerModuleType or kExoModuleTypes.Power1
+   -- self.powerModuleType = self.powerModuleType or kExoModuleTypes.Power1
     self.leftArmModuleType = self.leftArmModuleType or kExoModuleTypes.Claw
     self.rightArmModuleType = self.rightArmModuleType or kExoModuleTypes.Minigun
     self.utilityModuleType = self.utilityModuleType or kExoModuleTypes.None
     self.abilityModuleType = self.abilityModuleType or kExoModuleTypes.None
     
     local armorModuleData = kExoModuleTypesData[self.utilityModuleType]
-    self.armorBonus = armorModuleData and armorModuleData.armorBonus or 0
+	self.armorBonus = self:CalculateArmor() 
+--   self.armorBonus = armorModuleData and armorModuleData.armorBonus or 0
     self.hasPhaseModule = (self.utilityModuleType == kExoModuleTypes.PhaseModule)
     self.hasThrusters = (self.utilityModuleType == kExoModuleTypes.Thrusters)
     self.hasNanoRepair = (self.utilityModuleType == kExoModuleTypes.NanoRepair)
@@ -195,7 +196,7 @@ function Exo:GetArmorAmount(armorLevels)
     
     end
 
-	return Exo.kExosuitArmor + armorLevels * Exo.kExosuitArmorPerUpgradeLevel + self.armorBonus 
+	return kBaseExoArmor + self.armorBonus + armorLevels * Exo.kExosuitArmorPerUpgradeLevel  
 end
 
 function Exo:ProcessExoModularBuyAction(message)
@@ -212,7 +213,7 @@ if Server then
         if self:GetIsAlive() then
             -- pickupable version
             local exosuit = CreateEntity(Exosuit.kMapName, self:GetOrigin(), self:GetTeamNumber(), {
-                powerModuleType    = self.powerModuleType   ,
+               -- powerModuleType    = self.powerModuleType   ,
                 rightArmModuleType = self.rightArmModuleType,
                 leftArmModuleType  = self.leftArmModuleType ,
                 utilityModuleType  = self.utilityModuleType ,
@@ -455,6 +456,10 @@ end
 
 function Exo:CalculateWeight()
     return ModularExo_GetConfigWeight(ModularExo_ConvertNetMessageToConfig(self))
+end
+
+function Exo:CalculateArmor()
+	return ModularExo_GetConfigArmor(ModularExo_ConvertNetMessageToConfig(self))
 end
 
 local kMinFuelForThrusterActivation = 0.1

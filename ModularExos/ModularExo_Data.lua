@@ -15,10 +15,10 @@ kExoModuleSlots = enum{
 
 -- Slot data
 kExoModuleSlotsData = {
-    [kExoModuleSlots.PowerSupply] = {
-        category = kExoModuleCategories.PowerSupply,
-        required = true,
-    },
+    --[kExoModuleSlots.PowerSupply] = {
+  --      category = kExoModuleCategories.PowerSupply,
+   --     required = true,
+   -- },
     [kExoModuleSlots.LeftArm] = {
         category = kExoModuleCategories.Weapon,
         required = true,
@@ -53,7 +53,7 @@ kExoModuleTypes = enum{
     "Thrusters",
     "PhaseModule",
     "CatPack",
-	"MarineStructureAbility"
+    "MarineStructureAbility"
 }
 
 -- Information to decide which model to use for weapon combos
@@ -65,15 +65,6 @@ kExoArmTypes = enum{
 
 -- Module type data
 kExoModuleTypesData = {
-    -- Power modules
-    [kExoModuleTypes.Power1] = {
-        category = kExoModuleCategories.PowerSupply,
-        powerSupply = 10,
-        resourceCost = 0,
-        weight = 0,
-		levels = 1,
-		requiredTechId = Exo.PowerTech1,
-    },
     
     -- Weapon modules
 	[kExoModuleTypes.Claw] = {
@@ -83,6 +74,7 @@ kExoModuleTypesData = {
         mapName = Claw.kMapName,
         armType = kExoArmTypes.Claw,
         weight = kClawWeight,
+		armorValue = kClawArmor,
     },
     --[kExoModuleTypes.Welder] = {
     --    category = kExoModuleCategories.Weapon,
@@ -100,6 +92,7 @@ kExoModuleTypesData = {
         mapName = Minigun.kMapName,
         armType = kExoArmTypes.Minigun,
         weight = kMinigunWeight,
+		armorValue = kMinigunArmor,
 		requiredTechId = Exo.MinigunTech
     }, 
 	[kExoModuleTypes.Railgun] = {
@@ -109,6 +102,7 @@ kExoModuleTypesData = {
         mapName = Railgun.kMapName,
         armType = kExoArmTypes.Railgun,
         weight = kRailgunWeight,
+		armorValue = kRailgunArmor,
 		requiredTechId = Exo.RailgunTech
     },
     --[kExoModuleTypes.Flamethrower] = {
@@ -130,13 +124,13 @@ kExoModuleTypesData = {
 	--	requiredTechId = Exo.ExoShieldTech
     --},
 	--[kExoModuleTypes.MarineStructureAbility] = {
-   --     category = kExoModuleCategories.Weapon,
-   --     powerCost = 0,
+    --    category = kExoModuleCategories.Weapon,
+    --    powerCost = 0,
 	--	resourceCost = kExoBuilderCost,
-   --     mapName = MarineStructureAbility.kMapName,
-   --     armType = kExoArmTypes.Claw,
-   --     weight = kExoBuilderWeight,
-   -- },
+    --    mapName = MarineStructureAbility.kMapName,
+    --    armType = kExoArmTypes.Claw,
+    --    weight = kExoBuilderWeight,
+    --},
 
     
     
@@ -146,6 +140,7 @@ kExoModuleTypesData = {
         powerCost = 0,
 		resourceCost = kThrustersCost,
         weight = kThrustersWeight,
+		armorValue = kThrustersArmor,
 		requiredTechId = Exo.ThrusterModuleTech
 	
     },
@@ -161,7 +156,7 @@ kExoModuleTypesData = {
         category = kExoModuleCategories.Utility,
         powerCost = 0,
 		resourceCost = kArmorModuleCost,
-        armorBonus = 250,
+        armorValue = kArmorModuleArmor,
         weight = kArmorModuleWeight,
 		requiredTechId = Exo.ArmorModuleTech
 
@@ -170,7 +165,8 @@ kExoModuleTypesData = {
         category = kExoModuleCategories.Utility,
         powerCost = 0,
 		resourceCost = kNanoModuleCost,
-        weight = kNanoRepairWeight,
+		weight = kNanoRepairWeight,
+		armorValue = kNanoRepairArmor,
 
     },		
 	
@@ -186,6 +182,7 @@ kExoModuleTypesData = {
         powerCost = 0,
 		resourceCost = kExoCatPackCost,
         weight = kCatPackWeight,
+		armorValue = kCatPackArmor,
 
     },
     

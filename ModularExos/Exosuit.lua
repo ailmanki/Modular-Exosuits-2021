@@ -101,10 +101,10 @@ if Server then
                 weapons[i]:SetParent(nil)
             end
             local exoPlayer = player:Replace(Exo.kMapName, player:GetTeamNumber(), false, spawnPoint, {
-                powerModuleType    = self.powerModuleType   ,
                 rightArmModuleType = self.rightArmModuleType,
                 leftArmModuleType  = self.leftArmModuleType ,
                 utilityModuleType  = self.utilityModuleType ,
+				abilityModuleType  = self.abilityModuleType ,
             })
             exoPlayer.prevPlayerMapName = player:GetMapName()
             exoPlayer.prevPlayerHealth = player:GetHealth()

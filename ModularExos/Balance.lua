@@ -59,9 +59,6 @@ Exo.ExoFlamerTech = kTechId.ExosuitTech
 Exo.ExoWelderTech = kTechId.ExosuitTech
 Exo.RailgunTech = kTechId.ExosuitTech
 Exo.MinigunTech = kTechId.ExosuitTech
-Exo.PowerTech1 = kTechId.ExosuitTech
-Exo.PowerTech2 = kTechId.ExosuitTech
-Exo.PowerTech3 = kTechId.ExosuitTech
 Exo.ArmorModuleTech = kTechId.ExosuitTech
 Exo.PhaseModuleTech = kTechId.ExosuitTech
 Exo.ThrusterModuleTech = kTechId.ExosuitTech
@@ -159,7 +156,7 @@ ExoShield.kShieldDepth = 0.1
 ExoShield.kShieldEffectOnDelay = 1
 ExoShield.kShieldEffectOffDelay = 0.6
 
--- Thrusters
+-- Module weights
 kThrustersWeight = 0.05
 kPhaseModuleWeight = 0.1
 kArmorModuleWeight = 0.15
@@ -177,3 +174,13 @@ kWeaponCachePointValue = 100
 kNumArmoriesPerPlayer = 1
 kMarineBuildRadius = 3
 kNumSentriesPerPlayer = 1
+
+--Armor values
+kClawArmor = 100
+kMinigunArmor = 300
+kRailgunArmor = 150
+kThrustersArmor = 50
+kArmorModuleArmor = 400
+kNanoRepairArmor = 200
+kCatPackArmor = 100
+kBaseExoArmor = 200

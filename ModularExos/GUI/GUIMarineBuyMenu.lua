@@ -154,12 +154,12 @@ local orig_MarineBuy_GetCosts     = MarineBuy_GetCosts
 function MarineBuy_GetCosts(techId)
 	if techId == kTechId.Exosuit then
 		local minResCost = 1337
-		for moduleType, moduleTypeName in ipairs(kExoModuleTypes) do
-			local moduleTypeData = kExoModuleTypesData[moduleType]
-			if moduleTypeData and moduleTypeData.category == kExoModuleCategories.PowerSupply then
-				minResCost = math.min(minResCost, moduleTypeData.resourceCost)
-			end
-		end
+		--for moduleType, moduleTypeName in ipairs(kExoModuleTypes) do
+		--	local moduleTypeData = kExoModuleTypesData[moduleType]
+		--	if moduleTypeData and moduleTypeData.category == kExoModuleCategories.PowerSupply then
+		--		minResCost = math.min(minResCost, moduleTypeData.resourceCost)
+		--	end
+		--end
 		return minResCost
 	end
 	return orig_MarineBuy_GetCosts(techId)
@@ -231,17 +231,14 @@ function GUIMarineBuyMenu:_InitializeExoModularButtons()
 	local player         = Client.GetLocalPlayer()
 	if player and player:isa("Exo") then
 		self.activeExoConfig                                = ModularExo_ConvertNetMessageToConfig(player)
-		local isValid, badReason, resourceCost, powerSupply = ModularExo_GetIsConfigValid(self.activeExoConfig)
+		local isValid, badReason, resourceCost	 			= ModularExo_GetIsConfigValid(self.activeExoConfig)
 		self.activeExoConfigResCost                         = resourceCost
-		self.activeExoConfigPowerSupply                     = powerSupply
 		self.exoConfig                                      = self.activeExoConfig
 	else
 		self.activeExoConfig            = {}
 		self.activeExoConfigResCost     = 0
-		self.activeExoConfigPowerSupply = 0
 		self.exoConfig                  = {
-			[kExoModuleSlots.PowerSupply] = kExoModuleTypes.Power1,
-			[kExoModuleSlots.RightArm]    = kExoModuleTypes.Welder,
+			[kExoModuleSlots.RightArm]    = kExoModuleTypes.Minigun,
 			[kExoModuleSlots.LeftArm]     = kExoModuleTypes.Claw,
 			[kExoModuleSlots.Utility]     = kExoModuleTypes.None,
 			[kExoModuleSlots.Ability]     = kExoModuleTypes.None,
@@ -705,7 +702,7 @@ function GUIMarineBuyMenu:_SetDetailsSectionTechId(techId, techCost)
 end
 
 function GUIMarineBuyMenu:_RefreshExoModularButtons()
-	local isValid, badReason, resourceCost, powerSupply, powerCost, texturePath = ModularExo_GetIsConfigValid(self.exoConfig)
+	local isValid, badReason, resourceCost, powerCost, texturePath = ModularExo_GetIsConfigValid(self.exoConfig)
 	resourceCost                                                                = resourceCost or 0
 	self.exoConfigResourceCost                                                  = resourceCost
 		self.modularExoCostText:SetText(tostring(resourceCost - self.activeExoConfigResCost))
@@ -727,24 +724,8 @@ function GUIMarineBuyMenu:_RefreshExoModularButtons()
 			end
 		else
 			self.exoConfig[buttonData.slotType]                                         = buttonData.moduleType
-			local isValid, badReason, resourceCost, powerSupply, powerCost, texturePath = ModularExo_GetIsConfigValid(self.exoConfig)
-			if buttonData.slotType == kExoModuleSlots.PowerSupply then
-				if buttonData.powerSupply < self.activeExoConfigPowerSupply then
-					isValid   = false
-					badReason = "no refunds!"
-				elseif isValid then
-					resourceCost = resourceCost - self.activeExoConfigResCost
-					if PlayerUI_GetPlayerResources() < resourceCost then
-						isValid   = false
-						canAfford = false
-					end
-				elseif badReason == "not enough power" then
-					isValid                         = true
-					buttonData.forceToDefaultConfig = true
-				else
-					buttonData.forceToDefaultConfig = false
-				end
-			end
+			local isValid, badReason, resourceCost, powerCost, texturePath = ModularExo_GetIsConfigValid(self.exoConfig)
+	
 			if buttonData.slotType == kExoModuleSlots.RightArm and badReason == "bad model left" then
 				isValid                    = true
 				buttonData.forceLeftToClaw = true
@@ -920,6 +901,7 @@ function GUIMarineBuyMenu:CreatePrototypeLabUI()
 	buttonGroup:SetTexture(self.kButtonGroupFrame_Unlabeled_x2)
 	buttonGroup:SetSizeFromTexture()
 	buttonGroup:SetOptionFlag(GUIItem.CorrectScaling)
+	
 	self:_InitializeWeaponGroup(buttonGroup, buttonPositions,
 								{
 									kTechId.Jetpack,

@@ -141,13 +141,6 @@ local function GetBuildIconPixelCoords(techId)
 end
 
 GUIMarineBuyMenu.kExoModuleData = {
-	-- Power modules
-	[kExoModuleTypes.Power1]       = {
-		label          = "EXO_POWER_1", tooltip = "EXO_POWER_1_TOOLTIP",
-		image          = kInventoryIconsTexture,
-		imageTexCoords = { GetSmallIconPixelCoordinates(kTechId.Axe) },
-	},
-	
 	
 	-- Weapon modules
 	[kExoModuleTypes.Claw]         = {
