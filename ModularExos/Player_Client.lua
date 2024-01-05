@@ -26,19 +26,19 @@ function PlayerUI_GetExoThrustersAvailable()
 
 end
 
---function PlayerUI_GetExoShieldAvailable()
---
---    local player = Client.GetLocalPlayer()
---
---    if player and player:GetIsPlaying() and player:isa("Exo") and player.GetShieldAllowed then
---
---        return player:GetShieldAllowed(), player:GetFuel() >= kExoShieldMinFuel, player.shieldActive
---
---    end
---
---    return false, false, false
---
---end
+function PlayerUI_GetExoShieldAvailable()
+
+    local player = Client.GetLocalPlayer()
+
+    if player and player:GetIsPlaying() and player:isa("Exo") and player.GetShieldAllowed then
+
+        return player:GetShieldAllowed(), player:GetFuel() >= kExoNanoShieldMinFuel, player.shieldActive
+
+    end
+
+    return false, false, false
+
+end
 
 function PlayerUI_GetExoCatPackAvailable()
     

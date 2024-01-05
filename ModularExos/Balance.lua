@@ -36,9 +36,8 @@ kExoThrusterLateralAccel = 50
 kExoThrusterVerticleAccel = 8
 kExoThrusterMaxSpeed = 5
 
---kExoShieldMinFuel = 0.99
---kExoShieldDamageReductionScalar = 0.75
---kExoShieldFuelUsageRate = 6
+kExoNanoShieldMinFuel = 0.99
+kExoNanoShieldFuelUsageRate = 6
 
 kExoRepairMinFuel = 0.1
 kExoRepairPerSecond = 15

@@ -38,7 +38,7 @@ local networkVars = {
     utilityModuleType  = "enum kExoModuleTypes",
     abilityModuleType  = "enum kExoModuleTypes",
     repairActive       = "boolean",
---    shieldActive       = "boolean",
+    shieldActive       = "boolean",
     catpackActive      = "boolean",
     hasThrusters       = "boolean",
 --    hasPhaseModule     = "boolean",
@@ -141,12 +141,12 @@ function Exo:OnInitialized()
     
     orig_Exo_OnInitialized(self)
     
-    -- self.shieldActive = false
+    self.shieldActive = false
     self.repairActive = false
     self.catpackActive = false
     self.timeAutoRepairHealed = 0
     self.lastActivatedRepair = 0
-    -- self.lastActivatedShield = 0
+    self.lastActivatedShield = 0
     self.lastActivatedCatPack = 0
     
     if Server then
@@ -159,9 +159,9 @@ function Exo:GetHasThrusters()
     return self.hasThrusters and Exo.GetHasThrusters
 end
 
---function Exo:GetHasShield()
---    return self.hasNanoShield
---end
+function Exo:GetHasShield()
+    return self.hasNanoShield
+end
 
 function Exo:GetHasRepair()
     return self.hasNanoRepair
@@ -192,9 +192,7 @@ debug.setupvaluex(Exo.GetMaxSpeed, "kMaxSpeed", kMaxSpeed)
 
 local orig_Exo_GetIsThrusterAllowed = Exo.GetIsThrusterAllowed
 function Exo:GetIsThrusterAllowed()
-    return (
-            -- not self.shieldActive or
-                    not self.repairActive or not self.catpackActive) and (self.hasThrusters and orig_Exo_GetIsThrusterAllowed(self))
+    return (not self.shieldActive or not self.repairActive or not self.catpackActive) and (self.hasThrusters and orig_Exo_GetIsThrusterAllowed(self))
 end
 
 function Exo:GetSlowOnLand()
@@ -324,7 +322,7 @@ function Exo:GetFuelUsageRate()
     elseif self.repairActive then
         return kExoRepairFuelUsageRate --* usageScalar
     elseif self.shieldActive then
-        return kExoShieldFuelUsageRate --* usageScalarelse
+        return kExoNanoShieldFuelUsageRate --* usageScalarelse
     elseif self.catpackActive then
         return kExoCatPackFuelUsageRate --* usageScalar
     else
@@ -333,13 +331,12 @@ function Exo:GetFuelUsageRate()
 end
 
 function Exo:GetCatPackAllowed()
-    return self.hasCatPack and not (self.thrustersActive or self.repairActive)
-            --or self.shieldActive)
+    return self.hasCatPack and not (self.thrustersActive or self.repairActive or self.shieldActive)
 end
 
---function Exo:GetShieldAllowed()
---    return self.hasNanoShield and not (self.thrustersActive or self.repairActive or self.catpackActive)
---end
+function Exo:GetShieldAllowed()
+    return self.hasNanoShield and not (self.thrustersActive or self.repairActive or self.catpackActive)
+end
 
 function Exo:GetRepairAllowed()
     return self.hasNanoRepair and not (self.thrustersActive or self.shieldActive or self.catpackActive)
@@ -385,27 +382,27 @@ function Exo:TriggerCatPack()
 
 end
 
---function Exo:UpdateShields(input)
---
---    local buttonPressed = bit.band(input.commands, Move.Reload) ~= 0
---    if buttonPressed and self:GetShieldAllowed() then
---
---        if self:GetFuel() >= kExoShieldMinFuel and not self.shieldActive and self.lastActivatedShield + 1 < Shared.GetTime() then
---            self:SetFuel(self:GetFuel())
---            self.shieldActive = true
---            self.lastActivatedShield = Shared.GetTime()
---            self:TriggerNanoShield()
---
---        end
---    end
---
---    if self.shieldActive and (self:GetFuel() == 0 or not buttonPressed) then
---        self:SetFuel(self:GetFuel())
---        self:StopNanoShield()
---        self.shieldActive = false
---    end
---
---end
+function Exo:UpdateShields(input)
+
+    local buttonPressed = bit.band(input.commands, Move.Reload) ~= 0
+    if buttonPressed and self:GetShieldAllowed() then
+
+        if self:GetFuel() >= kExoNanoShieldMinFuel and not self.shieldActive and self.lastActivatedShield + 1 < Shared.GetTime() then
+            self:SetFuel(self:GetFuel())
+            self.shieldActive = true
+            self.lastActivatedShield = Shared.GetTime()
+            self:TriggerNanoShield()
+
+        end
+    end
+
+    if self.shieldActive and (self:GetFuel() == 0 or not buttonPressed) then
+        self:SetFuel(self:GetFuel())
+        self:StopNanoShield()
+        self.shieldActive = false
+    end
+
+end
 
 function Exo:UpdateCatPack(input)
     
@@ -473,7 +470,7 @@ function Exo:HandleButtons(input)
     
     self:UpdateThrusters(input)
     self:UpdateRepairs(input)
-    --self:UpdateShields(input)
+    self:UpdateShields(input)
     self:UpdateCatPack(input)
     
     if bit.band(input.commands, Move.Drop) ~= 0 then
