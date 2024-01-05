@@ -1,12 +1,12 @@
 kExoModuleCategories = enum {
-    "PowerSupply",
+ --   "PowerSupply",
     "Weapon",
     "Utility",
     "Ability",
 }
 -- The slots that modules go in
 kExoModuleSlots = enum {
-    "PowerSupply",
+ --   "PowerSupply",
     "RightArm",
     "LeftArm",
     "Utility",
@@ -40,7 +40,7 @@ kExoModuleSlotsData = {
 -- Module types
 kExoModuleTypes = enum {
     "None",
-    "Power1",
+   -- "Power1",
     "Claw",
     --"Welder",
     --"Shield",
@@ -75,6 +75,7 @@ kExoModuleTypesData = {
         armType      = kExoArmTypes.Claw,
         weight       = kClawWeight,
         armorValue   = kClawArmor,
+        leftArmOnly  = true
     },
     --[kExoModuleTypes.Welder] = {
     --    category = kExoModuleCategories.Weapon,
@@ -93,7 +94,8 @@ kExoModuleTypesData = {
         armType        = kExoArmTypes.Minigun,
         weight         = kMinigunWeight,
         armorValue     = kMinigunArmor,
-        requiredTechId = Exo.MinigunTech
+        requiredTechId = Exo.MinigunTech,
+        leftArmOnly    = false
     },
     [kExoModuleTypes.Railgun]    = {
         category       = kExoModuleCategories.Weapon,
@@ -103,7 +105,8 @@ kExoModuleTypesData = {
         armType        = kExoArmTypes.Railgun,
         weight         = kRailgunWeight,
         armorValue     = kRailgunArmor,
-        requiredTechId = Exo.RailgunTech
+        requiredTechId = Exo.RailgunTech,
+        leftArmOnly    = false
     },
     --[kExoModuleTypes.Flamethrower] = {
     --    category = kExoModuleCategories.Weapon,

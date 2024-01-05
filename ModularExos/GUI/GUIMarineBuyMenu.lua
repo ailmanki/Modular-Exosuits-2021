@@ -188,14 +188,14 @@ GUIMarineBuyMenu.kExoSlotData = {
     
     [kExoModuleSlots.RightArm] = {
         label      = "Secondary Weapon", --label = "EXO_MODULESLOT_RIGHT_ARM",
-        xp         = 0.15, yp = 0.0, anchorX = GUIItem.Left, gap = kModuleButtonGap * 0.4,
+        xp         = 0.17, yp = 0.2, anchorX = GUIItem.Left, gap = kModuleButtonGap * 0.4,
         makeButton = function(self, moduleType, moduleTypeData, offsetX, offsetY)
             return self:MakeWeaponModuleButton(moduleType, moduleTypeData, offsetX, offsetY, kExoModuleSlots.RightArm)
         end,
     },
     [kExoModuleSlots.LeftArm]  = {
         label      = "Primary Weapon", --label = "EXO_MODULESLOT_LEFT_ARM",
-        xp         = 1.0, yp = 0.0, anchorX = GUIItem.Right, gap = kModuleButtonGap * 0.4,
+        xp         = 1.00, yp = 0.2, anchorX = GUIItem.Right, gap = kModuleButtonGap * 0.4,
         makeButton = function(self, moduleType, moduleTypeData, offsetX, offsetY)
             return self:MakeWeaponModuleButton(moduleType, moduleTypeData, offsetX, offsetY, kExoModuleSlots.LeftArm)
         end,
@@ -203,14 +203,14 @@ GUIMarineBuyMenu.kExoSlotData = {
     
     [kExoModuleSlots.Utility]  = {
         label      = "Utility", --label = "EXO_MODULESLOT_UTILITY",
-        xp         = 0.15, yp = 0.6, anchorX = GUIItem.Left, gap = kModuleButtonGap * 0.4,
+        xp         = 0.17, yp = 0.65, anchorX = GUIItem.Left, gap = kModuleButtonGap * 0.4,
         makeButton = function(self, moduleType, moduleTypeData, offsetX, offsetY)
             return self:MakeUtilityModuleButton(moduleType, moduleTypeData, offsetX, offsetY)
         end,
     },
     [kExoModuleSlots.Ability]  = {
         label      = "Support Ability", --label = "EXO_MODULESLOT_ABILITY",
-        xp         = 0.15, yp = 0.75, anchorX = GUIItem.Left, gap = kModuleButtonGap * 0.4,
+        xp         = 1.00, yp = 0.65, anchorX = GUIItem.Right, gap = kModuleButtonGap * 0.4,
         makeButton = function(self, moduleType, moduleTypeData, offsetX, offsetY)
             return self:MakeAbilityModuleButton(moduleType, moduleTypeData, offsetX, offsetY)
         end,
@@ -256,7 +256,7 @@ function GUIMarineBuyMenu:_InitializeExoModularButtons()
     self.modularExoBuyButton:SetIsScaling(false)
     self.modularExoBuyButton:SetAnchor(GUIItem.Middle, GUIItem.Center)
     self.modularExoBuyButton:SetSize(Vector(kButtonWidth, kButtonHeight, 0))
-    self.modularExoBuyButton:SetPosition(Vector(kConfigAreaXOffset + 0.77 * kConfigAreaWidth, kConfigAreaYOffset + 0.8 * kConfigAreaHeight, 0))
+    self.modularExoBuyButton:SetPosition(Vector((kConfigAreaXOffset + 1.00 * kConfigAreaWidth) - kButtonWidth, kConfigAreaYOffset + 0.84 * kConfigAreaHeight, 0))
     
     self.modularExoBuyButton:SetTexture(kButtonTexture)
     self.modularExoBuyButton:SetLayer(kGUILayerPlayerHUDForeground4)
@@ -286,7 +286,7 @@ function GUIMarineBuyMenu:_InitializeExoModularButtons()
     self.modularExoCostText:SetFontName(kFont)
     self.modularExoCostText:SetTextAlignmentX(GUIItem.Align_Min)
     self.modularExoCostText:SetTextAlignmentY(GUIItem.Align_Center)
-    self.modularExoCostText:SetText("69")
+    self.modularExoCostText:SetText("0")
     self.modularExoCostText:SetFontIsBold(true)
     self.modularExoCostText:SetColor(kTextColor)
     self.modularExoCostText:SetOptionFlag(GUIItem.CorrectScaling)
@@ -342,6 +342,10 @@ function GUIMarineBuyMenu:_InitializeExoModularButtons()
             if moduleType == kExoModuleTypes.None and not slotTypeData.required then
                 isSameType = true
                 moduleTypeData = {}
+            end
+            -- excludes claw on secondary weapon (right) slot
+            if isSameType and slotTypeData.category == kExoModuleCategories.Weapon and moduleTypeData.leftArmOnly and kExoModuleSlots.RightArm == slotType then
+                isSameType = false
             end
             if isSameType then
                 local buttonGraphic, newOffsetX, newOffsetY = slotGUIDetails.makeButton(self, moduleType, moduleTypeData, offsetX, offsetY)
