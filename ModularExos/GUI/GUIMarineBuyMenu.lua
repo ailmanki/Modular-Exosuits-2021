@@ -82,8 +82,8 @@ local kResourceIconHeight = (32)
 
 local kFont = Fonts.kAgencyFB_Small
 
-local kCloseButtonColorHover =  Color(1, 1, 1, 1)
-local kCloseButtonColor =  Color(0.82, 0.98, 1, 1)
+local kCloseButtonColorHover = Color(1, 1, 1, 1)
+local kCloseButtonColor = Color(0.82, 0.98, 1, 1)
 local kTextColor = Color(kMarineFontColor)
 
 local kDisabledColor = Color(0.82, 0.98, 1, 0.5)
@@ -189,12 +189,12 @@ function GUIMarineBuyMenu:_InitializeExoModularButtons()
     local kFontSize = 40
     -------UPGRADE/BUY Button ---
     local kButtonWidth = 220
-    local padding = 0
+    local bPadding = 0
     self.modularExoBuyButtonBackground = self:CreateAnimatedGraphicItem()
     table.insert(self.modularExoGraphicItemsToDestroyList, self.modularExoBuyButtonBackground)
     self.modularExoBuyButtonBackground:SetIsScaling(false)
     
-    self.modularExoBuyButtonBackground:SetSize(Vector(kModuleButtonSize.x + padding *2, kModuleButtonSize.y + padding *2, 0))
+    self.modularExoBuyButtonBackground:SetSize(Vector(kModuleButtonSize.x + bPadding * 2, kModuleButtonSize.y + bPadding * 2, 0))
     self.modularExoBuyButtonBackground:SetPosition(Vector(kConfigAreaWidth - kButtonWidth, 0.86 * kConfigAreaHeight, 0))
     self.modularExoBuyButtonBackground:SetTexture(kButtonTexture)
     self.modularExoBuyButtonBackground:SetColor(kSlotPanelBackgroundColor)
@@ -205,7 +205,7 @@ function GUIMarineBuyMenu:_InitializeExoModularButtons()
     self.modularExoBuyButton:SetIsScaling(false)
     self.modularExoBuyButton:SetAnchor(GUIItem.Left, GUIItem.Top)
     self.modularExoBuyButton:SetSize(kModuleButtonSize)
-    self.modularExoBuyButton:SetPosition(Vector(padding, padding, 0))
+    self.modularExoBuyButton:SetPosition(Vector(bPadding, bPadding, 0))
     self.modularExoBuyButton:SetTexture(kMenuSelectionTexture)
     self.modularExoBuyButton:SetLayer(kGUILayerMarineBuyMenu)
     self.modularExoBuyButton:SetOptionFlag(GUIItem.CorrectScaling)
@@ -336,7 +336,7 @@ function GUIMarineBuyMenu:MakeModuleButton(moduleType, moduleTypeData, offsetX, 
     local label = self:CreateAnimatedTextItem()
     label:SetIsScaling(false)
     label:SetFontName(kFont)
-    label:SetPosition(Vector( contentPaddingX, contentPaddingY, 0))
+    label:SetPosition(Vector(contentPaddingX, contentPaddingY, 0))
     label:SetAnchor(GUIItem.Left, GUIItem.Top)
     label:SetTextAlignmentX(GUIItem.Align_Min)
     label:SetTextAlignmentY(GUIItem.Align_Min)
@@ -351,10 +351,10 @@ function GUIMarineBuyMenu:MakeModuleButton(moduleType, moduleTypeData, offsetX, 
     local image = self:CreateAnimatedGraphicItem()
     image:SetIsScaling(false)
     if vertical then
-        image:SetPosition(Vector(-kUtilityImageSize.x -contentPaddingX, -kUtilityImageSize.y * 0.5, 0))
+        image:SetPosition(Vector(-kUtilityImageSize.x - contentPaddingX, -kUtilityImageSize.y * 0.5, 0))
         image:SetSize(kUtilityImageSize)
     else
-        image:SetPosition(Vector(-kWeaponImageSize.x -contentPaddingX, -kWeaponImageSize.y * 0.5, 0))
+        image:SetPosition(Vector(-kWeaponImageSize.x - contentPaddingX, -kWeaponImageSize.y * 0.5, 0))
         image:SetSize(kWeaponImageSize)
     end
     image:SetAnchor(GUIItem.Right, GUIItem.Center)
@@ -381,7 +381,7 @@ function GUIMarineBuyMenu:MakeModuleButton(moduleType, moduleTypeData, offsetX, 
         
         icon = self:CreateAnimatedGraphicItem()
         icon:SetIsScaling(false)
-        icon:SetPosition(Vector(kResourceIconWidth * 0.7 - 6, -(kResourceIconHeight * 0.7 + 4 + contentPaddingY) , 0))
+        icon:SetPosition(Vector(kResourceIconWidth * 0.7 - 6, -(kResourceIconHeight * 0.7 + 4 + contentPaddingY), 0))
         icon:SetSize(Vector(kResourceIconWidth * 0.7, kResourceIconHeight * 0.7, 0))
         icon:SetAnchor(GUIItem.Left, GUIItem.Bottom)
         icon:SetTexture(kResourceIconTexture)
@@ -504,7 +504,7 @@ function GUIMarineBuyMenu:_SetDetailsSectionTechId(techId, techCost)
 end
 
 function GUIMarineBuyMenu:_RefreshExoModularButtons()
-    local isValid, badReason, resourceCost, powerCost, texturePath = ModularExo_GetIsConfigValid(self.exoConfig)
+    local _, _, resourceCost, _, _ = ModularExo_GetIsConfigValid(self.exoConfig)
     resourceCost = resourceCost or 0
     self.exoConfigResourceCost = resourceCost
     self.modularExoCostText:SetText(tostring(resourceCost - self.activeExoConfigResCost))
@@ -526,7 +526,7 @@ function GUIMarineBuyMenu:_RefreshExoModularButtons()
             end
         else
             self.exoConfig[buttonData.slotType] = buttonData.moduleType
-            local isValid, badReason, resourceCost, powerCost, texturePath = ModularExo_GetIsConfigValid(self.exoConfig)
+            local isValid, badReason, _, _, _ = ModularExo_GetIsConfigValid(self.exoConfig)
             
             if buttonData.slotType == kExoModuleSlots.RightArm and badReason == "bad model left" then
                 isValid = true
