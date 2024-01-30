@@ -52,7 +52,4 @@ ModLoader.SetupFileHook("lua/LiveMixin.lua", "lua/ModularExos/LiveMixin.lua", "p
 -- BUYMENU HELL
 ModLoader.SetupFileHook("lua/GUIMarineBuyMenu.lua", "lua/ModularExos/GUI/GUIMarineBuyMenu.lua", "post")
 
-
-
-
-
+--ModLoader.SetupFileHook("lua/ServerAdminCommands.lua", "lua/ModularExos/ServerAdminCommands.lua", "post")

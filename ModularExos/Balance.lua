@@ -1,14 +1,14 @@
--- Module pricing
+--- Module pricing
 kExoWelderCost = 15
-kRailgunCost = 30
+kRailgunCost = 20
+kMinigunCost = 25
 
-kMinigunCost = 30
 --kExoFlamerCost = 30
 --kExoShieldCost = 15
 kClawCost = 5
 --kPhaseModuleCost = 15
 kThrustersCost = 20
-kArmorModuleCost = 15
+kArmorModuleCost = 20
 kNanoModuleCost = 20
 kExoNanoShieldCost = 20
 kExoCatPackCost = 20
@@ -18,8 +18,8 @@ kRailgunMovementSlowdown = 1
 
 -- kNanoShieldPlayerDuration = 6
 -- kCatPackDuration = 6
---Exo
 
+--- Exo
 Exo.kExosuitArmor = kExosuitArmor
 Exo.kExosuitArmorPerUpgradeLevel = kExosuitArmorPerUpgradeLevel
 Exo.kVertThrust = 0
@@ -28,26 +28,28 @@ Exo.kMaxSpeed = 6
 Exo.kThrustersCooldownTime = 0.5
 Exo.kThrusterDuration = 1
 
--- FUEL USAGE
-
-kExoThrusterMinFuel = 0.3
-kExoThrusterFuelUsageRate = 1.5
+--- FUEL USAGE
+kExoFuelRechargeRate = 20
+--- Exo-Jetpack
+kExoThrusterMinFuel = 5 -- Energy Min
+kExoThrusterFuelUsageRate = 25 --Energy Cost/s
 kExoThrusterLateralAccel = 50
 kExoThrusterVerticleAccel = 8
 kExoThrusterMaxSpeed = 5
 
-kExoNanoShieldMinFuel = 0.99
-kExoNanoShieldFuelUsageRate = 6
+--- Exo-Nanoshield
+kExoNanoShieldMinFuel = 10 -- Energy Min
+kExoNanoShieldFuelUsageRate = 20 --Energy Cost/s
 
-kExoRepairMinFuel = 0.1
+--- Exo-Nanorepair
+kExoRepairMinFuel = 5 -- Energy Min
 kExoRepairPerSecond = 15
-kExoRepairFuelUsageRate = 10
+kExoRepairFuelUsageRate = 10 --Energy Cost/s
 kExoRepairInterval = 0.5
 
-kExoFuelRechargeRate = 20
-
-kExoCatPackMinFuel = 1
-kExoCatPackFuelUsageRate = 6
+--- Exo-Catpack
+kExoCatPackMinFuel = 10 -- Energy Min
+kExoCatPackFuelUsageRate = 10 --Energy Cost/s
 
 --Tech Research
 
@@ -76,19 +78,19 @@ Railgun.kRailgunChargeTime = 1.4
 Railgun.kRailgunDamage = 30]]
 
 
-kRailgunWeight = 0.045 -- default 0.045
+kRailgunWeight = 0.1 -- default 0.045
 kRailgunDamage = 10 -- default 10
 kRailgunChargeDamage = 140 -- default 140
 
 -- CLAW
-kClawWeight = 0.01 -- default 0.01
+kClawWeight = 0.0 -- default 0.01
 kClawDamage = 50 -- default 50
 
 -- MINIGUN --
 
 kMinigunDamage = 6 -- default 6
 kMinigunDamageType = kDamageType.Heavy --original heavy
-kMinigunWeight = 0.06 -- default 0.06
+kMinigunWeight = 0.2 -- default 0.06
 Minigun.kHeatUpRate = 0.3 -- default 0.3
 Minigun.kCoolDownRate = 0.4 -- default 0.4
 
@@ -154,13 +156,12 @@ Minigun.kCoolDownRate = 0.4 -- default 0.4
 --ExoShield.kShieldEffectOffDelay = 0.6
 
 -- Module weights
-kThrustersWeight = 0.05
+kArmorModuleWeight = 0.075
+kThrustersWeight = 0.025
 --kPhaseModuleWeight = 0.1
-kArmorModuleWeight = 0.15
-kNanoRepairWeight = 0.1
-kNanoShieldWeight = 0.1
-kCatPackWeight = 0.1
-kNanoRepairWeight = 0.1
+kNanoRepairWeight = 0.05
+kCatPackWeight = 0.05
+kNanoShieldWeight = 0.05
 --kExoBuilderWeight = 0.01
 
 ---- Exo Building
@@ -173,11 +174,11 @@ kNanoRepairWeight = 0.1
 --kNumSentriesPerPlayer = 1
 
 --Armor values
-kClawArmor = 100
-kMinigunArmor = 300
-kRailgunArmor = 150
-kThrustersArmor = 50
-kArmorModuleArmor = 400
-kNanoRepairArmor = 200
-kCatPackArmor = 100
 kBaseExoArmor = 200
+kClawArmor = 0
+kMinigunArmor = 100
+kRailgunArmor = 25
+kThrustersArmor = 0
+kArmorModuleArmor = 100
+kCatPackArmor = 0
+kNanoRepairArmor = 0
