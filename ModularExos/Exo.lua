@@ -18,7 +18,7 @@ local kMaxSpeed = 8
 
 
 --kExoThrusterMinFuel = 0.3
-kExoThrusterFuelUsageRate = 0.5
+--kExoThrusterFuelUsageRate = 0.5
 --kExoThrusterLateralAccel = 1
 --kExoThrusterVerticleAccel = 1
 --kExoThrusterMaxSpeed = 15
@@ -230,12 +230,12 @@ function Exo:ProcessExoModularBuyAction(message)
     ModularExo_HandleExoModularBuy(self, message)
 end
 
-function Exo:GetCanSelfWeld()
-    return false
-end
+--function Exo:GetCanSelfWeld()
+--    return false
+--end
 
 if Server then
-    local orig_Exo_PerformEject = Exo.PerformEject
+    --local orig_Exo_PerformEject = Exo.PerformEject
     function Exo:PerformEject()
         if self:GetIsAlive() then
             -- pickupable version
@@ -249,6 +249,16 @@ if Server then
             exosuit:SetCoords(self:GetCoords())
             exosuit:SetMaxArmor(self:GetMaxArmor())
             exosuit:SetArmor(self:GetArmor())
+            exosuit:SetFlashlightOn(self:GetFlashlightOn())
+            exosuit:TransferParasite(self)
+            
+            -- Set the auto-weld cooldown of the dropped exo to match the cooldown if we weren't
+            -- ejecting just now.
+            local combatTimeEnd = math.max(self:GetTimeLastDamageDealt(), self:GetTimeLastDamageTaken()) + kCombatTimeOut
+            local cooldownEnd = math.max(self.timeNextWeld, combatTimeEnd)
+            local now = Shared.GetTime()
+            local combatTimeRemaining = math.max(0, cooldownEnd - now)
+            exosuit.timeNextWeld = now + combatTimeRemaining
             
             local reuseWeapons = self.storedWeaponsIds ~= nil
             
@@ -275,7 +285,7 @@ if Server then
             end
             marine:SetHUDSlotActive(1)
             if marine:isa("JetpackMarine") then
-                marine:SetFuel(0)
+                marine:SetFuel(0.25)
             end
         end
         return false

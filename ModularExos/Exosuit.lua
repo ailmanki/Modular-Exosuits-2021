@@ -1,17 +1,15 @@
 --local kAnimationGraphSpawnOnly = PrecacheAsset("models/marine/exosuit/exosuit_spawn_only.animation_graph")
 local kAnimationGraphEject = PrecacheAsset("models/marine/exosuit/exosuit_spawn_animated.animation_graph")
 
-local networkVars = {
-
-}
+--local networkVars = {
+--
+--}
 -- Refactor this 
 local kLayoutModels = {
     ["MinigunMinigun"] = PrecacheAsset("models/marine/exosuit/exosuit_mm.model"),
     ["RailgunRailgun"] = PrecacheAsset("models/marine/exosuit/exosuit_rr.model"),
     ["ClawRailgun"]    = PrecacheAsset("models/marine/exosuit/exosuit_cr.model"),
     ["ClawMinigun"]    = PrecacheAsset("models/marine/exosuit/exosuit_cr.model"),
-    
-    
 }
 
 function Exosuit:SetLayout(layout)
@@ -31,7 +29,6 @@ end
 
 if Server then
     
-    -- Refactor onusedeffered
     function Exosuit:OnUseDeferred()
         
         local player = self.useRecipient
@@ -44,22 +41,20 @@ if Server then
                 weapons[i]:SetParent(nil)
             end
             
-            local exoPlayer
-            if self.layout == "MinigunMinigun" then
-                exoPlayer = player:GiveDualExo(nil, true)
-            elseif self.layout == "RailgunRailgun" then
-                exoPlayer = player:GiveDualRailgunExo(nil, true)
-            
-            else
-                exoPlayer = player:GiveExo(nil, true)
-            end
-            
+            local exoPlayer = player:Replace(Exo.kMapName, player:GetTeamNumber(), false, spawnPoint, {
+                rightArmModuleType = self.rightArmModuleType,
+                leftArmModuleType  = self.leftArmModuleType,
+                utilityModuleType  = self.utilityModuleType,
+                abilityModuleType  = self.abilityModuleType,
+            })
+            exoPlayer.prevPlayerMapName = player:GetMapName()
+            exoPlayer.prevPlayerHealth = player:GetHealth()
+            exoPlayer.prevPlayerMaxArmor = player:GetMaxArmor()
+            exoPlayer.prevPlayerArmor = player:GetArmor()
             if exoPlayer then
-                
                 for i = 1, #weapons do
                     exoPlayer:StoreWeapon(weapons[i])
                 end
-                
                 exoPlayer:SetMaxArmor(self:GetMaxArmor())
                 exoPlayer:SetArmor(self:GetArmor())
                 exoPlayer:SetFlashlightOn(self:GetFlashlightOn())
@@ -88,45 +83,14 @@ if Server then
                 DestroyEntity(self)
             
             end
-        
         end
-    
     end
     
     function Exosuit:OnUse(player, elapsedTime, useSuccessTable)
-        if self:GetIsValidRecipient(player) then
-            local weapons = player:GetWeapons()
-            for i = 1, #weapons do
-                weapons[i]:SetParent(nil)
-            end
-            local exoPlayer = player:Replace(Exo.kMapName, player:GetTeamNumber(), false, spawnPoint, {
-                rightArmModuleType = self.rightArmModuleType,
-                leftArmModuleType  = self.leftArmModuleType,
-                utilityModuleType  = self.utilityModuleType,
-                abilityModuleType  = self.abilityModuleType,
-            })
-            exoPlayer.prevPlayerMapName = player:GetMapName()
-            exoPlayer.prevPlayerHealth = player:GetHealth()
-            exoPlayer.prevPlayerMaxArmor = player:GetMaxArmor()
-            exoPlayer.prevPlayerArmor = player:GetArmor()
-            if exoPlayer then
-                for i = 1, #weapons do
-                    exoPlayer:StoreWeapon(weapons[i])
-                end
-                exoPlayer:SetMaxArmor(self:GetMaxArmor())
-                exoPlayer:SetArmor(self:GetArmor())
-                
-                local newAngles = player:GetViewAngles()
-                newAngles.pitch = 0
-                newAngles.roll = 0
-                newAngles.yaw = GetYawFromVector(self:GetCoords().zAxis)
-                exoPlayer:SetOffsetAngles(newAngles)
-                -- the coords of this entity are the same as the players coords when he left the exo, so reuse these coords to prevent getting stuck
-                exoPlayer:SetCoords(self:GetCoords())
-                
-                self:TriggerEffects("pickup")
-                DestroyEntity(self)
-            end
+        if self:GetIsValidRecipient(player) and (not self.useRecipient or self.useRecipient:GetIsDestroyed()) then
+            self.useRecipient = player
+            self:AddTimedCallback(self.OnUseDeferred, 0)
         end
     end
+    
 end

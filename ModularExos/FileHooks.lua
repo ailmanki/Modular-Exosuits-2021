@@ -21,7 +21,7 @@ ModLoader.SetupFileHook("lua/Marine.lua", "lua/ModularExos/Marine.lua", "post")
 ModLoader.SetupFileHook("lua/Weapons/Marine/ExoWeaponHolder.lua", "lua/ModularExos/ExoWeapons/ExoWeaponHolder.lua", "post")
 ModLoader.SetupFileHook("lua/Weapons/DotMarker.lua", "lua/ModularExos/ExoWeapons/DotMarker.lua", "post")
 
--- Exosuit releavant
+-- Exosuit relevant
 ModLoader.SetupFileHook("lua/ReadyRoomExo.lua", "lua/ModularExos/ReadyRoomExo.lua", "post")
 ModLoader.SetupFileHook("lua/Player_Client.lua", "lua/ModularExos/Player_Client.lua", "post")
 ModLoader.SetupFileHook("lua/GUIExoThruster.lua", "lua/ModularExos/GUI/GUIExoThruster.lua", "post")
@@ -31,7 +31,6 @@ ModLoader.SetupFileHook("lua/ExoVariantMixin.lua", "lua/ModularExos/ExoVariantMi
 -- ModLoader.SetupFileHook("lua/MarineWeaponEffects.lua", "lua/ModularExos/MarineWeaponEffects.lua", "post")
 ModLoader.SetupFileHook("lua/NanoShieldMixin.lua", "lua/ModularExos/NanoShieldMixin.lua", "post")
 ModLoader.SetupFileHook("lua/CatPackMixin.lua", "lua/ModularExos/CatPackMixin.lua", "post")
---ModLoader.SetupFileHook( "lua/AutoWeldMixin.lua", "lua/ModularExos/AutoWeldMixin.lua", "post" )
 
 
 -- Structure overrides
