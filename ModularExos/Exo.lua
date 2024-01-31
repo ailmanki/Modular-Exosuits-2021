@@ -249,6 +249,7 @@ if Server then
             exosuit:SetCoords(self:GetCoords())
             exosuit:SetMaxArmor(self:GetMaxArmor())
             exosuit:SetArmor(self:GetArmor())
+            exosuit:SetExoVariant(self:GetExoVariant())
             exosuit:SetFlashlightOn(self:GetFlashlightOn())
             exosuit:TransferParasite(self)
             
@@ -271,8 +272,8 @@ if Server then
             
             marine.onGround = false
             local initialVelocity = self:GetViewCoords().zAxis
-            initialVelocity:Scale(1 * 3.5)
-            initialVelocity.y = 2 * 2
+            initialVelocity:Scale(4)
+            initialVelocity.y = math.max(0,initialVelocity.y) + 9
             marine:SetVelocity(initialVelocity)
             
             if reuseWeapons then

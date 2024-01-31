@@ -11,7 +11,7 @@ function ReadyRoomExo:PerformEject()
         })
         exosuit:SetCoords(self:GetCoords())
         exosuit:SetFlashlightOn(self:GetFlashlightOn())
-        exosuit:TransferParasite(self)
+        exosuit:SetExoVariant(self:GetExoVariant())
         exosuit:TriggerEffects("death")
         DestroyEntity(exosuit)
         
