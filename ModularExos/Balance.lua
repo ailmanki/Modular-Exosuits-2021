@@ -29,27 +29,27 @@ Exo.kThrustersCooldownTime = 0.5
 Exo.kThrusterDuration = 1
 
 --- FUEL USAGE
-kExoFuelRechargeRate = 20
+--- rate could be effective seconds it takes to recharge/use 1 fuel
+kExoFuelRechargeRate = 5
 --- Exo-Jetpack
-kExoThrusterMinFuel = 0.99 -- Energy Min
-kExoThrusterFuelUsageRate = 25 --Energy Cost/s
-kExoThrusterLateralAccel = 50
-kExoThrusterVerticleAccel = 8
-kExoThrusterMaxSpeed = 5
+kExoThrusterMinFuel = 0.0 -- Energy Min
+kExoThrusterFuelUsageRate = 3 --Energy Cost/s
+--kExoThrusterLateralAccel = 50
+--kExoThrusterVerticleAccel = 8
 
 --- Exo-Nanoshield
 kExoNanoShieldMinFuel = 0.99 -- Energy Min
-kExoNanoShieldFuelUsageRate = 20 --Energy Cost/s
+kExoNanoShieldFuelUsageRate = 4 -- Energy Cost/s
 
 --- Exo-Nanorepair
 kExoRepairMinFuel = 0.99 -- Energy Min
 kExoRepairPerSecond = 15
-kExoRepairFuelUsageRate = 10 --Energy Cost/s
+kExoRepairFuelUsageRate = 5 --Energy Cost/s
 kExoRepairInterval = 0.5
 
 --- Exo-Catpack
 kExoCatPackMinFuel = 0.99 -- Energy Min
-kExoCatPackFuelUsageRate = 10 --Energy Cost/s
+kExoCatPackFuelUsageRate = 4 --Energy Cost/s
 
 --Tech Research
 

@@ -22,7 +22,7 @@ local kMaxSpeed = 8
 --kExoThrusterLateralAccel = 1
 --kExoThrusterVerticleAccel = 1
 --kExoThrusterMaxSpeed = 15
-local kHorizontalThrusterAddSpeed = 10
+local kHorizontalThrusterAddSpeed = 2 -- 10
 local kThrusterHorizontalAcceleration = 200
 local kThrusterUpwardsAcceleration = 0
 
@@ -554,7 +554,7 @@ function Exo:ModifyVelocity(input, velocity, deltaTime)
             input.move.y = 0
             
             local maxSpeed, wishDir
-            maxSpeed = self:GetMaxSpeed() + kHorizontalThrusterAddSpeed * self:GetInventorySpeedScalar()
+            maxSpeed = self:GetMaxSpeed() + kHorizontalThrusterAddSpeed + self:GetInventorySpeedScalar()
             
             if self.thrusterMode == kExoThrusterMode.StrafeLeft then
                 input.move.x = -1
