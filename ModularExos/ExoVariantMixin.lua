@@ -46,7 +46,7 @@ if Client then
                 self.dirtySkinState = false
                 return false
             end
-            Print(weaponClass)
+            --Print(weaponClass)
             
             --Handle world model
             local worldModel = self:GetRenderModel()

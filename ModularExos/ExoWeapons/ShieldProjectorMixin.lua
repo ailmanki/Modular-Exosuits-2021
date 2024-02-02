@@ -153,7 +153,7 @@ function ShieldProjectorMixin:UpdateShieldProjectorMixin(deltaTime)
                 local shouldRemove = false
                 if not nearbyEntityIdMap[nearbyEntityId] then
                     local nearbyEntity = Shared.GetEntity(nearbyEntityId)
-                            // Print("Entity %s (%s) out of range", nearbyEntityId, nearbyEntity:GetClassName())
+                    -- Print("Entity %s (%s) out of range", nearbyEntityId, nearbyEntity:GetClassName())
                     shouldRemove = true
                     
                     self.nearbyShieldableEntityIdMap[nearbyEntity:GetId()] = nil
