@@ -21,7 +21,8 @@ kExoVariantsData[kExoVariants.kodiak].worldMaterials["ClawMinigun"] = {
 }
 kExoVariantsData[kExoVariants.kodiak].viewMaterials["ClawMinigun"] = {
     "models/marine/exosuit/claw_view_kodiak.material",
-    "models/marine/exosuit/minigun_view_kodiak.material"
+    "models/marine/exosuit/minigun_view_kodiak.material",
+    "models/marine/exosuit/forearm_kodiak.material",
 }
 
 kExoVariantsData[kExoVariants.tundra].worldMaterials["ClawMinigun"] = {
@@ -31,7 +32,8 @@ kExoVariantsData[kExoVariants.tundra].worldMaterials["ClawMinigun"] = {
 }
 kExoVariantsData[kExoVariants.tundra].viewMaterials["ClawMinigun"] = {
     "models/marine/exosuit/claw_view_tundra.material",
-    "models/marine/exosuit/minigun_view_tundra.material"
+    "models/marine/exosuit/minigun_view_tundra.material",
+    "models/marine/exosuit/forearm_tundra.material",
 }
 
 kExoVariantsData[kExoVariants.forge].worldMaterials["ClawMinigun"] = {
@@ -42,6 +44,7 @@ kExoVariantsData[kExoVariants.forge].worldMaterials["ClawMinigun"] = {
 kExoVariantsData[kExoVariants.forge].viewMaterials["ClawMinigun"] = {
     "models/marine/exosuit/claw_view.material",
     "models/marine/exosuit/minigun_view_forge.material",
+    "models/marine/exosuit/forearm_forge.material",
 }
 
 kExoVariantsData[kExoVariants.sandstorm].worldMaterials["ClawMinigun"] = {
@@ -52,6 +55,7 @@ kExoVariantsData[kExoVariants.sandstorm].worldMaterials["ClawMinigun"] = {
 kExoVariantsData[kExoVariants.sandstorm].viewMaterials["ClawMinigun"] = {
     "models/marine/exosuit/claw_view.material",
     "models/marine/exosuit/minigun_view_sandstorm.material",
+    "models/marine/exosuit/forearm_sandstorm.material",
 }
 
 kExoVariantsData[kExoVariants.chroma].worldMaterials["ClawMinigun"] = {
@@ -62,6 +66,7 @@ kExoVariantsData[kExoVariants.chroma].worldMaterials["ClawMinigun"] = {
 kExoVariantsData[kExoVariants.chroma].viewMaterials["ClawMinigun"] = {
     "models/marine/exosuit/claw_view.material",
     "models/marine/exosuit/minigun_view_chroma.material",
+    "models/marine/exosuit/forearm_chroma.material",
 }
 
 --- Claw Railgun

@@ -92,7 +92,7 @@ if Client then
                             if weaponClass == "Minigun" then
                                 assert(#viewMats == 1)
                                 viewModel:SetOverrideMaterial(0, viewMats[1])
-                            elseif weaponClass == "Railgun" or weaponClass == "ClawMinigun" then
+                            elseif weaponClass == "Railgun" then
                                 assert(#viewMats == 2)
                                 viewModel:SetOverrideMaterial(0, viewMats[1])
                                 viewModel:SetOverrideMaterial(1, viewMats[2])
@@ -101,6 +101,11 @@ if Client then
                                 viewModel:SetOverrideMaterial(0, viewMats[1])
                                 viewModel:SetOverrideMaterial(1, viewMats[2])
                                 viewModel:SetOverrideMaterial(2, viewMats[3])
+                            elseif  weaponClass == "ClawMinigun" then
+                                assert(#viewMats == 3)
+                                viewModel:SetOverrideMaterial(0, viewMats[1])
+                                viewModel:SetOverrideMaterial(1, viewMats[2])
+                                viewModel:SetOverrideMaterial(9, viewMats[3])
                             end
                         else
                             viewModel:ClearOverrideMaterials()
@@ -121,3 +126,16 @@ if Client then
     end
 
 end
+
+-- viewModel:LogAllMaterials()
+-- Claw Minigun model:
+--    0 - models/marine/exosuit/claw_view.material
+--    1 - models/marine/exosuit/minigun_view.material
+--    2 - models/marine/exosuit/exosuit_view.material
+--    3 - models/marine/exosuit/exosuit_view_screen.material
+--    4 - models/marine/exosuit/exosuit_view_panel_claw2.material
+--    5 - models/marine/exosuit/exosuit_view_panel_claw1.material
+--    6 - models/marine/exosuit/exosuit_view_panel_mini1.material
+--    7 - models/marine/exosuit/exosuit_view_panel_mini2.material
+--    8 - models/marine/exosuit/exosuit_view_panel_armor.material
+--    9 - models/marine/exosuit/forearm.material
