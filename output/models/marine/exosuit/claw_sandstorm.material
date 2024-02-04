@@ -4,5 +4,3 @@ normalMap = "models/marine/exosuit/claw_normal.dds"
 specularMap = "models/marine/exosuit/claw_spec.dds"
 emissiveMap = "materials/dev/black.dds"
 surface = "metal"
-numColumns = 2
-numRows = 2
