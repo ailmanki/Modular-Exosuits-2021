@@ -14,8 +14,8 @@ Exo.kDualAnimationGraph = PrecacheAsset("models/marine/exosuit/exosuit_mm.animat
 Exo.kDualRailgunModelName = PrecacheAsset("models/marine/exosuit/exosuit_rr.model")
 Exo.kDualRailgunAnimationGraph = PrecacheAsset("models/marine/exosuit/exosuit_rr.animation_graph")
 
-local kMaxSpeed = 8
-
+-- This value supercedes Balance.lua...
+local kMaxSpeed = 7
 
 --kExoThrusterMinFuel = 0.3
 --kExoThrusterFuelUsageRate = 0.5
