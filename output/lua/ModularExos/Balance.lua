@@ -4,7 +4,7 @@ kRailgunCost = 20
 kMinigunCost = 25
 
 --kExoFlamerCost = 30
-kExoShieldCost = 15
+kExoShieldCost = 500
 kClawCost = 5
 --kPhaseModuleCost = 15
 kThrustersCost = 20
@@ -23,7 +23,7 @@ Exo.kExosuitArmor = kExosuitArmor
 Exo.kExosuitArmorPerUpgradeLevel = kExosuitArmorPerUpgradeLevel
 Exo.kVertThrust = 0
 Exo.kHorizThrust = 250
-Exo.kMaxSpeed = 6
+Exo.kMaxSpeed = 5.5
 Exo.kThrustersCooldownTime = 0.5
 Exo.kThrusterDuration = 1
 

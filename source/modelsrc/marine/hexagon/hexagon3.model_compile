@@ -1,0 +1,4 @@
+
+geometry "hexagon2.fbx"
+physics "hexagon2.fbx"
+scale 0.2

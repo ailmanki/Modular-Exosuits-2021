@@ -6,8 +6,6 @@ Script.Load("lua/TeamMixin.lua")
 Script.Load("lua/EntityChangeMixin.lua")
 Script.Load("lua/NanoShieldMixin.lua")
 
-Script.Load("lua/ModularExos/ExoWeapons/ShieldProjectorMixin.lua")
-
 class 'ExoShield'(Entity)
 
 ExoShield.kMapName = "exoshield"
@@ -20,27 +18,68 @@ ExoShield.kMapName = "exoshield"
 
 -- TODO: Move balance-related stuff into ModularExo_Balance.lua
 -- up
-ExoShield.kShieldAngleYawMin = math.rad(90) -- left
-ExoShield.kShieldAngleYawMax = math.rad(90) -- right
+ExoShield.kShieldAngleYawMin = math.rad(70) -- left
+ExoShield.kShieldAngleYawMax = math.rad(70) -- right
 
+function generateShieldPosition(numColumns, numRows)
+    local shieldPosition = {}
+    
+    for i = 0, numColumns - 1 do
+        local x = i / (numColumns - 1) -- normalize to 0-1 range
+        for j = 0, numRows - 1 do
+            local y = j / (numRows - 1) -- normalize to 0-1 range
+                -- first and last column/row only have center position
+                table.insert(shieldPosition, {x, y})
+        end
+    end
+    
+    return shieldPosition
+end
+local shieldPosition = {
+    --first column
+    { 0, 0.5 },
+    --second column
+    { 0.25, 0.25 },
+    { 0.25, 0.75 },
+    --third column
+    { 0.5, 0 },
+    { 0.5, 0.5 },
+    { 0.5, 1 },
+    --fourth column
+    { 0.75, 0.25 },
+    { 0.75, 0.75 },
+    --fifth column
+    { 1, 0.5 }
+}
 
+shieldPosition = generateShieldPosition(12,12)
+local cinematicCount = #shieldPosition
 
+--ExoShield.kHexagonIdleCinematic = PrecacheAsset("cinematics/modularexo/exoshield_hexagon_idle.cinematic")
+--ExoShield.kHexagonBreakCinematic = PrecacheAsset("cinematics/modularexo/exoshield_hexagon_break.cinematic")
+ExoShield.kHexagonModelP = PrecacheAsset("models/marine/hexagon/hexagon3.model")
+ExoShield.kHexagonModel = PrecacheAsset("models/marine/hexagon/hexagon3.model")
+--ExoShield.kHexagonMaterial = PrecacheAsset("models/marine/hexagon/hexagon.material")
+ExoShield.kHexagonMaterial = PrecacheAsset("materials/biodome/biodome_ground.material")
+--ExoShield.kHexagonModel = PrecacheAsset("models/exoshield_hexagon.model")
+--ExoShield.kHexagonMaterial = PrecacheAsset("models/exoshield_hexagon.material")
 ExoShield.kShieldPitchUpDeadzone = math.rad(10)
 ExoShield.kShieldPitchUpLimit = math.rad(30)
-
 ExoShield.kShieldDistance = 2.2
 ExoShield.kShieldHeightMin = 2-- down
 ExoShield.kShieldHeightMax = 1
 
-local hexagonSideLength, hexagonGap = 0.195, 0.02
-ExoShield.kShieldEffectHexagonColCount = math.floor((ExoShield.kShieldAngleYawMin + ExoShield.kShieldAngleYawMax) * ExoShield.kShieldDistance / (math.sqrt(3) * hexagonSideLength + hexagonGap))
-ExoShield.kShieldEffectHexagonRowCount = math.floor((ExoShield.kShieldHeightMin + ExoShield.kShieldHeightMax) / (math.sqrt(3) * hexagonSideLength + hexagonGap))
+local ExoShieldkShieldAngleYawMaxMin = (ExoShield.kShieldAngleYawMin + ExoShield.kShieldAngleYawMax)
+local ExoShieldkShieldHeightMaxMin = (ExoShield.kShieldHeightMax + ExoShield.kShieldHeightMin)
+
+
+
 
 local networkVars = {
     heatAmount             = "float (0 to 1 by 0.01)", -- current shield heat
     isShieldDesired        = "boolean", -- if the user wants the shield up (click to toggle)
     isShieldDeployed       = "boolean", -- if the shield is "powered" (may not be active)
-    --isShieldActive = "boolean", -- if the shield is 
+    isShieldActive         = "boolean", -- if the shield is currently active
     isShieldOverheated     = "boolean", -- if the shield is currently cooling down from an overheat
     shieldDeployChangeTime = "time", -- the time the shield was deployed/undeployed
     lastHitTime            = "time", -- the last time damage was done to the shield
@@ -50,7 +89,6 @@ local networkVars = {
 AddMixinNetworkVars(ExoWeaponSlotMixin, networkVars)
 AddMixinNetworkVars(LiveMixin, networkVars)
 AddMixinNetworkVars(TeamMixin, networkVars)
-AddMixinNetworkVars(ShieldProjectorMixin, networkVars)
 AddMixinNetworkVars(NanoShieldMixin, networkVars)
 
 function ExoShield:OnCreate()
@@ -64,7 +102,6 @@ function ExoShield:OnCreate()
     InitMixin(self, LiveMixin)
     InitMixin(self, TeamMixin)
     InitMixin(self, ExoWeaponSlotMixin)
-    InitMixin(self, ShieldProjectorMixin)
     InitMixin(self, NanoShieldMixin)
     
     self.heatAmount = 0
@@ -80,8 +117,8 @@ function ExoShield:OnCreate()
     
     self.isPhysicsActive = false
     
-    self.contactEntityIdList = {}
-    self.contactEntityIdMap = {}
+    --self.contactEntityIdList = {}
+    --self.contactEntityIdMap = {}
     
     if Client then
         self.shieldEffectScalar = 0
@@ -109,7 +146,9 @@ function ExoShield:OnDestroy()
         end
         if self.cinematicList then
             for cinematicI, cinematic in ipairs(self.cinematicList) do
-                Client.DestroyCinematic(cinematic)
+                Client.DestroyRenderModel(cinematic)
+                cinematic = nil
+                --Client.DestroyCinematic(cinematic)
             end
             self.cinematicList = nil
         end
@@ -129,7 +168,7 @@ function ExoShield:OnPrimaryAttackEnd(player)
     self.isShieldDesired = false
 end
 
-function ExoShield:UpdateHeat(dt, shouldSet)
+function ExoShield:UpdateHeat(dt)
     
     
     self.isInCombat = (Shared.GetTime() < self.lastHitTime + ExoShield.kCombatDuration)
@@ -156,70 +195,77 @@ function ExoShield:UpdateHeat(dt, shouldSet)
     if self.heatAmount >= 1 then
         self.isShieldOverheated = true
     end
-    if shouldSet then
+    if Server then
         self.heatAmount = Clamp(self.heatAmount - cooldownRate * dt, minHeat, 1)
     end
 end
 
 function ExoShield:AbsorbDamage(damage)
     self.heatAmount = self.heatAmount + ExoShield.kHeatPerDamage * damage
-    -- Print("ouch %s! (%s)", damage, self.heatAmount)
+    Print("ExoShield:AbsorbDamage: damage %s! (%s)", damage, self.heatAmount)
     self.lastHitTime = Shared.GetTime()
 end
 function ExoShield:AbsorbProjectile(projectileEnt)
     if projectileEnt:isa("Bomb") then
+        Print("ExoShield:AbsorbProjectile: Bomb")
         projectileEnt:TriggerEffects("bomb_absorb")
         self:AbsorbDamage(kBileBombDamage * ExoShield.kCorrodeDamageScalar)
     elseif projectileEnt:isa("WhipBomb") then
+        Print("ExoShield:AbsorbProjectile: WhipBomb")
         projectileEnt:TriggerEffects("whipbomb_absorb")
         self:AbsorbDamage(kWhipBombardDamage * ExoShield.kCorrodeDamageScalar)
         self.lastHitTime = Shared.GetTime()
     end
 end
 function ExoShield:OverrideTakeDamage(damage, attacker, doer, point, direction, armorUsed, healthUsed, damageType, preventAlert)
+    Print("ExoShield:OverrideTakeDamage: damage %s!", damage)
     self:AbsorbDamage(damage)
-    --Print("ouch %s", damage)
     return false, false, 0.0001 -- must be >0 if you want damage numbers to appear
 end
-function ExoShield:GetIsEntityZappable(ent)
-    return HasMixin(ent, "Live") and ent:GetIsAlive()--and ent:GetTeam() == kAlienTeamType and HasMixin(ent, "Energy")
-end
-function ExoShield:StartZappingEntity(ent)
-    --Print("New entity %s (%s) in contact", ent:GetId(), ent:GetClassName())
-    if #self.contactEntityIdList == 1 then
-        if Client then
-            if not self.contactSoundEffect then
-                self.contactSoundEffect = Client.CreateSoundEffect(Shared.GetSoundIndex("sound/NS2.fev/marine/grenades/pulse/explode"))--"sound/NS2.fev/ambient/neon light loop"))
-                self.contactSoundEffect:SetParent(self:GetId())
-                self.contactSoundEffect:SetCoords(Coords.GetTranslation(self:GetShieldCoords().origin))
-                self.contactSoundEffect:SetPositional(true)
-                self.contactSoundEffect:SetRolloff(SoundSystem.Rolloff_Linear)
-                self.contactSoundEffect:SetMinDistance(0)
-                self.contactSoundEffect:SetMaxDistance(10)
-                
-                self.contactSoundEffect:SetVolume(1)
-                --self.contactSoundEffect:SetPitch(self.pitch)
-            end
-            self.contactSoundEffect:Start()
-        end
-    end
-end
-function ExoShield:StopZappingEntity(ent)
-    if #self.contactEntityIdList == 0 then
-        if Client then
-            self.contactSoundEffect:Stop()
-        end
-    end
-end
-function ExoShield:UpdateZapping(deltaTime)
-    for entI, entId in ipairs(self.contactEntityIdList) do
-        local ent = Shared.GetEntity(entId)
-        if HasMixin(ent, "Energy") then
-            ent:AddEnergy(-ent:GetMaxEnergy() * ExoShield.kContactEnergyDrainRatePercent * deltaTime)
-            ent:AddEnergy(-ExoShield.kContactEnergyDrainRateFixed * deltaTime)
-        end
-    end
-end
+--function ExoShield:GetIsEntityZappable(ent)
+--    return HasMixin(ent, "Live") and ent:GetIsAlive()--and ent:GetTeam() == kAlienTeamType and HasMixin(ent, "Energy")
+--end
+--function ExoShield:StartZappingEntity(ent)
+--    Print("ExoShield:StartZappingEntity: New entity %s (%s) in contact", ent:GetId(), ent:GetClassName())
+--    if Client then
+--        if #self.contactEntityIdList == 1 then
+--            if not self.contactSoundEffect then
+--                self.contactSoundEffect = Client.CreateSoundEffect(Shared.GetSoundIndex("sound/NS2.fev/marine/grenades/pulse/explode"))--"sound/NS2.fev/ambient/neon light loop"))
+--                self.contactSoundEffect:SetParent(self:GetId())
+--                self.contactSoundEffect:SetCoords(Coords.GetTranslation(self:GetShieldCoords(0.5, 0.5).origin))
+--                self.contactSoundEffect:SetPositional(true)
+--                self.contactSoundEffect:SetRolloff(SoundSystem.Rolloff_Linear)
+--                self.contactSoundEffect:SetMinDistance(0)
+--                self.contactSoundEffect:SetMaxDistance(10)
+--
+--                self.contactSoundEffect:SetVolume(1)
+--                --self.contactSoundEffect:SetPitch(self.pitch)
+--            end
+--            self.contactSoundEffect:Start()
+--        end
+--    end
+--end
+--function ExoShield:StopZappingEntity(ent)
+--    Print("ExoShield:StopZappingEntity")
+--    if Client then
+--        if #self.contactEntityIdList == 0 then
+--            self.contactSoundEffect:Stop()
+--        end
+--    end
+--end
+--
+--function ExoShield:UpdateZapping(deltaTime)
+--
+--    for entI, entId in ipairs(self.contactEntityIdList) do
+--        local ent = Shared.GetEntity(entId)
+--        if HasMixin(ent, "Energy") then
+--            ent:AddEnergy(-ent:GetMaxEnergy() * ExoShield.kContactEnergyDrainRatePercent * deltaTime)
+--            ent:AddEnergy(-ExoShield.kContactEnergyDrainRateFixed * deltaTime)
+--        end
+--    end
+--
+--end
+
 function ExoShield:GetIsNanoShielded()
     return true
 end
@@ -272,68 +318,115 @@ function ExoShield:ProcessMoveOnWeapon(player, input)
     end
     
     self.isShieldActive = (self.isShieldDeployed and time > self.shieldDeployChangeTime + ExoShield.kShieldOnDelay)
-    if Server then
-        self:UpdateHeat(deltaTime, true)
-        self:UpdateZapping(deltaTime)
-    else
-        self:UpdateHeat(deltaTime, false)
-    end
-    self:UpdatePhysics(deltaTime)
+    self:UpdateHeat(deltaTime)
+    --self:UpdateZapping(deltaTime)
     
-    self:UpdateShieldProjectorMixin(deltaTime)
+    self:UpdatePhysics(deltaTime)
+
 end
 
 function ExoShield:UpdatePhysics()
-    --Print("?!?")
     PROFILE("ExoShield:UpdatePhysics")
     
     if self.isShieldActive and not self.isPhysicsActive then
         self:CreatePhysics()
     elseif not self.isShieldActive and self.isPhysicsActive then
-        self:DestroyPhysics()
+       -- self:DestroyPhysics()
     end
-    if self.isPhysicsActive then
+    
+    if self.isShieldActive then
+        local projectorCoords, projectorAngles = self:GetShieldProjectorCoordinates()
+        
         for physBodyI, physBody in ipairs(self.physBodyList) do
-            local rowI = math.floor(physBodyI / ExoShield.kPhysBodyColCount) + 1
-            local colI = physBodyI % ExoShield.kPhysBodyColCount
+            -- server side
+            local xFraction = shieldPosition[physBodyI][1]
+            local yFraction = shieldPosition[physBodyI][2]
             
-            local coords = self:GetShieldCoords((colI - 0.5) / ExoShield.kPhysBodyColCount, (rowI - 0.5) / ExoShield.kPhysBodyRowCount)
-            physBody:SetCoords(coords)
-        end
+            local newAngles = Angles(projectorAngles)
+            newAngles.yaw = newAngles.yaw - ExoShield.kShieldAngleYawMin + xFraction * ExoShieldkShieldAngleYawMaxMin
+            
+            -- Calculate the forward offset based on the shield distance
+            local forwardOffset = newAngles:GetCoords().zAxis * ExoShield.kShieldDistance
+            
+            -- Reset the pitch angle
+            newAngles.pitch = 0
+            
+            -- Get the coordinates from the adjusted angles
+            local newCoords = newAngles:GetCoords()
+            
+            -- Adjust the origin of the shield coordinates based on the projector coordinates, forward offset, and yFraction
+            newCoords.origin = (
+                    projectorCoords.origin
+                            + forwardOffset
+                            + Vector(0, -ExoShield.kShieldHeightMin + yFraction * ExoShieldkShieldHeightMaxMin, 0)
+            )
+            
+            physBody:SetCoords(newCoords)
+            local direction = Vector(0, 0, 0)
+            physBody:AddImpulse(self:GetOrigin(), direction)
+       end
     end
 end
 function ExoShield:CreatePhysics()
+    if Client then
+        Print("Client: ExoShield:CreatePhysics")
+    end
+    if Server then
+        Print("Server: ExoShield:CreatePhysics")
+    end
     if not self.isPhysicsActive then
         self.isPhysicsActive = true
         self.physBodyList = {}
-        local width = math.sqrt(2 * ExoShield.kShieldDistance ^ 2 * (1 - math.cos((ExoShield.kShieldAngleYawMin + ExoShield.kShieldAngleYawMax) / ExoShield.kPhysBodyColCount)))
-        local height = (ExoShield.kShieldHeightMin + ExoShield.kShieldHeightMax) / ExoShield.kPhysBodyRowCount
         local projectorCoords = self:GetShieldProjectorCoordinates()
-        for rowI = 1, ExoShield.kPhysBodyRowCount do
-            for colI = 1, ExoShield.kPhysBodyColCount do
-                local physBody = Shared.CreatePhysicsBoxBody(true, Vector(width / 2, height / 2, ExoShield.kShieldDepth / 2), 10, projectorCoords)
-                physBody:SetEntity(self)
-                physBody:SetPhysicsType(CollisionObject.Dynamic)
-                physBody:SetGroup(PhysicsGroup.ShieldGroup)
-                --physBody:SetGroupFilterMask(PhysicsMask.None)
-                physBody:SetTriggeringEnabled(true)
-                physBody:SetCollisionEnabled(true)
-                physBody:SetGravityEnabled(false)
-                table.insert(self.physBodyList, physBody)
+        
+        for cinematicI = 1, cinematicCount do
+            local physBody = Shared.CreatePhysicsModel(ExoShield.kHexagonModel, true, projectorCoords, self)
+            
+            
+            --physBody:SetEntity(self)
+            physBody:SetPhysicsType(CollisionObject.Dynamic)
+            physBody:SetGroup(PhysicsGroup.ShieldGroup)
+            physBody:SetTriggeringEnabled(true)
+            physBody:SetCollisionEnabled(true)
+            physBody:SetGravityEnabled(false)
+            
+            if Client then
+                -- Create the render model
+                local renderModel = Client.CreateRenderModel(RenderScene.Zone_Default)
+                renderModel:SetModel(ExoShield.kHexagonModel)
+                renderModel:InstanceMaterials()
+                physBody:SetEntity(renderModel)
+                table.insert(self.cinematicList, renderModel)
             end
+            table.insert(self.physBodyList, physBody)
         end
-        --Print("Phyzzz on %s!", Server and "Server" or Client and "Client" or "?!?")
     end
 end
 function ExoShield:DestroyPhysics()
     if self.isPhysicsActive then
-        for i, physBody in ipairs(self.physBodyList) do
+        for _, renderModel in ipairs(self.cinematicList) do
+            Client.DestroyRenderModel(renderModel)
+        end
+        
+        -- Now destroy physics bodies
+        for _, physBody in ipairs(self.physBodyList) do
             Shared.DestroyCollisionObject(physBody)
         end
+        
+        -- Clear the lists
+        self.physBodyList = {}
+        self.cinematicList = {}
+        
         self.isPhysicsActive = false
-        --Print("Phyzzz dead on %s.", Server and "Server" or Client and "Client" or "?!?")
     end
 end
+
+local clawLightColorCold = Color(0, 0.7, 1, 1)
+local clawLightColorHot = Color(1, 0, 0, 1)
+local hexagonSize = 0.1
+local hexagonModelSize = Vector(hexagonSize, hexagonSize, hexagonSize)
+local rate = 11 + 3 * (2 * math.random() - 1)
+local angRate = math.pi * 2 * math.pi * 2 / (4 + 1 * (2 * math.random() - 1))
 
 function ExoShield:OnUpdateRender()
     PROFILE("ExoShield:OnUpdateRender")
@@ -351,7 +444,6 @@ function ExoShield:OnUpdateRender()
         self.shieldEffectScalar = 1 - self.shieldEffectScalar
     end
     
-    local coords = self:GetShieldCoords()
     
     --local player = self:GetParent()
     if not self.clawLight then
@@ -364,107 +456,151 @@ function ExoShield:OnUpdateRender()
     self.clawLight:SetIsVisible(self.shieldEffectScalar > 0)
     self.clawLight:SetRadius(10 * self.shieldEffectScalar)
     self.clawLight:SetIntensity(15 * self.shieldEffectScalar)
-    self.clawLight:SetColor(LerpColor(Color(0, 0.7, 1, 1), Color(1, 0, 0, 1), self.heatAmount))
-    self.clawLight:SetCoords(coords)
-    
-    if false and not self.shieldModel then
-        self.shieldModelIsViewModel = shouldDisplayAsViewModel
-        self.shieldModel = Client.CreateRenderModel(RenderScene.Zone_Default)
-        self.shieldModel:SetModel("models/effects/arc_blast.model")
-    end
-    --[[ local rotAngles = Angles(-math.pi/2, 0, 0)
-    coords = coords*rotAngles:GetCoords()
-    coords.xAxis = coords.xAxis*24.00
-    coords.yAxis = coords.yAxis*0.05
-    coords.zAxis = coords.zAxis*15.00*(0.1+math.max(0, self.shieldEffectScalar-0.5)/0.5*0.9) ]]
-    if self.shieldModel then
-        self.shieldModel:SetIsVisible(self.shieldEffectScalar > 0)
-        self.shieldModel:SetCoords(coords)
-    end
-    
-    if not self.cinematicList then
-        --Print("%s", self.cinematicList)
-        local projectorCoords = self:GetShieldProjectorCoordinates()
-        self.cinematicList = {}
-        self.cinematicCoordsList = {}
-        for cinematicI = 1, ExoShield.kShieldEffectHexagonColCount * ExoShield.kShieldEffectHexagonRowCount do
-            local cinematic = Client.CreateCinematic(RenderScene.Zone_Default)
-            cinematic:SetCinematic("cinematics/modularexo/exoshield_hexagon_idle.cinematic")
-            cinematic:SetRepeatStyle(Cinematic.Repeat_Endless)
-            --cinematic:SetCoords(coords)
-            self.cinematicList[cinematicI] = cinematic
-            local coords = Coords.GetIdentity()
-            coords.xAxis, coords.yAxis, coords.zAxis = projectorCoords.xAxis, projectorCoords.yAxis, projectorCoords.zAxis
-            coords.origin = Vector(0, 0, 0)
-            self.cinematicCoordsList[cinematicI] = projectorCoords
-        end
-    end
-    if self.cinematicList then
-        
-        local projectorCoords = self:GetShieldProjectorCoordinates()
-        for cinematicI, cinematic in ipairs(self.cinematicList) do
-            local rowI = math.floor(cinematicI / ExoShield.kShieldEffectHexagonColCount) + 1
-            local colI = cinematicI % ExoShield.kShieldEffectHexagonColCount
-            local isEven = (colI % 2 == 0)
-            local newCoords = self:GetShieldCoords(
-                    (colI - 0.5) / ExoShield.kShieldEffectHexagonColCount,
-                    (rowI - (isEven and 0 or 0.5)) / ExoShield.kShieldEffectHexagonRowCount
-            )
-            newCoords.origin = newCoords.origin - projectorCoords.origin
-            
-            local hexagonSize = math.sqrt(3) * hexagonSideLength
-            local startPoint = Vector(projectorCoords.origin)
-            startPoint.y = projectorCoords.origin.y + newCoords.origin.y
-            local endPoint = projectorCoords.origin + newCoords.origin--startPoint.origin+(newCoords.origin-startPoint.origin)*2
-            local trace = Shared.TraceBox(
-                    Vector(hexagonSize, hexagonSize, hexagonSize),
-                    startPoint, endPoint,
-                    CollisionRep.Default, PhysicsMask.MarineBullets, EntityFilterTwo(self, self:GetParent())
-            )
-            local rate = RRR or 11 + 3 * (2 * math.random() - 1)
-            local angRate = math.pi * 2 / (4 + 1 * (2 * math.random() - 1))
-            --[[ if trace.fraction ~= 1 then
-                rate = rate*3
-                local normal = -trace.normal
-                newCoords = Angles(0, math.atan2(normal.x, normal.z), 0):GetCoords()
-                newCoords.origin = trace.endPoint-projectorCoords.origin
-                local f = trace.fraction--Clamp((trace.fraction-0.5)*2, 0, 1)
-                --newCoords.xAxis = newCoords.xAxis*f
-                --newCoords.yAxis = newCoords.yAxis*f
-                --newCoords.zAxis = newCoords.zAxis*f
-            end ]]
-            
-            local prevCoords = self.cinematicCoordsList[cinematicI]
-            local prevAngles = Angles()
-            prevAngles:BuildFromCoords(prevCoords)
-            local newAngles = Angles()
-            newAngles:BuildFromCoords(newCoords)
-            local angles = SlerpAngles(prevAngles, newAngles, math.pi * 2 * angRate * deltaTime)
-            local anglesCoords = angles:GetCoords()
-            anglesCoords.origin = SlerpVector(prevCoords.origin, newCoords.origin, rate * deltaTime)
-            self.cinematicCoordsList[cinematicI] = anglesCoords
-            
-            local actualCoords = Coords.GetIdentity()
-            actualCoords.xAxis, actualCoords.yAxis, actualCoords.zAxis = anglesCoords.xAxis, anglesCoords.yAxis, anglesCoords.zAxis
-            actualCoords.origin = anglesCoords.origin + projectorCoords.origin
-            cinematic:SetCoords(actualCoords)
-            
-            cinematic:SetIsVisible(self.isShieldActive)
-        end
-    end
-    
+    self.clawLight:SetColor(LerpColor(clawLightColorCold, clawLightColorHot, self.heatAmount))
+    local clawLightCoords = self:GetShieldCoords(0.5, 0.5)
+    self.clawLight:SetCoords(clawLightCoords)
+    ----
+    ----if Client then
+    ----    Print("Client: ExoShield:OnUpdateRender")
+    ----end
+    ----if Server then
+    ----    Print("Server: ExoShield:OnUpdateRender")
+    ----end
+    --local projectorCoords, projectorAngles = self:GetShieldProjectorCoordinates()
+    --if not self.cinematicList then
+    --    self.cinematicList = {}
+    --    self.cinematicCoordsList = {}
+    --    for cinematicI = 1, cinematicCount do
+    --
+    --        local model = Client.CreateRenderModel(RenderScene.Zone_Default)
+    --        model:SetModel(ExoShield.kHexagonModel)
+    --        --model.model = ExoShield.kHexagonModel
+    --        --model:SetIsVisible(false)
+    --        --model:InstanceMaterials()
+    --        --Print(model:GetOverrideMaterialName(0))
+    --
+    --        --model:AddMaterial(ExoShield.kHexagonMaterial)
+    --
+    --        model:InstanceMaterials()
+    --
+    --        --local cinematic = Client.CreateCinematic(RenderScene.Zone_Default)
+    --        --cinematic:SetCinematic(ExoShield.kHexagonIdleCinematic)
+    --        --cinematic:SetRepeatStyle(Cinematic.Repeat_Endless)
+    --
+    --        self.cinematicList[cinematicI] = model
+    --
+    --        local coords = Coords.GetIdentity()
+    --        coords.xAxis, coords.yAxis, coords.zAxis = projectorCoords.xAxis, projectorCoords.yAxis, projectorCoords.zAxis
+    --        coords.origin = projectorCoords.origin
+    --
+    --        coords.xAxis, coords.yAxis, coords.zAxis = coords.xAxis * 10, coords.yAxis * 10, coords.zAxis * 10
+    --        local angles = Angles()
+    --        angles:BuildFromCoords(coords)
+    --        self.cinematicList[cinematicI]:SetCoords(coords)
+    --
+    --        -- Set the visibility of the cinematic based on whether the shield is active or not
+    --        self.cinematicList[cinematicI]:SetIsVisible(true)
+    --        self.cinematicCoordsList[cinematicI] = { coords, angles }
+    --    end
+    --end
+    --if self.cinematicList and self.isShieldActive then
+    --
+    --    local filter = EntityFilterTwo(self, self:GetParent())
+    --
+    --    for cinematicI = 1, cinematicCount do
+    --        -- Retrieve the x and y fractions from the shieldPosition table using the cinematic index
+    --        --[[local xFraction = shieldPosition[cinematicI][1]
+    --        local yFraction = shieldPosition[cinematicI][2]
+    --
+    --        -- Create a new Angles object from the projectorAngles
+    --        local newAngles = Angles(projectorAngles)
+    --
+    --        -- Adjust the yaw angle of the new Angles object based on the xFraction
+    --        -- This is done by subtracting the minimum shield angle yaw from the current yaw angle
+    --        -- and then adding the product of the xFraction and the difference between the maximum and minimum shield angle yaws
+    --        newAngles.yaw = newAngles.yaw - ExoShield.kShieldAngleYawMin + xFraction * ExoShieldkShieldAngleYawMaxMin
+    --
+    --        -- Calculate the forward offset based on the shield distance
+    --        local forwardOffset = newAngles:GetCoords().zAxis * ExoShield.kShieldDistance
+    --
+    --        -- Reset the pitch angle
+    --        newAngles.pitch = 0
+    --
+    --        -- Get the coordinates from the adjusted angles
+    --        local newCoords = newAngles:GetCoords()
+    --
+    --        -- Adjust the origin of the shield coordinates based on the projector coordinates, forward offset, and yFraction
+    --        newCoords.origin = (
+    --                projectorCoords.origin
+    --                        + forwardOffset
+    --                        + Vector(0, -ExoShield.kShieldHeightMin + yFraction * ExoShieldkShieldHeightMaxMin, 0)
+    --        )
+    --
+    --        -- Retrieve the previous coordinates and angles from the cinematicCoordsList
+    --        local prevCoords, prevAngles = unpack(self.cinematicCoordsList[cinematicI])
+    --
+    --        ------------------------------
+    --        local trace = Shared.TraceBox(
+    --                hexagonModelSize,
+    --                projectorCoords.origin, newCoords.origin,
+    --        --prevCoords.origin, newCoords.origin,
+    --                CollisionRep.Default, PhysicsMask.Movement, filter
+    --        --CollisionRep.Default, PhysicsMask.MarineBullets, filter
+    --        )
+    --        if trace.fraction ~= 1 then
+    --            --local normal = -trace.normal
+    --            --newAngles.yaw = math.atan2(normal.x, normal.z)
+    --            --newCoords.origin = trace.endPoint
+    --            local f = Clamp((trace.fraction-0.8)*5, 0, 1)
+    --            newCoords.xAxis = newCoords.xAxis*f
+    --            newCoords.yAxis = newCoords.yAxis*f
+    --            newCoords.zAxis = newCoords.zAxis*f
+    --        end
+    --        --Print("trace.fraction: %f", trace.fraction)
+    --        self.cinematicList[cinematicI]:SetMaterialParameter("dmgAmount", trace.fraction)
+    --
+    --        --self.cinematicList[cinematicI]:SetMaterialParameter("inwall", trace.fraction)
+    --        ---------------------
+    --        -- Slerp (spherical linear interpolation) between the previous angles and the new angles
+    --        -- This is done to smoothly transition from the previous angles to the new angles over time
+    --        local angles = SlerpAngles(prevAngles, newAngles, angRate * deltaTime)
+    --
+    --        -- Get the coordinates from the adjusted angles
+    --        local coords = angles:GetCoords()
+    --
+    --        --coords.xAxis, coords.yAxis, coords.zAxis = coords.xAxis *10, coords.yAxis*10, coords.zAxis*10
+    --        -- Slerp between the previous coordinates and the new coordinates
+    --        -- This is done to smoothly transition from the previous coordinates to the new coordinates over time
+    --        coords.origin = SlerpVector(prevCoords.origin, newCoords.origin, rate * deltaTime)
+    --        coords.xAxis, coords.yAxis, coords.zAxis = newCoords.xAxis, newCoords.yAxis, newCoords.zAxis
+    --        -----------
+    --
+    --        -- Update the cinematicCoordsList with the new coordinates and angles
+    --        self.cinematicCoordsList[cinematicI] = { coords, angles }]]
+    --
+    --        if self.physBodyList[cinematicI] then
+    --            -- Set the coordinates of the cinematic to the new coordinates
+    --            self.cinematicList[cinematicI]:SetCoords(self.physBodyList[cinematicI]:GetPosition():GetCoords())
+    --
+    --            -- Set the visibility of the cinematic based on whether the shield is active or not
+    --            self.cinematicList[cinematicI]:SetIsVisible(self.isShieldActive)
+    --
+    --        end
+    --    end
+    --end
+    --
     local parent = self:GetParent()
     if parent and parent:GetIsLocalPlayer() then
         local heatDisplayUI = self.heatDisplayUI
         if not heatDisplayUI then
             heatDisplayUI = Client.CreateGUIView(242 + 64, 720)
-            heatDisplayUI:Load("lua/ModularExos/GUI/GUI" .. self:GetExoWeaponSlotName():gsub("^%l", string.upper) .. "ShieldDisplay.lua")
-            heatDisplayUI:SetTargetTexture("*exo_claw_" .. self:GetExoWeaponSlotName())
+            heatDisplayUI:Load("lua/ModularExos/GUI/GUILeftShieldDisplay.lua")
+            heatDisplayUI:SetTargetTexture("*exo_claw_left")
             self.heatDisplayUI = heatDisplayUI
         end
-        heatDisplayUI:SetGlobal("heatAmount" .. self:GetExoWeaponSlotName(), self.heatAmount)
-        heatDisplayUI:SetGlobal("idleHeatAmount" .. self:GetExoWeaponSlotName(), self.idleHeatAmount)
-        heatDisplayUI:SetGlobal("shieldStatus" .. self:GetExoWeaponSlotName(), (
+        heatDisplayUI:SetGlobal("heatAmountleft", self.heatAmount)
+        heatDisplayUI:SetGlobal("idleHeatAmountleft", self.idleHeatAmount)
+        heatDisplayUI:SetGlobal("shieldStatusleft", (
                 self.isShieldOverheated and "overheat"
                         or not self.isShieldDesired and "off"
                         or self.isInCombat and "combat"
@@ -473,28 +609,41 @@ function ExoShield:OnUpdateRender()
     end
 end
 
+--- Get the coordinates of the shield based on the fractions provided.
+-- This function calculates the coordinates of the shield based on the fractions of the yaw and pitch angles.
+-- @param xFraction The fraction of the yaw angle. Defaults to 0.5 if not provided.
+-- @param yFraction The fraction of the pitch angle. Defaults to 0.5 if not provided.
+-- @return shieldCoords The calculated coordinates of the shield.
 function ExoShield:GetShieldCoords(xFraction, yFraction)
-    xFraction = xFraction or 0.5
-    yFraction = yFraction or 0.5
     
     local projectorCoords, projectorAngles = self:GetShieldProjectorCoordinates()
     
-    projectorAngles.yaw = projectorAngles.yaw - ExoShield.kShieldAngleYawMin + xFraction * (ExoShield.kShieldAngleYawMin + ExoShield.kShieldAngleYawMax)
-    --projectorAngles.pitch = projectorAngles.pitch-ExoShield.kShieldAnglePitchMin+yFraction*(ExoShield.kShieldAnglePitchMin+ExoShield.kShieldAnglePitchMax)
+    -- Adjust the yaw angle based on the xFraction
+    projectorAngles.yaw = projectorAngles.yaw - ExoShield.kShieldAngleYawMin + xFraction * ExoShieldkShieldAngleYawMaxMin
+    
+    
+    -- Calculate the forward offset based on the shield distance
     local forwardOffset = projectorAngles:GetCoords().zAxis * ExoShield.kShieldDistance
+    
+    -- Reset the pitch angle
     projectorAngles.pitch = 0
+    
+    -- Get the coordinates from the adjusted angles
     local shieldCoords = projectorAngles:GetCoords()
+    
+    -- Adjust the origin of the shield coordinates based on the projector coordinates, forward offset, and yFraction
     shieldCoords.origin = (
             projectorCoords.origin
                     + forwardOffset
-                    + Vector(0, -ExoShield.kShieldHeightMin + yFraction * (ExoShield.kShieldHeightMax + ExoShield.kShieldHeightMin), 0)
+                    + Vector(0, -ExoShield.kShieldHeightMin + yFraction * ExoShieldkShieldHeightMaxMin, 0)
     )
     
     return shieldCoords
 end
 
 function ExoShield:GetSurfaceOverride(dmg)
-    return "nanoshield" -- alternatively: "electronic", "armor", "flame", "ethereal", "hallucination", "structure"
+    -- alternatively: "electronic", "armor", "flame", "ethereal", "hallucination", "structure"
+    return "nanoshield"
 end
 
 function ExoShield:OnTag(tagName)
@@ -513,34 +662,7 @@ function ExoShield:OnUpdateAnimationInput(modelMixin)
 end
 
 function ExoShield:GetWeight()
-    return 0
-end
-
-function ExoShield:OnTriggerEntered(entA, entB)
-    local ent = (entA == self and entB or entA)
-    --Print("Entity %s (%s) entered trigger", ent:GetId(), ent:GetClassName())
-    if not self.contactEntityIdMap[ent:GetId()] and self:GetIsEntityZappable(ent) then
-        local i = #self.contactEntityIdList + 1
-        self.contactEntityIdList[i] = ent:GetId()
-        self.contactEntityIdMap[ent:GetId()] = i
-        self:StartZappingEntity(ent)
-    end
-end
-function ExoShield:OnTriggerExited(entA, entB)
-    local ent = (entA == self and entB or entA)
-    --Print("Entity %s (%s) exited trigger", ent:GetId(), ent:GetClassName())
-    if self.contactEntityIdMap[ent:GetId()] then
-        self.contactEntityIdList[self.contactEntityIdMap[ent:GetId()]] = nil
-        self.contactEntityIdMap[ent:GetId()] = nil
-        self:StopZappingEntity(ent)
-    end
-end
-function ExoShield:OnEntityChange(oldId, newId)
-    if self.contactEntityIdMap[oldId] then
-        self.contactEntityIdList[self.contactEntityIdMap[oldId]] = nil
-        self.contactEntityIdMap[oldId] = nil
-        self:StopZappingEntity(ent)
-    end
+    return kExoShieldWeight
 end
 
 -- to fix a bug

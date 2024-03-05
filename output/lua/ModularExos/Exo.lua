@@ -98,7 +98,7 @@ function Exo:OnInitialized()
     -- self.powerModuleType = self.powerModuleType or kExoModuleTypes.Power1
     if kExoModuleTypesData[self.leftArmModuleType] == nil then
         if self.layout == "MinigunMinigun" then
-            self.leftArmModuleType = kExoModuleTypes.Minigun
+            self.leftArmModuleType = kExoModuleTypes.Shield
         elseif self.layout == "RailgunRailgun" then
             self.leftArmModuleType = kExoModuleTypes.Railgun
         else
