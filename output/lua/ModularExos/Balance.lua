@@ -78,8 +78,8 @@ Railgun.kRailgunDamage = 30]]
 
 
 kRailgunWeight = 0.1 -- default 0.045
-kRailgunDamage = 10 -- default 10
-kRailgunChargeDamage = 140 -- default 140
+kRailgunDamage = 30 -- default 10
+kRailgunChargeDamage = 10 -- default 140
 
 -- CLAW
 kClawWeight = 0.0 -- default 0.01
