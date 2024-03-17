@@ -168,6 +168,11 @@ GUIMarineBuyMenu.kExoModuleData = {
         image          = kInventoryIconsTexture,
         imageTexCoords = { GetSmallIconPixelCoordinates(kTechId.ClawRailgunExosuit) },
     },
+	[kExoModuleTypes.PlasmaLauncher]      = {
+        label          = "Plasma Launcher", tooltip = "EXO_WEAPON_RAILGUN_TOOLTIP",
+        image          = kInventoryIconsTexture,
+        imageTexCoords = { GetSmallIconPixelCoordinates(kTechId.ClawRailgunExosuit) },
+    },
     [kExoModuleTypes.Minigun]      = {
         label          = "Minigun", tooltip = "EXO_WEAPON_MMINIGUN_TOOLTIP",
         image          = kInventoryIconsTexture,

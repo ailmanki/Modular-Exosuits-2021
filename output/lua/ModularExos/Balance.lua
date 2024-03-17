@@ -1,6 +1,7 @@
 --- Module pricing
 kExoWelderCost = 15
 kRailgunCost = 20
+kPlasmaLauncherCost = 20
 kMinigunCost = 25
 
 --kExoFlamerCost = 30
@@ -56,6 +57,7 @@ Exo.ExoShieldTech = kTechId.ExosuitTech
 --Exo.ExoFlamerTech = kTechId.ExosuitTech
 --Exo.ExoWelderTech = kTechId.ExosuitTech
 Exo.RailgunTech = kTechId.ExosuitTech
+Exo.PlasmaLauncherTech = kTechId.ExosuitTech
 Exo.MinigunTech = kTechId.ExosuitTech
 Exo.ArmorModuleTech = kTechId.ExosuitTech
 --Exo.PhaseModuleTech = kTechId.ExosuitTech
@@ -92,6 +94,33 @@ kMinigunDamageType = kDamageType.Heavy --original heavy
 kMinigunWeight = 0.2 -- default 0.06
 Minigun.kHeatUpRate = 0.3 -- default 0.3
 Minigun.kCoolDownRate = 0.4 -- default 0.4
+
+-- PLASMALAUNCHER --
+kPlasmaT1LifeTime = 10
+kPlasmaT2LifeTime = 5
+kPlasmaT3LifeTime = 5
+
+kPlasmaMinDirectDamage = 20
+kPlasmaMaxDirectDamage = 40
+
+kPlasmaSpeedMin = 1
+kPlasmaSpeedMedian = 2.5
+kPlasmaSpeedMax = 5
+
+kPlasmaHitBoxRadiusMax = 0.45 -- Hitbox radius from center of projectile...
+kPlasmaHitBoxRadiusMedian = 0.3
+kPlasmaHitBoxRadiusMin = 0.15
+
+kPlasmaDOTDamageMax = 20 -- DOT applied after direct damage
+kPlasmaDOTDamageMin = 0
+kPlasmaDOTDuration = 3
+kPlasmaDOTInterval = 0.5
+
+kPlasmaDamageRadius = 4 -- 4 is the pulse damage radius (matches pulse cinematic)
+
+kPlasmaDamageType = kDamageType.Normal -- Damage type of DOT...
+
+kPlasmaLauncherWeight = 0.1
 
 ---- FLAMETHROWER --
 --kExoFlamerWeight = 0.15
@@ -178,6 +207,7 @@ kBaseExoArmor = 200
 kClawArmor = 0
 kMinigunArmor = 100
 kRailgunArmor = 25
+kPlasmaLauncherArmor = 25
 kThrustersArmor = 0
 kArmorModuleArmor = 100
 kCatPackArmor = 0

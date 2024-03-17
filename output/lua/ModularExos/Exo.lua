@@ -1,4 +1,5 @@
 Script.Load("lua/Mixins/JumpMoveMixin.lua")
+Script.Load("lua/ModularExos/ExoWeapons/PierceProjectile.lua")
 --Script.Load("lua/PhaseGateUserMixin.lua")
 --Script.Load("lua/ModularExos/ExoWeapons/MarineStructureAbility.lua")
 
@@ -91,6 +92,7 @@ function Exo:OnCreate()
     
     --InitMixin(self, PhaseGateUserMixin)
     InitMixin(self, JumpMoveMixin)
+	InitMixin(self, PierceProjectileShooterMixin)
 end
 
 local orig_Exo_OnInitialized = Exo.OnInitialized
