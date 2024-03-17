@@ -1,0 +1,7 @@
+shader = "shaders/hexagon.surface_shader"
+albedoMap = "models/marine/hexagon/hexagon.dds"
+normalMap = "models/marine/hexagon/hexagon.dds"
+specularMap = "models/marine/hexagon/hexagon.dds"
+opacityMap = "models/marine/hexagon/hexagon.dds"
+emissiveMap = "materials/dev/black.dds"
+surface = "nanoshield"

@@ -14,8 +14,8 @@ for maskKey, maskValue in pairs(PhysicsMask) do
 end
 
 -- Appends the "MarineBullets" to the PhysicsMask enum, excluding the ShieldGroup from the mask
---debug.appendtoenum(PhysicsMask, "MarineBullets", bit.band(PhysicsMask.Bullets, bit.bnot(bit.lshift(1, PhysicsGroup.ShieldGroup - 1))))
+debug.appendtoenum(PhysicsMask, "MarineBullets", bit.band(PhysicsMask.Bullets, bit.bnot(bit.lshift(1, PhysicsGroup.ShieldGroup - 1))))
 
 -- Appends the "MarinePredictedProjectileGroup" to the PhysicsMask enum, excluding the ShieldGroup from the mask
---debug.appendtoenum(PhysicsMask, "MarinePredictedProjectileGroup", bit.band(PhysicsMask.PredictedProjectileGroup, bit.bnot(bit.lshift(1, PhysicsGroup.ShieldGroup - 1))))
+debug.appendtoenum(PhysicsMask, "MarinePredictedProjectileGroup", bit.band(PhysicsMask.PredictedProjectileGroup, bit.bnot(bit.lshift(1, PhysicsGroup.ShieldGroup - 1))))
 

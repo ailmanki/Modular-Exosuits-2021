@@ -5,7 +5,7 @@ Script.Load("lua/TechMixin.lua")
 Script.Load("lua/TeamMixin.lua")
 Script.Load("lua/EntityChangeMixin.lua")
 Script.Load("lua/NanoShieldMixin.lua")
-
+Script.Load("lua/Utility.lua")
 class 'ExoShield'(Entity)
 
 ExoShield.kMapName = "exoshield"
@@ -83,6 +83,7 @@ local networkVars = {
     isShieldOverheated     = "boolean", -- if the shield is currently cooling down from an overheat
     shieldDeployChangeTime = "time", -- the time the shield was deployed/undeployed
     lastHitTime            = "time", -- the last time damage was done to the shield
+    equipmentId = "entityid",
 }
 
 --AddMixinNetworkVars(TechMixin, networkVars)
@@ -126,31 +127,19 @@ function ExoShield:OnCreate()
     
     --self:SetUpdates(true)
 end
-function ExoShield:OnInitialized()
 
+function ExoShield:OnInitialized()
 end
+
 function ExoShield:GetTechId()
     return nil
 end
 function ExoShield:OnDestroy()
     Entity.OnDestroy(self)
-    self:DestroyPhysics()
     if Client then
-        if self.shieldModel then
-            Client.DestroyRenderModel(self.shieldModel)
-            self.shieldModel = nil
-        end
         if self.clawLight then
             Client.DestroyRenderLight(self.clawLight)
             self.clawLight = nil
-        end
-        if self.cinematicList then
-            for cinematicI, cinematic in ipairs(self.cinematicList) do
-                Client.DestroyRenderModel(cinematic)
-                cinematic = nil
-                --Client.DestroyCinematic(cinematic)
-            end
-            self.cinematicList = nil
         end
         if self.heatDisplayUI then
             Client.DestroyGUIView(self.heatDisplayUI)
@@ -161,11 +150,46 @@ end
 
 function ExoShield:OnPrimaryAttack(player)
     if not player:GetPrimaryAttackLastFrame() then
-        self.isShieldDesired = not self.isShieldDesired -- toggle desired state
+        self.isShieldDesired = true
+        if Server then
+            if Shared.GetIsRunningPrediction() then
+                return
+            end
+            --local player = self:GetParent()
+            local origin = player:GetAttachPointOrigin(Shield.kAttachPoint)
+            
+            local team = player:GetTeamNumber()
+            self.shields = {}
+            for i = 1, 9 do
+                local shield = CreateEntity(Shield.kMapName, Vector(), team, {shield = i})
+                shield:SetParent(player)
+                shield:SetPhysicsType(PhysicsType.Kinematic)
+               -- shield:SetPhysicsType(CollisionObject.None)
+                --shield:SetPhysicsGroup(PhysicsGroup.ShieldGroup)
+                --shield:SetPhysicsGroup(PhysicsGroup.RagdollGroup)
+                --shield:SetTriggeringEnabled(true)
+                --shield:SetCollisionEnabled(true)
+                --shield:SetGravityEnabled(false)
+               -- shield:SetAttachPoint(Shield.kAttachPoint)
+                -- shield:SetAngles(player:GetAngles())
+                shield:SetCoords(Coords.GetIdentity())
+                table.insert(self.shields, shield)
+            end
+            
+        end
     end
 end
 function ExoShield:OnPrimaryAttackEnd(player)
     self.isShieldDesired = false
+    if self.shields then
+        for i = 1, 9 do
+            if self.shields[i] then
+                DestroyEntity(self.shields[i])
+                self.shields[i] = nil
+            end
+        end
+        self.shields = nil
+    end
 end
 
 function ExoShield:UpdateHeat(dt)
@@ -199,29 +223,29 @@ function ExoShield:UpdateHeat(dt)
         self.heatAmount = Clamp(self.heatAmount - cooldownRate * dt, minHeat, 1)
     end
 end
-
-function ExoShield:AbsorbDamage(damage)
-    self.heatAmount = self.heatAmount + ExoShield.kHeatPerDamage * damage
-    Print("ExoShield:AbsorbDamage: damage %s! (%s)", damage, self.heatAmount)
-    self.lastHitTime = Shared.GetTime()
-end
-function ExoShield:AbsorbProjectile(projectileEnt)
-    if projectileEnt:isa("Bomb") then
-        Print("ExoShield:AbsorbProjectile: Bomb")
-        projectileEnt:TriggerEffects("bomb_absorb")
-        self:AbsorbDamage(kBileBombDamage * ExoShield.kCorrodeDamageScalar)
-    elseif projectileEnt:isa("WhipBomb") then
-        Print("ExoShield:AbsorbProjectile: WhipBomb")
-        projectileEnt:TriggerEffects("whipbomb_absorb")
-        self:AbsorbDamage(kWhipBombardDamage * ExoShield.kCorrodeDamageScalar)
-        self.lastHitTime = Shared.GetTime()
-    end
-end
-function ExoShield:OverrideTakeDamage(damage, attacker, doer, point, direction, armorUsed, healthUsed, damageType, preventAlert)
-    Print("ExoShield:OverrideTakeDamage: damage %s!", damage)
-    self:AbsorbDamage(damage)
-    return false, false, 0.0001 -- must be >0 if you want damage numbers to appear
-end
+--
+--function ExoShield:AbsorbDamage(damage)
+--    self.heatAmount = self.heatAmount + ExoShield.kHeatPerDamage * damage
+--    Print("ExoShield:AbsorbDamage: damage %s! (%s)", damage, self.heatAmount)
+--    self.lastHitTime = Shared.GetTime()
+--end
+--function ExoShield:AbsorbProjectile(projectileEnt)
+--    if projectileEnt:isa("Bomb") then
+--        Print("ExoShield:AbsorbProjectile: Bomb")
+--        projectileEnt:TriggerEffects("bomb_absorb")
+--        self:AbsorbDamage(kBileBombDamage * ExoShield.kCorrodeDamageScalar)
+--    elseif projectileEnt:isa("WhipBomb") then
+--        Print("ExoShield:AbsorbProjectile: WhipBomb")
+--        projectileEnt:TriggerEffects("whipbomb_absorb")
+--        self:AbsorbDamage(kWhipBombardDamage * ExoShield.kCorrodeDamageScalar)
+--        self.lastHitTime = Shared.GetTime()
+--    end
+--end
+--function ExoShield:OverrideTakeDamage(damage, attacker, doer, point, direction, armorUsed, healthUsed, damageType, preventAlert)
+--    Print("ExoShield:OverrideTakeDamage: damage %s!", damage)
+--    self:AbsorbDamage(damage)
+--    return false, false, 0.0001 -- must be >0 if you want damage numbers to appear
+--end
 --function ExoShield:GetIsEntityZappable(ent)
 --    return HasMixin(ent, "Live") and ent:GetIsAlive()--and ent:GetTeam() == kAlienTeamType and HasMixin(ent, "Energy")
 --end
@@ -319,114 +343,11 @@ function ExoShield:ProcessMoveOnWeapon(player, input)
     
     self.isShieldActive = (self.isShieldDeployed and time > self.shieldDeployChangeTime + ExoShield.kShieldOnDelay)
     self:UpdateHeat(deltaTime)
-    --self:UpdateZapping(deltaTime)
-    
-    self:UpdatePhysics(deltaTime)
-
 end
 
-function ExoShield:UpdatePhysics()
-    PROFILE("ExoShield:UpdatePhysics")
-    
-    if self.isShieldActive and not self.isPhysicsActive then
-        self:CreatePhysics()
-    elseif not self.isShieldActive and self.isPhysicsActive then
-       -- self:DestroyPhysics()
-    end
-    
-    if self.isShieldActive then
-        local projectorCoords, projectorAngles = self:GetShieldProjectorCoordinates()
-        
-        for physBodyI, physBody in ipairs(self.physBodyList) do
-            -- server side
-            local xFraction = shieldPosition[physBodyI][1]
-            local yFraction = shieldPosition[physBodyI][2]
-            
-            local newAngles = Angles(projectorAngles)
-            newAngles.yaw = newAngles.yaw - ExoShield.kShieldAngleYawMin + xFraction * ExoShieldkShieldAngleYawMaxMin
-            
-            -- Calculate the forward offset based on the shield distance
-            local forwardOffset = newAngles:GetCoords().zAxis * ExoShield.kShieldDistance
-            
-            -- Reset the pitch angle
-            newAngles.pitch = 0
-            
-            -- Get the coordinates from the adjusted angles
-            local newCoords = newAngles:GetCoords()
-            
-            -- Adjust the origin of the shield coordinates based on the projector coordinates, forward offset, and yFraction
-            newCoords.origin = (
-                    projectorCoords.origin
-                            + forwardOffset
-                            + Vector(0, -ExoShield.kShieldHeightMin + yFraction * ExoShieldkShieldHeightMaxMin, 0)
-            )
-            
-            physBody:SetCoords(newCoords)
-            local direction = Vector(0, 0, 0)
-            physBody:AddImpulse(self:GetOrigin(), direction)
-       end
-    end
-end
-function ExoShield:CreatePhysics()
-    if Client then
-        Print("Client: ExoShield:CreatePhysics")
-    end
-    if Server then
-        Print("Server: ExoShield:CreatePhysics")
-    end
-    if not self.isPhysicsActive then
-        self.isPhysicsActive = true
-        self.physBodyList = {}
-        local projectorCoords = self:GetShieldProjectorCoordinates()
-        
-        for cinematicI = 1, cinematicCount do
-            local physBody = Shared.CreatePhysicsModel(ExoShield.kHexagonModel, true, projectorCoords, self)
-            
-            
-            --physBody:SetEntity(self)
-            physBody:SetPhysicsType(CollisionObject.Dynamic)
-            physBody:SetGroup(PhysicsGroup.ShieldGroup)
-            physBody:SetTriggeringEnabled(true)
-            physBody:SetCollisionEnabled(true)
-            physBody:SetGravityEnabled(false)
-            
-            if Client then
-                -- Create the render model
-                local renderModel = Client.CreateRenderModel(RenderScene.Zone_Default)
-                renderModel:SetModel(ExoShield.kHexagonModel)
-                renderModel:InstanceMaterials()
-                physBody:SetEntity(renderModel)
-                table.insert(self.cinematicList, renderModel)
-            end
-            table.insert(self.physBodyList, physBody)
-        end
-    end
-end
-function ExoShield:DestroyPhysics()
-    if self.isPhysicsActive then
-        for _, renderModel in ipairs(self.cinematicList) do
-            Client.DestroyRenderModel(renderModel)
-        end
-        
-        -- Now destroy physics bodies
-        for _, physBody in ipairs(self.physBodyList) do
-            Shared.DestroyCollisionObject(physBody)
-        end
-        
-        -- Clear the lists
-        self.physBodyList = {}
-        self.cinematicList = {}
-        
-        self.isPhysicsActive = false
-    end
-end
 
 local clawLightColorCold = Color(0, 0.7, 1, 1)
 local clawLightColorHot = Color(1, 0, 0, 1)
-local hexagonSize = 0.1
-local hexagonModelSize = Vector(hexagonSize, hexagonSize, hexagonSize)
-local rate = 11 + 3 * (2 * math.random() - 1)
-local angRate = math.pi * 2 * math.pi * 2 / (4 + 1 * (2 * math.random() - 1))
 
 function ExoShield:OnUpdateRender()
     PROFILE("ExoShield:OnUpdateRender")
@@ -459,13 +380,14 @@ function ExoShield:OnUpdateRender()
     self.clawLight:SetColor(LerpColor(clawLightColorCold, clawLightColorHot, self.heatAmount))
     local clawLightCoords = self:GetShieldCoords(0.5, 0.5)
     self.clawLight:SetCoords(clawLightCoords)
+    
     ----
     ----if Client then
     ----    Print("Client: ExoShield:OnUpdateRender")
     ----end
-    ----if Server then
-    ----    Print("Server: ExoShield:OnUpdateRender")
-    ----end
+    --if Server then
+    --    Print("Server: ExoShield:OnUpdateRender")
+    --end
     --local projectorCoords, projectorAngles = self:GetShieldProjectorCoordinates()
     --if not self.cinematicList then
     --    self.cinematicList = {}
@@ -648,13 +570,14 @@ end
 
 function ExoShield:OnTag(tagName)
     PROFILE("ExoShield:OnTag")
-    local player = self:GetParent()
-    if player then
-        if tagName == "hit" then
-        elseif tagName == "claw_attack_start" then
-            --player:TriggerEffects("claw_attack")
-        end
-    end
+    --Print(tagName)
+    --local player = self:GetParent()
+    --if player then
+    --    if tagName == "hit" then
+    --    elseif tagName == "claw_attack_start" then
+    --        --player:TriggerEffects("claw_attack")
+    --    end
+    --end
 end
 
 function ExoShield:OnUpdateAnimationInput(modelMixin)

@@ -6,18 +6,16 @@
 		<input name="specularMap" type="texture" address="wrap" />
 		<input name="emissiveMap" type="texture" address="wrap" srgb="true"/>
 		<input name="opacityMap" type="texture" address="wrap" />
-        <input name="decals" type="float">0.0</input>
+        <input name="decals" type="float">1.0</input>
+        <input name="emissiveMod" type="float">1.0</input>
 		<input name="transmissionColor" type="float3">(1, 1, 1)</input>
-		<input name="dmgAmount" type="float">1.0</input>
-		<input name="inwall" type="float">1.0</input>
-
 	</inputs>
 
-	<params>
-		<param name="translucent">true</param>
-		<param name="wsNormal">true</param>
-	</params>
-
+    <params>
+        <param name="translucent">true</param>
+		<param name="vsPosition">true</param>
+		<param name="vsNormal">true</param>
+    </params>
 	<code>
 	<![CDATA[
 		float3 DecodeNormal(const float4 texNormal)
@@ -28,21 +26,28 @@
 		}
 		void MaterialShader(in Material_Input input, inout Material material)
 		{
-			float showDecals   = decals;
-			float opacity = 1 - tex2D(opacityMap, input.texCoord).r;
+		//float3 posSq = input.vsPosition * input.vsPosition;
+                     //float vsDistInv = 1.0f / (sqrt(posSq.x + posSq.y + posSq.z)+0.00001);
 
-			float4 specularGloss = tex2D(specularMap, input.texCoord);
-            float disturbed = (dmgAmount - 0.9)*10;
-			//material.wsOffset = input.wsNormal * -0.0015;
-			material.albedo 	= tex2D(albedoMap, input.texCoord).rgb;
-			//material.specular	= specularGloss.rgb;
-			//material.gloss		= specularGloss.a * disturbed;
-			material.emissive   = tex2D(emissiveMap, input.texCoord).rgb * dmgAmount;
-			//material.opacity    = tex2D(opacityMap, input.texCoord).a;
-			material.id         = showDecals;
-			material.transmissionColor = transmissionColor * tex2D(albedoMap, input.texCoord).rgb;
-			material.ssDistortion = DecodeNormal( tex2D(albedoMap, input.texCoord) ).xy * (dmgAmount * 0.01);
+                     float3 ssDir = normalize(input.vsPosition);
+                     float intensity = -dot(ssDir, input.vsNormal);
+                     intensity = 1.0 - clamp(intensity, 0.0, 1.0);
+                     intensity = intensity * intensity * intensity;
+                     float fresnelIntensity = clamp(intensity, 0, 1);
 
+                     //material.albedo 	= float3(0, 0, 0);
+                     material.albedo 	= tex2D(albedoMap, input.texCoord).rgb;
+                     material.tsNormal 	= float3(0, 0, 1);
+                     material.specular	= float3(7, 7, 7) * fresnelIntensity  + float3(0.15, 0.15, 0.15);
+                     material.gloss		= 2.0 * fresnelIntensity + 1.75;
+			//--float opacity = 1 - tex2D(opacityMap, input.texCoord).a;
+			//material.transmissionColor = tex2D(albedoMap, input.texCoord).rgb;
+            //material.tsNormal 	=  1 - tex2D(albedoMap, input.texCoord).rgb * 0.005 * sin(time);
+			//material.ssDistortion = DecodeNormal( tex2D(normalMap, input.texCoord) ).xy * float2(1, -1) * 0.005 * sin(time);
+
+			float4 tex = tex2D(emissiveMap, input.texCoord);
+			material.emissive = tex.rgb * input.color.rgb;
+			//--material.id         = decals;
 		}
 	]]>
 	</code>
