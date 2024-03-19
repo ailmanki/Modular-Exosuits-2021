@@ -16,10 +16,6 @@ class 'PlasmaLauncher'(Entity)
 
 PlasmaLauncher.kMapName = "PlasmaLauncher"
 
-function PlasmaLauncher:GetIsAffectedByWeaponUpgrades()
-    return true
-end
-
 local kPlasmaRange = 400
 
 -- Time required to go from 0% to 100% charged...
@@ -205,17 +201,19 @@ local function PlasmaBallProjectile(self, player)
 		if ChargePercent < 0.33 then
 			shotHitBoxSize = kPlasmaHitBoxRadiusMin
 			shotSpeed = kPlasmaSpeedMax
+			shotDamageRadius = kPlasmaDamageRadius/2.0
 			player:CreatePierceProjectile("PlasmaT1", startPoint, viewCoords.zAxis * shotSpeed, 0.5, 0, 0 , nil, shotDamage, shotDOTDamage, shotHitBoxSize, shotDamageRadius, ChargePercent)
 		elseif ChargePercent < 0.67 then
 			shotHitBoxSize = kPlasmaHitBoxRadiusMedian
 			shotSpeed = kPlasmaSpeedMedian
+			shotDamageRadius = kPlasmaDamageRadius/2.0
 			player:CreatePierceProjectile("PlasmaT2", startPoint, viewCoords.zAxis * shotSpeed, 0.5, 0, 0 , nil, shotDamage, shotDOTDamage, shotHitBoxSize, shotDamageRadius, ChargePercent)
 		else
 			shotHitBoxSize = kPlasmaHitBoxRadiusMax
 			shotDamageRadius = kPlasmaDamageRadius
 			shotSpeed = kPlasmaSpeedMin
 			player:CreatePierceProjectile("PlasmaT3", startPoint, viewCoords.zAxis * shotSpeed, 0.5, 0, 0 , nil, shotDamage, shotDOTDamage, shotHitBoxSize, shotDamageRadius, ChargePercent)
-		end		
+		end	
     end
 end
 
@@ -383,46 +381,29 @@ if Client then
     function PlasmaLauncher:GetPrimaryAttacking()
         return self.plasmalauncherAttacking
     end
-	--[[
-    function PlasmaLauncher:OnProcessMove(input)
 
-        Entity.OnProcessMove(self, input)
-        
-        local player = self:GetParent()
-        
-        if player then
+end
+
+if Server then
+
+    function PlasmaLauncher:OnParentKilled(attacker, doer, point, direction)
+    end
     
-            -- trace and highlight first target
-            local filter = EntityFilterAllButMixin("RailgunTarget")
-            local startPoint = player:GetEyePos()
-            local endPoint = startPoint + player:GetViewCoords().zAxis * kPlasmaRange
-            local trace = Shared.TraceRay(startPoint, endPoint, CollisionRep.Damage, PhysicsMask.Bullets, EntityFilterAllButIsa("Tunnel"))
-            local direction = (endPoint - startPoint):GetUnit()
-            
-            local extents = GetDirectedExtentsForDiameter(direction, kBulletSize)
-            
-            self.PlasmaTargetId = nil
-            
-            if trace.fraction < 1 then
-                
-                local capsuleTrace = Shared.TraceBox(extents, startPoint, trace.endPoint, CollisionRep.Damage, PhysicsMask.Bullets, filter)
-                if capsuleTrace.entity then
-                
-                    capsuleTrace.entity:SetRailgunTarget()
-                    self.PlasmaTargetId = capsuleTrace.entity:GetId()
-                    
-                end
-            
+    -- 
+    -- The Railgun explodes players. We must bypass the ragdoll here.
+    -- 
+    function PlasmaLauncher:OnDamageDone(doer, target)
+    
+        if doer == self then
+        
+            if HasMixin(target, "Ragdoll") and target:isa("Player") and not target:GetIsAlive() then
+                target:SetBypassRagdoll(true)
             end
-        
+            
         end
-    
+        
     end
     
-    function PlasmaLauncher:GetTargetId()
-        return self.PlasmaTargetId
-    end
-    ]]
 end
 
 Shared.LinkClassToMap("PlasmaLauncher", PlasmaLauncher.kMapName, networkVars)

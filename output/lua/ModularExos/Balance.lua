@@ -97,19 +97,19 @@ Minigun.kCoolDownRate = 0.4 -- default 0.4
 
 -- PLASMALAUNCHER --
 kPlasmaT1LifeTime = 10
-kPlasmaT2LifeTime = 5
-kPlasmaT3LifeTime = 5
+kPlasmaT2LifeTime = 10
+kPlasmaT3LifeTime = 10
 
-kPlasmaMinDirectDamage = 20
+kPlasmaMinDirectDamage = 30
 kPlasmaMaxDirectDamage = 40
 
-kPlasmaSpeedMin = 1
-kPlasmaSpeedMedian = 2.5
-kPlasmaSpeedMax = 5
+kPlasmaSpeedMin = 1.5
+kPlasmaSpeedMedian = 4
+kPlasmaSpeedMax = 6.5
 
-kPlasmaHitBoxRadiusMax = 0.45 -- Hitbox radius from center of projectile...
-kPlasmaHitBoxRadiusMedian = 0.3
-kPlasmaHitBoxRadiusMin = 0.15
+kPlasmaHitBoxRadiusMax = 0.495 -- Hitbox radius from center of projectile...
+kPlasmaHitBoxRadiusMedian = 0.33
+kPlasmaHitBoxRadiusMin = 0.165
 
 kPlasmaDOTDamageMax = 20 -- DOT applied after direct damage
 kPlasmaDOTDamageMin = 0

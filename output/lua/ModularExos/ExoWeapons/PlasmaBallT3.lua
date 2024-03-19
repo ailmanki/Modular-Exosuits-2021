@@ -55,17 +55,24 @@ function PlasmaT3:OnCreate()
 
 end
 
+function PlasmaT3:GetIsAffectedByWeaponUpgrades()
+    return true
+end
+
 function PlasmaT3:GetDeathIconIndex()
-    return 
+    return kDeathMessageIcon.Railgun
 end
 
 if Server then
 
     function PlasmaT3:ProcessHit(targetHit, surface, normal, hitPoint, shotDamage, shotDOTDamage, shotDamageRadius, ChargePercent)        
 		
-		local hitEntities = GetEntitiesForTeamWithinRange("Alien", GetEnemyTeamNumber(self:GetTeamNumber()), self:GetOrigin(), shotDamageRadius)
+		--local hitEntities = GetEntitiesForTeamWithinRange("Alien", GetEnemyTeamNumber(self:GetTeamNumber()), self:GetOrigin(), shotDamageRadius)
+		local hitEntities = GetEntitiesWithMixinWithinRange("Live", self:GetOrigin(), shotDamageRadius)
+		table.removevalue(hitEntities, self)
+		table.removevalue(hitEntities, self:GetOwner())
 		
-		if targetHit then
+		if targetHit and targetHit ~= self:GetOwner() then
 
             table.removevalue(hitEntities, targetHit)
             self:DoDamage(shotDamage, targetHit, targetHit:GetOrigin(), GetNormalizedVector(targetHit:GetOrigin() - self:GetOrigin()), "none")
@@ -96,22 +103,22 @@ if Server then
 
 			if entity.SetElectrified then
 				entity:SetElectrified(kElectrifiedDuration)
+				
+				local dotMarker = CreateEntity(DotMarker.kMapName, self:GetOrigin() + normal * 0.2, self:GetTeamNumber())
+			
+				entity.id = entity:GetId()
+				
+				dotMarker:SetOwner(self:GetOwner())
+				dotMarker:SetDamageType(kPlasmaDamageType)        
+				dotMarker:SetLifeTime(kPlasmaDOTDuration)
+				dotMarker:SetDamage(shotDOTDamage)
+				dotMarker:SetDamageIntervall(kPlasmaDOTInterval)
+				dotMarker:SetDotMarkerType(DotMarker.kType.SingleTarget)
+				dotMarker:SetAttachToTarget(entity, entity:GetOrigin())		
+				dotMarker:SetDeathIconIndex(kDeathMessageIcon.BileBomb)
+				dotMarker:SetRadius(0)
+				
 			end
-
-			local dotMarker = CreateEntity(DotMarker.kMapName, self:GetOrigin() + normal * 0.2, self:GetTeamNumber())
-			
-			entity.id = entity:GetId()
-			
-			dotMarker:SetOwner(self:GetOwner())
-			dotMarker:SetDamageType(kPlasmaDamageType)        
-			dotMarker:SetLifeTime(kPlasmaDOTDuration)
-			dotMarker:SetDamage(shotDOTDamage)
-			dotMarker:SetDamageIntervall(kPlasmaDOTInterval)
-			dotMarker:SetDotMarkerType(DotMarker.kType.SingleTarget)
-			dotMarker:SetAttachToTarget(entity, entity:GetOrigin())		
-			dotMarker:SetDeathIconIndex(kDeathMessageIcon.BileBomb)
-			dotMarker:SetRadius(0)
-		
 		end
 		
 		local params = { surface = surface }

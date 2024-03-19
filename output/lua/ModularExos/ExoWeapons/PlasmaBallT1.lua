@@ -55,19 +55,35 @@ function PlasmaT1:OnCreate()
 
 end
 
+function PlasmaT1:GetIsAffectedByWeaponUpgrades()
+    return true
+end
+
 function PlasmaT1:GetDeathIconIndex()
-    return 
+    return kDeathMessageIcon.Railgun
 end
 
 if Server then
 
     function PlasmaT1:ProcessHit(targetHit, surface, normal, hitPoint, shotDamage, shotDOTDamage, shotDamageRadius, ChargePercent)        
 		
-		if targetHit and targetHit ~= self:GetOwner() then
+		--local hitEntities = GetEntitiesForTeamWithinRange("Alien", GetEnemyTeamNumber(self:GetTeamNumber()), self:GetOrigin(), shotDamageRadius)
+		local hitEntities = GetEntitiesWithMixinWithinRange("Live", self:GetOrigin(), shotDamageRadius)
+		table.removevalue(hitEntities, self)
+		table.removevalue(hitEntities, self:GetOwner())
 		
-			local targetOrigin = GetTargetOrigin(targetHit)
-			self:DoDamage(shotDamage, targetHit, targetOrigin, GetNormalizedVector(targetHit:GetOrigin() - self:GetOrigin()), "none")
-			
+		if targetHit and targetHit ~= self:GetOwner() then
+
+            table.removevalue(hitEntities, targetHit)
+            self:DoDamage(shotDamage, targetHit, targetHit:GetOrigin(), GetNormalizedVector(targetHit:GetOrigin() - self:GetOrigin()), "none")
+
+        end
+		
+		for _, entity in ipairs(hitEntities) do
+
+			local targetOrigin = GetTargetOrigin(entity)
+			self:DoDamage(shotDamage, entity, targetOrigin, GetNormalizedVector(entity:GetOrigin() - self:GetOrigin()), "none")
+		
 		end
 			
 		local params = { surface = surface }
