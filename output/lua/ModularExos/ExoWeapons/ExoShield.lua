@@ -152,16 +152,13 @@ function ExoShield:OnPrimaryAttack(player)
     if not player:GetPrimaryAttackLastFrame() then
         self.isShieldDesired = true
         if Server then
-            if Shared.GetIsRunningPrediction() then
-                return
-            end
             --local player = self:GetParent()
             local origin = player:GetAttachPointOrigin(Shield.kAttachPoint)
             
             local team = player:GetTeamNumber()
             self.shields = {}
             for i = 1, 9 do
-                local shield = CreateEntity(Shield.kMapName, Vector(), team, {shield = i})
+                local shield = CreateEntity(Shield.kMapName, origin, team, {shield = i})
                 shield:SetParent(player)
                 shield:SetPhysicsType(PhysicsType.Kinematic)
                -- shield:SetPhysicsType(CollisionObject.None)

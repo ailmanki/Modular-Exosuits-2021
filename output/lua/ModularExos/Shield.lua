@@ -7,7 +7,8 @@
 -- ========= For more information, visit us at http://www.unknownworlds.com =====================
 
 --Script.Load("lua/ScriptActor.lua")
-Script.Load("lua/Mixins/ClientModelMixin.lua")
+--Script.Load("lua/Mixins/ClientModelMixin.lua")
+Script.Load("lua/Mixins/ModelMixin.lua")
 Script.Load("lua/LiveMixin.lua")
 Script.Load("lua/TeamMixin.lua")
 Script.Load("lua/DamageMixin.lua")
@@ -16,7 +17,7 @@ Script.Load("lua/OwnerMixin.lua")
 Script.Load("lua/PhysicsGroups.lua")
 Script.Load("lua/GameEffectsMixin.lua")
 
-class 'Shield' (Entity)
+class 'Shield' (ScriptActor)
 
 Shield.kMapName = "shield"
 
@@ -51,7 +52,8 @@ local networkVars =
 }
 
 AddMixinNetworkVars(BaseModelMixin, networkVars)
-AddMixinNetworkVars(ClientModelMixin, networkVars)
+AddMixinNetworkVars(ModelMixin, networkVars)
+--AddMixinNetworkVars(ClientModelMixin, networkVars)
 AddMixinNetworkVars(LiveMixin, networkVars)
 AddMixinNetworkVars(TeamMixin, networkVars)
 AddMixinNetworkVars(GameEffectsMixin, networkVars)
@@ -61,7 +63,8 @@ function Shield:OnCreate()
     ScriptActor.OnCreate(self)
 
     InitMixin(self, BaseModelMixin)
-    InitMixin(self, ClientModelMixin)
+    InitMixin(self, ModelMixin)
+    --InitMixin(self, ClientModelMixin)
     
     InitMixin(self, LiveMixin)
     InitMixin(self, TeamMixin)
@@ -74,7 +77,7 @@ function Shield:OnCreate()
     self.shield = 1
     --self:SetUpdateRate(kRealTimeUpdateRate)
     
-    self:SetUpdates(true, kRealTimeUpdateRate)
+    --self:SetUpdates(true, kRealTimeUpdateRate)
     --self:SetLagCompensated(true)
     self:SetPhysicsType(PhysicsType.Kinematic)
     --self:SetPhysicsGroup(PhysicsGroup.ShieldGroup)
@@ -103,7 +106,7 @@ function Shield:OnAdjustModelCoords(modelCoords)
     --modelCoords.origin = modelCoords.origin + Vector(8,8,0)
     --modelCoords.origin = modelCoords.origin + Vector(8,8,0)
     -- rotate angle by -90 degrees around z axis
-    self:GetParent()
+    
     --
     --if Server then
     --    Print("Shield:OnAdjustModelCoords")
