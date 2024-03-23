@@ -33,3 +33,13 @@ GetEffectManager():AddEffectData("FlamerModEffects", {
     },
 })
     
+GetEffectManager():AddEffectData("plasma_impact", {
+	plasma_impact = 
+    {
+        PlasmaImpact = 
+        {
+            {cinematic = "cinematics/modularexo/plasma_impact.cinematic", done = true}
+        }
+    },
+})	
+	

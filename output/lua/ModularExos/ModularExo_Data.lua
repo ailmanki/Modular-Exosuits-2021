@@ -47,6 +47,7 @@ kExoModuleTypes = enum {
     "Railgun",
     "Minigun",
     --"Flamethrower",
+	"PlasmaLauncher",
     "Armor",
     "NanoRepair",
     "NanoShield",
@@ -61,6 +62,7 @@ kExoArmTypes = enum {
     "Claw",
     "Minigun",
     "Railgun",
+	"PlasmaLauncher",
 }
 
 -- Module type data
@@ -106,6 +108,17 @@ kExoModuleTypesData = {
         weight         = kRailgunWeight,
         armorValue     = kRailgunArmor,
         requiredTechId = Exo.RailgunTech,
+        leftArmOnly    = false
+    },
+	[kExoModuleTypes.PlasmaLauncher]    = {
+        category       = kExoModuleCategories.Weapon,
+        powerCost      = 0,
+        resourceCost   = kPlasmaLauncherCost,
+        mapName        = PlasmaLauncher.kMapName,
+        armType        = kExoArmTypes.PlasmaLauncher,
+        weight         = kPlasmaLauncherWeight,
+        armorValue     = kPlasmaLauncherArmor,
+        requiredTechId = Exo.PlasmaLauncherTech,
         leftArmOnly    = false
     },
     --[kExoModuleTypes.Flamethrower] = {
@@ -208,6 +221,9 @@ kExoWeaponRightLeftComboModels = {
         [kExoArmTypes.Railgun] = {
             isValid = false,
         },
+		[kExoArmTypes.PlasmaLauncher] = {
+            isValid = false,
+        },
         [kExoArmTypes.Claw]    = {
             isValid        = true,
             worldModel     = "models/marine/exosuit/exosuit_cm.model",
@@ -222,6 +238,13 @@ kExoWeaponRightLeftComboModels = {
             isValid = false,
         },
         [kExoArmTypes.Railgun] = {
+            isValid        = true,
+            worldModel     = "models/marine/exosuit/exosuit_rr.model",
+            worldAnimGraph = "models/marine/exosuit/exosuit_rr.animation_graph",
+            viewModel      = "models/marine/exosuit/exosuit_rr_view.model",
+            viewAnimGraph  = "models/marine/exosuit/exosuit_rr_view.animation_graph",
+        },
+		[kExoArmTypes.PlasmaLauncher] = {
             isValid        = true,
             worldModel     = "models/marine/exosuit/exosuit_rr.model",
             worldAnimGraph = "models/marine/exosuit/exosuit_rr.animation_graph",
@@ -245,12 +268,42 @@ kExoWeaponRightLeftComboModels = {
         [kExoArmTypes.Railgun] = {
             isValid = false,
         },
+		[kExoArmTypes.PlasmaLauncher] = {
+            isValid = false,
+        },
         [kExoArmTypes.Claw]    = {
             isValid        = false,
             worldModel     = "models/marine/exosuit/exosuit_cm.model",
             worldAnimGraph = "models/marine/exosuit/exosuit_cm.animation_graph",
             viewModel      = "models/marine/exosuit/exosuit_cm_view.model",
             viewAnimGraph  = "models/marine/exosuit/exosuit_cm_view.animation_graph",
+        },
+    },
+	[kExoArmTypes.PlasmaLauncher] = {
+        isValid                = true,
+        [kExoArmTypes.Minigun] = {
+            isValid = false,
+        },
+        [kExoArmTypes.Railgun] = {
+            isValid        = true,
+            worldModel     = "models/marine/exosuit/exosuit_rr.model",
+            worldAnimGraph = "models/marine/exosuit/exosuit_rr.animation_graph",
+            viewModel      = "models/marine/exosuit/exosuit_rr_view.model",
+            viewAnimGraph  = "models/marine/exosuit/exosuit_rr_view.animation_graph",
+        },
+		[kExoArmTypes.PlasmaLauncher] = {
+            isValid        = true,
+            worldModel     = "models/marine/exosuit/exosuit_rr.model",
+            worldAnimGraph = "models/marine/exosuit/exosuit_rr.animation_graph",
+            viewModel      = "models/marine/exosuit/exosuit_rr_view.model",
+            viewAnimGraph  = "models/marine/exosuit/exosuit_rr_view.animation_graph",
+        },
+        [kExoArmTypes.Claw]    = {
+            isValid        = true,
+            worldModel     = "models/marine/exosuit/exosuit_cr.model",
+            worldAnimGraph = "models/marine/exosuit/exosuit_cr.animation_graph",
+            viewModel      = "models/marine/exosuit/exosuit_cr_view.model",
+            viewAnimGraph  = "models/marine/exosuit/exosuit_cr_view.animation_graph",
         },
     },
 }
