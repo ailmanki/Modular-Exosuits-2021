@@ -80,7 +80,7 @@ Railgun.kRailgunDamage = 30]]
 
 
 kRailgunWeight = 0.1 -- default 0.045
-kRailgunDamage = 30 -- default 10
+kRailgunDamage = 40 -- default 10
 kRailgunChargeDamage = 10 -- default 140
 
 -- CLAW
@@ -100,12 +100,12 @@ kPlasmaT1LifeTime = 10
 kPlasmaT2LifeTime = 10
 kPlasmaT3LifeTime = 10
 
-kPlasmaMinDirectDamage = 30
-kPlasmaMaxDirectDamage = 40
+kPlasmaMinDirectDamage = 40
+kPlasmaMaxDirectDamage = 50
 
-kPlasmaSpeedMin = 1.5
-kPlasmaSpeedMedian = 4
-kPlasmaSpeedMax = 6.5
+kPlasmaSpeedMin = 2.5
+kPlasmaSpeedMedian = 5.5
+kPlasmaSpeedMax = 8.5
 
 kPlasmaHitBoxRadiusMax = 0.495 -- Hitbox radius from center of projectile...
 kPlasmaHitBoxRadiusMedian = 0.33

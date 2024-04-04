@@ -59,7 +59,7 @@ function PierceProjectileShooterMixin:CreatePierceProjectile(className, startPoi
     local minLifeTime = _G[className].kMinLifeTime
 
     local projectile
-    local projectileController = ProjectileController()
+    local projectileController = PierceProjectileController()
     projectileController:Initialize(startPoint, velocity, shotHitBoxSize, self, bounce, friction, gravity, detonateWithTeam, clearOnImpact, minLifeTime, detonateRadius, shotDamage, shotDOTDamage, shotDamageRadius, ChargePercent)
     projectileController.projectileId = self.nextProjectileId
 	
@@ -82,7 +82,7 @@ function PierceProjectileShooterMixin:CreatePierceProjectile(className, startPoi
 
 		projectile.LastEntityHit = projectile:GetId()
 
-        projectile:SetProjectileController(projectileController, self.isHallucination == true)
+        projectile:SetPierceProjectileController(projectileController, self.isHallucination == true)
 
     end
 
@@ -213,7 +213,7 @@ local function DestroyProjectiles(self)
         local projectile = Shared.GetEntity(entry.EntityId)
         if projectile then
 
-            projectile:SetProjectileController(entry.Controller, true)
+            projectile:SetPierceProjectileController(entry.Controller, true)
             if entry.Model then
                 Client.DestroyRenderModel(entry.Model)
             end
@@ -283,9 +283,9 @@ function PierceProjectileShooterMixin:SetProjectileDestroyed(projectileId)
 
 end
 
-class 'ProjectileController'
+class 'PierceProjectileController'
 
-function ProjectileController:Initialize(startPoint, velocity, radius, predictor, bounce, friction, gravity, detonateWithTeam, clearOnImpact, minLifeTime, detonateRadius, shotDamage, shotDOTDamage, shotDamageRadius, ChargePercent)
+function PierceProjectileController:Initialize(startPoint, velocity, radius, predictor, bounce, friction, gravity, detonateWithTeam, clearOnImpact, minLifeTime, detonateRadius, shotDamage, shotDOTDamage, shotDamageRadius, ChargePercent)
 
     self.creationTime = Shared.GetTime()
 
@@ -314,11 +314,11 @@ function ProjectileController:Initialize(startPoint, velocity, radius, predictor
 
 end
 
-function ProjectileController:SetControllerPhysicsMask(mask)
+function PierceProjectileController:SetControllerPhysicsMask(mask)
     self.mask = mask
 end
 
-function ProjectileController:Move(deltaTime, velocity, projectile)
+function PierceProjectileController:Move(deltaTime, velocity, projectile)
 
     local hitEntity, normal, impact, endPoint
 
@@ -364,7 +364,7 @@ function ProjectileController:Move(deltaTime, velocity, projectile)
 	return hitEntity, normal, impact, endPoint
 end
 
-function ProjectileController:Update(deltaTime, projectile, predict)
+function PierceProjectileController:Update(deltaTime, projectile, predict)
 
     if self.controller and not self.stopSimulation then
 
@@ -433,7 +433,7 @@ function ProjectileController:Update(deltaTime, projectile, predict)
     end
 end
 
-function ProjectileController:GetCoords()
+function PierceProjectileController:GetCoords()
 
     if self.controller then
         return self.controller:GetCoords()
@@ -441,15 +441,15 @@ function ProjectileController:GetCoords()
 
 end
 
-function ProjectileController:GetPosition()
+function PierceProjectileController:GetPosition()
     return self.controller:GetPosition()
 end
 
-function ProjectileController:GetOrigin()
+function PierceProjectileController:GetOrigin()
     return self.controller:GetPosition()
 end
 
-function ProjectileController:Uninitialize()
+function PierceProjectileController:Uninitialize()
 
     if self.controller ~= nil then
 
@@ -586,7 +586,7 @@ function PierceProjectile:GetVelocity()
 
 end
 
-function PierceProjectile:SetProjectileController(controller, selfUpdate)
+function PierceProjectile:SetPierceProjectileController(controller, selfUpdate)
     self.projectileController = controller
     self.selfUpdate = selfUpdate
 end
