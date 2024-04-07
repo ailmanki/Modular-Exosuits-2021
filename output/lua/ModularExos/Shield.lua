@@ -72,14 +72,16 @@ function Shield:OnCreate()
     InitMixin(self, EntityChangeMixin)
     InitMixin(self, GameEffectsMixin)
     if Server then
+        self:SetUpdates(true)
     elseif Client then
     end
     self.shield = 1
+    self.fullyUpdated = true
     --self:SetUpdateRate(kRealTimeUpdateRate)
     
     --self:SetUpdates(true, kRealTimeUpdateRate)
     --self:SetLagCompensated(true)
-    self:SetPhysicsType(PhysicsType.Kinematic)
+    self:SetPhysicsType(PhysicsType.Dynamic)
     --self:SetPhysicsGroup(PhysicsGroup.ShieldGroup)
 end
 
@@ -277,6 +279,11 @@ elseif Client then
     --end
     
 end
-
+function Shield:OnUpdate(deltaTime)
+    -- Call the parent's OnUpdate (if it exists)
+    ScriptActor.OnUpdate(self, deltaTime)
+    
+    -- Add your server-side physics update code here
+end
 
 Shared.LinkClassToMap("Shield", Shield.kMapName, networkVars, false)

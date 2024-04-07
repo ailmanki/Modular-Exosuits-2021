@@ -1,4 +1,4 @@
-shader = "shaders/hexagon.surface_shader"
+shader = "shaders/exoshield_hexagon_nice.surface_shader"
 albedoMap = "models/marine/hexagon/hexagon.dds"
 normalMap = "models/marine/hexagon/hexagon.dds"
 specularMap = "models/marine/hexagon/hexagon.dds"
