@@ -1,6 +1,0 @@
-shader = "models/marine/exoshield/exosuit.surface_shader"
-albedoMap = "models/marine/exoshield/exoshield_hexagon.dds"
-normalMap = "models/marine/exoshield/exoshield_hexagon.dds"
-specularMap = "models/marine/exoshield/exoshield_hexagon.dds"
-emissiveMap = "materials/dev/black.dds"
-surface = "metal"

@@ -3,8 +3,7 @@ Script.Load("lua/Weapons/Marine/ExoWeaponHolder.lua")
 Script.Load("lua/Weapons/Marine/ExoWeaponSlotMixin.lua")
 Script.Load("lua/TechMixin.lua")
 Script.Load("lua/TeamMixin.lua")
-Script.Load("lua/EntityChangeMixin.lua")
-Script.Load("lua/NanoShieldMixin.lua")
+--Script.Load("lua/EntityChangeMixin.lua")
 Script.Load("lua/Utility.lua")
 class 'ExoShield'(Entity)
 
@@ -17,12 +16,6 @@ ExoShield.kMapName = "exoshield"
 -- combat state: idle       --*damage*   -> combat     --*delay* -> idle
 
 
-ExoShield.kShieldPitchUpDeadzone = math.rad(10)
-ExoShield.kShieldPitchUpLimit = math.rad(30)
-ExoShield.kShieldDistance = 2.2
-ExoShield.kShieldHeightMin = 2-- down
-ExoShield.kShieldHeightMax = 1
-
 ExoShield.kModelNames = {
     PrecacheAsset("models/marine/hexagon/hexagon4_1.model"),
     PrecacheAsset("models/marine/hexagon/hexagon4_2.model"),
@@ -34,8 +27,7 @@ ExoShield.kModelNames = {
     PrecacheAsset("models/marine/hexagon/hexagon4_8.model"),
     PrecacheAsset("models/marine/hexagon/hexagon4_9.model"),
 }
-ExoShield.kAttachPoint = "Exosuit_HoodHinge"
-
+--ExoShield.kAttachPoint = "Exosuit_HoodHinge"
 
 
 local networkVars = {
@@ -51,8 +43,8 @@ local networkVars = {
 --AddMixinNetworkVars(TechMixin, networkVars)
 AddMixinNetworkVars(ExoWeaponSlotMixin, networkVars)
 AddMixinNetworkVars(LiveMixin, networkVars)
+AddMixinNetworkVars(TechMixin, networkVars)
 AddMixinNetworkVars(TeamMixin, networkVars)
-AddMixinNetworkVars(NanoShieldMixin, networkVars)
 
 function ExoShield:OnCreate()
     
@@ -60,12 +52,12 @@ function ExoShield:OnCreate()
     
     Entity.OnCreate(self)
     
-    --InitMixin(self, TechMixin)
-    InitMixin(self, EntityChangeMixin)
+    self.lastAttackApplyTime = 0
+    InitMixin(self, ExoWeaponSlotMixin)
+    InitMixin(self, TechMixin)
+    --InitMixin(self, EntityChangeMixin)
     InitMixin(self, LiveMixin)
     InitMixin(self, TeamMixin)
-    InitMixin(self, ExoWeaponSlotMixin)
-    InitMixin(self, NanoShieldMixin)
     
     self.heatAmount = 0
     self.isShieldDesired = false
@@ -87,16 +79,16 @@ function ExoShield:OnCreate()
     end
     
     self:SetUpdates(true, kRealTimeUpdateRate)
+    self:SetLagCompensated(true)
 end
 
 function ExoShield:OnInitialized()
+    Entity.OnInitialized(self)
 end
 
-function ExoShield:GetTechId()
-    return nil
-end
 function ExoShield:OnDestroy()
     Entity.OnDestroy(self)
+    self:DestroyPhysics()
     if Client then
         if self.clawLight then
             Client.DestroyRenderLight(self.clawLight)
@@ -157,38 +149,10 @@ function ExoShield:UpdateHeat(dt)
     end
 end
 
-function ExoShield:GetIsNanoShielded()
-    return true
-end
-
-function ExoShield:GetOwner()
-    return self:GetParent()
-end
 function ExoShield:GetIsShieldActive()
     return self.isShieldActive
 end
-function ExoShield:GetShieldTeam()
-    return kMarineTeamType
-end
-function ExoShield:GetShieldProjectorCoordinates()
-    local player = self:GetParent()
-    local playerViewCoords = player:GetViewCoords()
-    local playerAngles = Angles()
-    playerAngles:BuildFromCoords(playerViewCoords)
-    
-    playerAngles.pitch = Clamp(playerAngles.pitch + ExoShield.kShieldPitchUpDeadzone, -ExoShield.kShieldPitchUpLimit, 0)
-    
-    local projectorCoords = playerAngles:GetCoords() -- GetViewCoords seems to twitch when used directly..
-    projectorCoords.origin = playerViewCoords.origin
-    
-    return projectorCoords, playerAngles
-end
-function ExoShield:GetShieldDistance()
-    return ExoShield.kShieldDistance
-end
-function ExoShield:GetShieldAngleExtents()
-    return ExoShield.kShieldAngleYawMin, ExoShield.kShieldAngleYawMax
-end
+
 
 --function ExoShield:OnUpdate(deltaTime)
 function ExoShield:ProcessMoveOnWeapon(player, input)
@@ -222,6 +186,7 @@ function ExoShield:UpdatePhysics(deltaTime)
 end
 
 function ExoShield:MovePhysics()
+
     if self.physBodyList then
         local coords = self:GetCoords()
         local boneCoords = CoordsArray()
@@ -244,9 +209,9 @@ function ExoShield:CreatePhysics()
         --Print("Creating physics for %s", ExoShield.kModelNames[i])
         local physBody = Shared.CreatePhysicsModel(ExoShield.kModelNames[i], true, self:GetCoords(), self)
         physBody:SetEntity(self)
-        physBody:SetPhysicsType(CollisionObject.Dynamic)
+        physBody:SetPhysicsType(CollisionObject.Kinematic)
         physBody:SetGroup(PhysicsGroup.ShieldGroup)
-        physBody:SetGroupFilterMask(PhysicsMask.None)
+        --physBody:SetGroupFilterMask(PhysicsMask.None)
         physBody:SetCCDEnabled(true)
         physBody:SetTriggeringEnabled(true)
         physBody:SetCollisionEnabled(true)
@@ -341,8 +306,6 @@ function ExoShield:OnUpdateRender()
     end
 end
 
-
-
 function ExoShield:GetSurfaceOverride(dmg)
     -- alternatively: "electronic", "armor", "flame", "ethereal", "hallucination", "structure"
     return "nanoshield"
@@ -374,25 +337,25 @@ function ExoShield:GetWeight()
     return 0
 end
 --
---function ExoShield:OnTriggerEntered(entA, entB)
---    --local ent = (entA == self and entB or entA)
---    ----Print("Entity %s (%s) entered trigger", ent:GetId(), ent:GetClassName())
---    --if not self.contactEntityIdMap[ent:GetId()] and self:GetIsEntityZappable(ent) then
---    --    local i = #self.contactEntityIdList + 1
---    --    self.contactEntityIdList[i] = ent:GetId()
---    --    self.contactEntityIdMap[ent:GetId()] = i
---    --    self:StartZappingEntity(ent)
---    --end
---end
---function ExoShield:OnTriggerExited(entA, entB)
---    --local ent = (entA == self and entB or entA)
---    ----Print("Entity %s (%s) exited trigger", ent:GetId(), ent:GetClassName())
---    --if self.contactEntityIdMap[ent:GetId()] then
---    --    self.contactEntityIdList[self.contactEntityIdMap[ent:GetId()]] = nil
---    --    self.contactEntityIdMap[ent:GetId()] = nil
---    --    self:StopZappingEntity(ent)
---    --end
---end
+function ExoShield:OnTriggerEntered(entA, entB)
+    local ent = (entA == self and entB or entA)
+    Print("Entity %s (%s) entered trigger", ent:GetId(), ent:GetClassName())
+    --if not self.contactEntityIdMap[ent:GetId()] and self:GetIsEntityZappable(ent) then
+    --    local i = #self.contactEntityIdList + 1
+    --    self.contactEntityIdList[i] = ent:GetId()
+    --    self.contactEntityIdMap[ent:GetId()] = i
+    --    self:StartZappingEntity(ent)
+    --end
+end
+function ExoShield:OnTriggerExited(entA, entB)
+    local ent = (entA == self and entB or entA)
+    Print("Entity %s (%s) exited trigger", ent:GetId(), ent:GetClassName())
+    --if self.contactEntityIdMap[ent:GetId()] then
+    --    self.contactEntityIdList[self.contactEntityIdMap[ent:GetId()]] = nil
+    --    self.contactEntityIdMap[ent:GetId()] = nil
+    --    self:StopZappingEntity(ent)
+    --end
+end
 --function ExoShield:OnEntityChange(oldId, newId)
 --    --if self.contactEntityIdMap[oldId] then
 --    --    self.contactEntityIdList[self.contactEntityIdMap[oldId]] = nil
