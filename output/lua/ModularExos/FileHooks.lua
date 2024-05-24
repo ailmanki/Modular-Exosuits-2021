@@ -4,6 +4,11 @@ ModLoader.SetupFileHook("lua/Shared.lua", "lua/ModularExos/Shared.lua", "post")
 ModLoader.SetupFileHook("lua/TechTreeConstants.lua", "lua/ModularExos/TechTreeConstants.lua", "post")
 ModLoader.SetupFileHook("lua/TechData.lua", "lua/ModularExos/TechData.lua", "post")
 ModLoader.SetupFileHook("lua/Globals.lua", "lua/ModularExos/Globals.lua", "post")
+ModLoader.SetupFileHook("lua/GUIInsight_PlayerHealthbars.lua", "lua/ModularExos/GUIInsight_PlayerHealthbars.lua", "post")
+ModLoader.SetupFileHook("lua/Onos.lua", "lua/ModularExos/Onos.lua", "post")
+ModLoader.SetupFileHook("lua/GUILeftRailgunDisplay.lua", "lua/ModularExos/GUILeftRailgunDisplay.lua", "post")
+ModLoader.SetupFileHook("lua/GUIRightRailgunDisplay.lua", "lua/ModularExos/GUIRightRailgunDisplay.lua", "post")
+ModLoader.SetupFileHook("lua/Weapons/Marine/Claw.lua", "lua/ModularExos/ExoWeapons/Claw.lua", "post")
 -- realted to weaponcache - not in use
 -- ModLoader.SetupFileHook("lua/NS2Utility.lua", "lua/ModularExos/NS2Utility.lua", "post")
 

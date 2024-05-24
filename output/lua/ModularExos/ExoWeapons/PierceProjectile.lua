@@ -47,7 +47,7 @@ function PierceProjectileShooterMixin:__initmixin()
     self.PierceProjectilesList = unique_set()
 end
 
-function PierceProjectileShooterMixin:CreatePierceProjectile(className, startPoint, velocity, bounce, friction, gravity, physicsMaskOverride, shotDamage, shotDOTDamage, shotHitBoxSize, shotDamageRadius, ChargePercent)
+function PierceProjectileShooterMixin:CreatePierceProjectile(className, startPoint, velocity, bounce, friction, gravity, physicsMaskOverride, shotDamage, shotDOTDamage, shotHitBoxSize, shotDamageRadius, ChargePercent, player)
 
     if Predict or (not Server and _G[className].kUseServerPosition) then
         return nil
@@ -60,7 +60,7 @@ function PierceProjectileShooterMixin:CreatePierceProjectile(className, startPoi
 
     local projectile
     local projectileController = PierceProjectileController()
-    projectileController:Initialize(startPoint, velocity, shotHitBoxSize, self, bounce, friction, gravity, detonateWithTeam, clearOnImpact, minLifeTime, detonateRadius, shotDamage, shotDOTDamage, shotDamageRadius, ChargePercent)
+    projectileController:Initialize(startPoint, velocity, shotHitBoxSize, self, bounce, friction, gravity, detonateWithTeam, clearOnImpact, minLifeTime, detonateRadius, shotDamage, shotDOTDamage, shotDamageRadius, ChargePercent, player)
     projectileController.projectileId = self.nextProjectileId
 	
 	cinematicName = _G[className].kProjectileCinematic	
@@ -285,7 +285,7 @@ end
 
 class 'PierceProjectileController'
 
-function PierceProjectileController:Initialize(startPoint, velocity, radius, predictor, bounce, friction, gravity, detonateWithTeam, clearOnImpact, minLifeTime, detonateRadius, shotDamage, shotDOTDamage, shotDamageRadius, ChargePercent)
+function PierceProjectileController:Initialize(startPoint, velocity, radius, predictor, bounce, friction, gravity, detonateWithTeam, clearOnImpact, minLifeTime, detonateRadius, shotDamage, shotDOTDamage, shotDamageRadius, ChargePercent, player)
 
     self.creationTime = Shared.GetTime()
 
@@ -294,6 +294,7 @@ function PierceProjectileController:Initialize(startPoint, velocity, radius, pre
     self.controller:SetGroup(PhysicsGroup.ProjectileGroup)
     self.controller:SetupSphere(radius or 0.1, self.controller:GetCoords(), false)
 
+	self.hitboxRadius = radius or 0.1
     self.velocity = Vector(velocity)
     self.bounce = bounce or 0.5
     self.friction = friction or 0
@@ -311,6 +312,7 @@ function PierceProjectileController:Initialize(startPoint, velocity, radius, pre
 	self.shotDamageRadius = shotDamageRadius or 0
 	
 	self.ChargePercent = ChargePercent or 0
+	self.player = player
 
 end
 
@@ -330,24 +332,25 @@ function PierceProjectileController:Move(deltaTime, velocity, projectile)
             break
         end
 		
-        local trace = self.controller:Move(offset, CollisionRep.Damage, CollisionRep.Damage, self.mask or PhysicsMask.PredictedProjectileGroup)
+		self.controller:SetupSphere(self.hitboxRadius, self.controller:GetCoords(), false)
+		local traceEntity = self.controller:Move(0.5*offset, CollisionRep.Damage, CollisionRep.Damage, self.mask or PhysicsMask.PredictedProjectileGroup)
+		
+		self.controller:SetupSphere(0.01, self.controller:GetCoords(), false)
+        local traceGeo = self.controller:Move(0.5*offset, CollisionRep.Damage, CollisionRep.Damage, self.mask or PhysicsMask.PredictedProjectileGroup)
+				
+		if traceEntity.fraction < 1 and traceEntity.entity then           
 
-        if trace.fraction < 1 then
+			impact = true
 
-            impact = true
+            endPoint = Vector(traceEntity.endPoint)
 
-            endPoint = Vector(trace.endPoint)
+            deltaTime = deltaTime * (1-traceEntity.fraction)
 
-            deltaTime = deltaTime * (1-trace.fraction)
+            normal = Vector(traceEntity.normal)
 
-            normal = Vector(trace.normal)
-
-            if trace.entity then
-                hitEntity = trace.entity
-            end
+            hitEntity = traceEntity.entity
 
             if normal then
-
                 normal:Normalize()
 
                 local newVel = velocity - 2 * velocity:DotProduct(normal) * normal
@@ -358,6 +361,33 @@ function PierceProjectileController:Move(deltaTime, velocity, projectile)
 
                 VectorCopy(newVel, velocity)
 			end
+		elseif traceGeo.fraction < 1 then
+
+            impact = true
+
+            endPoint = Vector(traceGeo.endPoint)
+
+            deltaTime = deltaTime * (1-traceGeo.fraction)
+
+            normal = Vector(traceGeo.normal)
+			
+			if traceGeo.entity then
+                hitEntity = traceGeo.entity
+            end
+			
+            if normal then
+                normal:Normalize()
+
+                local newVel = velocity - 2 * velocity:DotProduct(normal) * normal
+
+                local perpendicular = (velocity + newVel) * 0.5
+
+                newVel = newVel - newVel:GetProjection(normal) * (1-self.bounce) - perpendicular * self.friction
+
+                VectorCopy(newVel, velocity)
+			end
+		else
+			break
 		end
 	end
 

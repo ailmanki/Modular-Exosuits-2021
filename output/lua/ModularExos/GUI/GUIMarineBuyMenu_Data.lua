@@ -153,11 +153,11 @@ GUIMarineBuyMenu.kExoModuleData = {
     --    image          = kInventoryIconsTexture,
     --    imageTexCoords = { GetSmallIconPixelCoordinates(kTechId.Welder) },
     --},
-    [kExoModuleTypes.Shield]       = {
-        label          = "Shield", tooltip = "EXO_WEAPON_SHIELD_TOOLTIP",
-        image          = kInventoryIconsTexture,
-        imageTexCoords = { GetSmallIconPixelCoordinates(kTechId.PulseGrenade) },
-    },
+    --[kExoModuleTypes.Shield]       = {
+    --    label          = "Shield", tooltip = "EXO_WEAPON_SHIELD_TOOLTIP",
+    --    image          = kInventoryIconsTexture,
+    --    imageTexCoords = { GetSmallIconPixelCoordinates(kTechId.PulseGrenade) },
+    --},
     --[kExoModuleTypes.MarineStructureAbility] = {
     --    label = "Builder", tooltip = "EXO_WEAPON_SHIELD_TOOLTIP",
     --    image = kInventoryIconsTexture,
@@ -198,27 +198,30 @@ GUIMarineBuyMenu.kExoModuleData = {
         image          = "ui/buildmenu.dds",
         imageTexCoords = { GetBuildIconPixelCoords(kTechId.Jetpack) },
     },
+	
     --[kExoModuleTypes.PhaseModule]  = {
     --    label          = "Phase", tooltip = "EXO_UTILITY_SCANNER_TOOLTIP",
     --    image          = "ui/buildmenu.dds",
     --    imageTexCoords = { GetBuildIconPixelCoords(kTechId.PhaseGate) },
     --},
-    [kExoModuleTypes.NanoShield]   = {
-        label          = "Nano Shield", tooltip = "EXO_UTILITY_SCANNER_TOOLTIP",
-        image          = "ui/buildmenu.dds",
-        imageTexCoords = { GetBuildIconPixelCoords(kTechId.NanoShield) },
-    },
+	
+    --[kExoModuleTypes.NanoShield]   = {
+    --    label          = "Nano Shield", tooltip = "EXO_UTILITY_SCANNER_TOOLTIP",
+    --    image          = "ui/buildmenu.dds",
+    --    imageTexCoords = { GetBuildIconPixelCoords(kTechId.NanoShield) },
+    --},
+	
     [kExoModuleTypes.NanoRepair]   = {
         label          = "Nano Repair", tooltip = "EXO_UTILITY_SCANNER_TOOLTIP",
         image          = "ui/buildmenu.dds",
         imageTexCoords = { GetBuildIconPixelCoords(kTechId.Welder) },
     },
-    
-    [kExoModuleTypes.CatPack]      = {
-        label          = "Catpack", tooltip = "EXO_UTILITY_SCANNER_TOOLTIP",
-        image          = "ui/buildmenu.dds",
-        imageTexCoords = { GetBuildIconPixelCoords(kTechId.CatPack) },
-    },
+	
+    --[kExoModuleTypes.CatPack]      = {
+    --    label          = "Catpack", tooltip = "EXO_UTILITY_SCANNER_TOOLTIP",
+    --    image          = "ui/buildmenu.dds",
+    --    imageTexCoords = { GetBuildIconPixelCoords(kTechId.CatPack) },
+    --},
     
     [kExoModuleTypes.None]         = {
         label          = "None", tooltip = "It appears to be a lot of nothing.",

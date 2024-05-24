@@ -19,7 +19,41 @@ debug.setupvaluex(Railgun.GetChargeAmount, "kChargeTime", kChargeTime)
 debug.setupvaluex(Railgun.ProcessMoveOnWeapon, "kChargeForceShootTime", kChargeForceShootTime)
 
 if Client then
-	debug.setupvaluex(Railgun.OnProcessMove, "kRailgunRange", kRailgunRange)
+	    function Railgun:OnProcessMove(input)
+
+        Entity.OnProcessMove(self, input)
+        
+        local player = self:GetParent()
+        
+        if player then
+    
+            -- trace and highlight first target
+            local filter = EntityFilterAllButMixin("RailgunTarget")
+            local startPoint = player:GetEyePos()
+            local endPoint = startPoint + player:GetViewCoords().zAxis * kRailgunRange * 1.11
+            local trace = Shared.TraceRay(startPoint, endPoint, CollisionRep.Damage, PhysicsMask.Bullets, EntityFilterAllButIsa("Tunnel"))
+            local direction = (endPoint - startPoint):GetUnit()
+            
+            local extents = GetDirectedExtentsForDiameter(direction, kBulletSize)
+            
+            self.railgunTargetId = nil
+            
+            if trace.fraction < 1 then
+                
+                local capsuleTrace = Shared.TraceBox(extents, startPoint, trace.endPoint, CollisionRep.Damage, PhysicsMask.Bullets, filter)
+                if capsuleTrace.entity then
+                
+                    capsuleTrace.entity:SetRailgunTarget()
+                    self.railgunTargetId = capsuleTrace.entity:GetId()
+                    
+                end
+            
+            end
+        
+        end
+    
+    end
+	-- debug.setupvaluex(Railgun.OnProcessMove, "kRailgunRange", kRailgunRange)
 end
 
 -- Allows railguns to fire simulataneously...

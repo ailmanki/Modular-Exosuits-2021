@@ -27,7 +27,7 @@ class 'PlasmaT3' (PierceProjectile)
 PlasmaT3.kMapName            = "PlasmaT3"
 
 PlasmaT3.kModelName            = PrecacheAsset("models/marine/exosuit/plasma.model")
-PlasmaT3.kProjectileCinematic  = PrecacheAsset("cinematics/modularexo/plasma_fly_bigger.cinematic")
+PlasmaT3.kProjectileCinematic  = PrecacheAsset("cinematics/modularexo/plasma_fly_t3.cinematic")
 
 PlasmaT3.kClearOnImpact      = true
 PlasmaT3.kClearOnEnemyImpact = false
@@ -60,7 +60,7 @@ function PlasmaT3:GetIsAffectedByWeaponUpgrades()
 end
 
 function PlasmaT3:GetDeathIconIndex()
-    return kDeathMessageIcon.Railgun
+    return kDeathMessageIcon.PulseGrenade
 end
 
 if Server then
@@ -75,7 +75,7 @@ if Server then
 		if targetHit and targetHit ~= self:GetOwner() then
 
             table.removevalue(hitEntities, targetHit)
-            self:DoDamage(shotDamage, targetHit, targetHit:GetOrigin(), GetNormalizedVector(targetHit:GetOrigin() - self:GetOrigin()), "none")
+            self:DoDamage(shotDamage, targetHit, self:GetOrigin(), GetNormalizedVector(targetHit:GetOrigin() - self:GetOrigin()), "none")
 
             if targetHit.SetElectrified then
                 targetHit:SetElectrified(kElectrifiedDuration)
@@ -99,7 +99,7 @@ if Server then
 		for _, entity in ipairs(hitEntities) do
 
 			local targetOrigin = GetTargetOrigin(entity)
-			self:DoDamage(shotDamage, entity, targetOrigin, GetNormalizedVector(entity:GetOrigin() - self:GetOrigin()), "none")
+			self:DoDamage(shotDamage, entity, self:GetOrigin(), GetNormalizedVector(entity:GetOrigin() - self:GetOrigin()), "none")
 
 			if entity.SetElectrified then
 				entity:SetElectrified(kElectrifiedDuration)
