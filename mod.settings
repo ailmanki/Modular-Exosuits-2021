@@ -1,4 +1,4 @@
-name        = "Modular Exosuits Beta"
+name        = "Modular Exosuits Beta (DEV)"
 source_dir  = "source"
 output_dir  = "output"
 description = [=[Scatter's Modular Exos (based on the one from 2014 by Scatter). This mod allows you to customize your Exo in the Prototype Lab menu.

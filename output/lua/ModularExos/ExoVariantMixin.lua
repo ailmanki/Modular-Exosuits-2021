@@ -21,9 +21,15 @@ if Client then
             local wep = self:GetActiveWeapon()
             if wep then
                 local className = wep:GetLeftSlotWeapon():GetClassName()
-                if className == "ExoShield" then
+                
+				if className == "ExoShield" then
                     className = "Claw"
                 end
+				
+				if className == "PlasmaLauncher" then
+					className = "Railgun"
+				end
+				
                 if className == "Claw" then
                     local weaponHolder = self:GetWeapon(ExoWeaponHolder.kMapName)
                     if weaponHolder:GetRightSlotWeapon():isa("Minigun") then

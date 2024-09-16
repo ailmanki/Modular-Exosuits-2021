@@ -8,11 +8,11 @@ kMinigunCost = 25
 kExoShieldCost = 15
 kClawCost = 5
 --kPhaseModuleCost = 15
-kThrustersCost = 20
-kArmorModuleCost = 20
-kNanoModuleCost = 20
-kExoNanoShieldCost = 20
-kExoCatPackCost = 20
+kThrustersCost = 10
+kArmorModuleCost = 10
+kNanoModuleCost = 10
+kExoNanoShieldCost = 10
+kExoCatPackCost = 10
 
 kMinigunMovementSlowdown = 1
 kRailgunMovementSlowdown = 1
@@ -42,7 +42,7 @@ kExoNanoShieldMinFuel = 0.99 -- Energy Min
 kExoNanoShieldFuelUsageRate = 4 -- Energy Cost/s
 
 --- Exo-Nanorepair
-kExoRepairMinFuel = 0.99 -- Energy Min
+kExoRepairMinFuel = 0.01 -- Energy Min
 kExoRepairPerSecond = 15
 kExoRepairFuelUsageRate = 5 --Energy Cost/s
 kExoRepairInterval = 0.5
@@ -66,29 +66,15 @@ Exo.ThrusterModuleTech = kTechId.ExosuitTech
 --Weapons
 
 --RAILGUN --
---[[kRailgunDamage = 30
-kRailChargeDamage = 50
-Railgun.kRailChargeDamage = 50
-Railgun.kChargeTime = 2
-Railgun.kChargeForceShootTime = 2.2
-Railgun.kRailgunRange = 400
-Railgun.kRailgunSpread = Math.Radians(0)
-Railgun.kBulletSize = 0.3
-Railgun.kRailgunMovementSlowdown = 0.8
-Railgun.kRailgunChargeTime = 1.4
-Railgun.kRailgunDamage = 30]]
-
-
-kRailgunWeight = 0.1 -- default 0.045
-kRailgunDamage = 30 -- default 10
-kRailgunChargeDamage = 10 -- default 140
+kRailgunWeight = 0.1      -- default 0.045
+kRailgunDamage = 45 	  -- default 10
+kRailgunChargeDamage = 15 -- default 140
 
 -- CLAW
 kClawWeight = 0.0 -- default 0.01
 kClawDamage = 50 -- default 50
 
 -- MINIGUN --
-
 kMinigunDamage = 6 -- default 6
 kMinigunDamageType = kDamageType.Heavy --original heavy
 kMinigunWeight = 0.2 -- default 0.06
@@ -100,21 +86,21 @@ kPlasmaT1LifeTime = 10
 kPlasmaT2LifeTime = 10
 kPlasmaT3LifeTime = 10
 
-kPlasmaMinDirectDamage = 30
-kPlasmaMaxDirectDamage = 40
+kPlasmaMinDirectDamage = 50
+kPlasmaMaxDirectDamage = 70
 
-kPlasmaSpeedMin = 1.5
-kPlasmaSpeedMedian = 4
-kPlasmaSpeedMax = 6.5
+kPlasmaSpeedMin = 20
+kPlasmaSpeedMedian = 35
+kPlasmaSpeedMax = 50
 
 kPlasmaHitBoxRadiusMax = 0.495 -- Hitbox radius from center of projectile...
 kPlasmaHitBoxRadiusMedian = 0.33
 kPlasmaHitBoxRadiusMin = 0.165
 
-kPlasmaDOTDamageMax = 20 -- DOT applied after direct damage
+kPlasmaDOTDamageMax = 40 -- DOT applied after direct damage
 kPlasmaDOTDamageMin = 0
-kPlasmaDOTDuration = 3
-kPlasmaDOTInterval = 0.5
+kPlasmaDOTDuration = 1.5
+kPlasmaDOTInterval = 0.25
 
 kPlasmaDamageRadius = 4 -- 4 is the pulse damage radius (matches pulse cinematic)
 

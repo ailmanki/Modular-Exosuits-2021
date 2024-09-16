@@ -130,17 +130,17 @@ kExoModuleTypesData = {
     --    weight = 0.12,
     --	requiredTechId = Exo.ExoFlamerTech
     --},
-    [kExoModuleTypes.Shield] = {
-        category = kExoModuleCategories.Weapon,
-        powerCost = 0,
-    	resourceCost = kExoShieldCost,
-        mapName = ExoShield.kMapName,
-        armType = kExoArmTypes.Claw,
-        weight = kExoShieldWeight,
-        armorValue     = kThrustersArmor,
-    	requiredTechId = Exo.ExoShieldTech,
-        leftArmOnly  = true
-    },
+    --[kExoModuleTypes.Shield] = {
+    --    category = kExoModuleCategories.Weapon,
+    --    powerCost = 0,
+    --	resourceCost = kExoShieldCost,
+    --    mapName = ExoShield.kMapName,
+    --    armType = kExoArmTypes.Claw,
+    --    weight = kExoShieldWeight,
+    --    armorValue     = kThrustersArmor,
+    --	requiredTechId = Exo.ExoShieldTech,
+    --    leftArmOnly  = true
+    --},
     --[kExoModuleTypes.MarineStructureAbility] = {
     --    category = kExoModuleCategories.Weapon,
     --    powerCost = 0,
@@ -188,21 +188,21 @@ kExoModuleTypesData = {
         
     },
     
-    [kExoModuleTypes.NanoShield] = {
-        category     = kExoModuleCategories.Ability,
-        powerCost    = 0,
-        resourceCost = kExoNanoShieldCost,
-        weight       = kNanoShieldWeight,
-        
-    },
-    [kExoModuleTypes.CatPack]    = {
-        category     = kExoModuleCategories.Ability,
-        powerCost    = 0,
-        resourceCost = kExoCatPackCost,
-        weight       = kCatPackWeight,
-        armorValue   = kCatPackArmor,
-        
-    },
+    --[kExoModuleTypes.NanoShield] = {
+    --    category     = kExoModuleCategories.Ability,
+    --    powerCost    = 0,
+    --    resourceCost = kExoNanoShieldCost,
+    --    weight       = kNanoShieldWeight,
+    --    
+    --},
+    --[kExoModuleTypes.CatPack]    = {
+    --    category     = kExoModuleCategories.Ability,
+    --    powerCost    = 0,
+    --    resourceCost = kExoCatPackCost,
+    --    weight       = kCatPackWeight,
+    --    armorValue   = kCatPackArmor,
+    --    
+    --},
     
     [kExoModuleTypes.None]       = { },
 }

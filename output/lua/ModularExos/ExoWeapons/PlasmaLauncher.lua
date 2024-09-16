@@ -10,6 +10,7 @@ Script.Load("lua/Weapons/ClientWeaponEffectsMixin.lua")
 Script.Load("lua/ModularExos/ExoWeapons/PlasmaBallT1.lua")
 Script.Load("lua/ModularExos/ExoWeapons/PlasmaBallT2.lua")
 Script.Load("lua/ModularExos/ExoWeapons/PlasmaBallT3.lua")
+
 Script.Load("lua/ModularExos/ExoWeapons/PierceProjectile.lua")
 
 class 'PlasmaLauncher'(Entity)
@@ -112,20 +113,19 @@ function PlasmaLauncher:ProcessMoveOnWeapon(player, input)
     end
 end
 
--- Allows plasmalaunchers to fire simulataneously...
+-- Allows railguns to fire simulataneously...
 function PlasmaLauncher:OnPrimaryAttack(player)
     
     local exoWeaponHolder = player:GetActiveWeapon()
-    local otherSlotWeapon = self:GetExoWeaponSlot() == ExoWeaponHolder.kSlotNames.Left and exoWeaponHolder:GetRightSlotWeapon() or exoWeaponHolder:GetLeftSlotWeapon()
-    if self.timeOfLastShot + kPlasmaLauncherChargeTime <= Shared.GetTime() then
-        
+    local otherSlotWeapon = self:GetExoWeaponSlot() == ExoWeaponHolder.kSlotNames.Left and exoWeaponHolder:GetRightSlotWeapon() or exoWeaponHolder:GetLeftSlotWeapon() 
+	if self.timeOfLastShot + kPlasmaLauncherChargeTime <= Shared.GetTime() then
+    
         if not self.plasmalauncherAttacking then
             self.timeChargeStarted = Shared.GetTime()
         end
         self.plasmalauncherAttacking = true
-    
+		
     end
-
 end
 
 function PlasmaLauncher:OnPrimaryAttackEnd(player)
@@ -142,41 +142,6 @@ local function TriggerSteamEffect(self, player)
     
 end
 
-function PlasmaLauncher:GetBarrelPoint()
-
-    local player = self:GetParent()
-    if player then
-    
-        if player:GetIsLocalPlayer() then
-        
-            local origin = player:GetEyePos()
-            local viewCoords = player:GetViewCoords()
-            
-            if self:GetIsLeftSlot() then
-                return origin + viewCoords.zAxis * 0.9 + viewCoords.xAxis * 0.65 + viewCoords.yAxis * -0.19
-            else
-                return origin + viewCoords.zAxis * 0.9 + viewCoords.xAxis * -0.65 + viewCoords.yAxis * -0.19
-            end    
-        
-        else
-    
-            local origin = player:GetEyePos()
-            local viewCoords = player:GetViewCoords()
-            
-            if self:GetIsLeftSlot() then
-                return origin + viewCoords.zAxis * 0.9 + viewCoords.xAxis * 0.35 + viewCoords.yAxis * -0.15
-            else
-                return origin + viewCoords.zAxis * 0.9 + viewCoords.xAxis * -0.35 + viewCoords.yAxis * -0.15
-            end
-            
-        end    
-        
-    end
-    
-    return self:GetOrigin()
-
-end
-
 function PlasmaLauncher:GetDeathIconIndex()
     return kDeathMessageIcon.Railgun
 end
@@ -184,35 +149,43 @@ end
 local function PlasmaBallProjectile(self, player)
 
 	if not Predict then
-
+		
         local eyePos = player:GetEyePos()
         local viewCoords = player:GetViewCoords()
-
-        local startPointTrace = Shared.TraceCapsule(eyePos, eyePos + viewCoords.zAxis * 1.5, Spit.kRadius, 0, CollisionRep.Damage, PhysicsMask.PredictedProjectileGroup, EntityFilterOneAndIsa(player, "Babbler"))
-        local startPoint = startPointTrace.endPoint
+		
+		local startPoint
+		
+		if self:GetIsLeftSlot() then
+			startPoint = eyePos + viewCoords.zAxis * 1.75 + viewCoords.xAxis * 0.65 + viewCoords.yAxis * -0.19
+		else
+			startPoint = eyePos + viewCoords.zAxis * 1.75 + viewCoords.xAxis * -0.65 + viewCoords.yAxis * -0.19
+		end
 
 		local ChargePercent = math.min(1, (Shared.GetTime() - self.timeChargeStarted) / kChargeTime)
 		local shotDamage = kPlasmaMinDirectDamage + ChargePercent * (kPlasmaMaxDirectDamage - kPlasmaMinDirectDamage)
-		--local shotSpeed = kPlasmaSpeedMax - ChargePercent * (kPlasmaSpeedMax - kPlasmaSpeedMin)
 		local shotDOTDamage = kPlasmaDOTDamageMin + ChargePercent * (kPlasmaDOTDamageMax - kPlasmaDOTDamageMin)
 
 		local shotHitBoxSize, shotDamageRadius, shotSpeed
+
+		local exoWeaponHolder = player:GetActiveWeapon()
+		local LeftWeapon = exoWeaponHolder:GetLeftSlotWeapon()
+		local RightWeapon = exoWeaponHolder:GetRightSlotWeapon()
 
 		if ChargePercent < 0.33 then
 			shotHitBoxSize = kPlasmaHitBoxRadiusMin
 			shotSpeed = kPlasmaSpeedMax
 			shotDamageRadius = kPlasmaDamageRadius/2.0
-			player:CreatePierceProjectile("PlasmaT1", startPoint, viewCoords.zAxis * shotSpeed, 0.5, 0, 0 , nil, shotDamage, shotDOTDamage, shotHitBoxSize, shotDamageRadius, ChargePercent)
+			player:CreatePierceProjectile("PlasmaT1", startPoint, viewCoords.zAxis * shotSpeed, 0.5, 0, 0 , nil, shotDamage, shotDOTDamage, shotHitBoxSize, shotDamageRadius, ChargePercent, player)
 		elseif ChargePercent < 0.67 then
 			shotHitBoxSize = kPlasmaHitBoxRadiusMedian
 			shotSpeed = kPlasmaSpeedMedian
 			shotDamageRadius = kPlasmaDamageRadius/2.0
-			player:CreatePierceProjectile("PlasmaT2", startPoint, viewCoords.zAxis * shotSpeed, 0.5, 0, 0 , nil, shotDamage, shotDOTDamage, shotHitBoxSize, shotDamageRadius, ChargePercent)
+			player:CreatePierceProjectile("PlasmaT2", startPoint, viewCoords.zAxis * shotSpeed, 0.5, 0, 0 , nil, shotDamage, shotDOTDamage, shotHitBoxSize, shotDamageRadius, ChargePercent, player)
 		else
 			shotHitBoxSize = kPlasmaHitBoxRadiusMax
 			shotDamageRadius = kPlasmaDamageRadius
 			shotSpeed = kPlasmaSpeedMin
-			player:CreatePierceProjectile("PlasmaT3", startPoint, viewCoords.zAxis * shotSpeed, 0.5, 0, 0 , nil, shotDamage, shotDOTDamage, shotHitBoxSize, shotDamageRadius, ChargePercent)
+			player:CreatePierceProjectile("PlasmaT3", startPoint, viewCoords.zAxis * shotSpeed, 0.5, 0, 0 , nil, shotDamage, shotDOTDamage, shotHitBoxSize, shotDamageRadius, ChargePercent, player)
 		end	
     end
 end
@@ -250,8 +223,17 @@ function PlasmaLauncher:OnUpdateRender()
 
     PROFILE("PlasmaLauncher:OnUpdateRender")
     
-    local chargeAmount = self:GetChargeAmount()
-    local parent = self:GetParent()
+	local parent = self:GetParent()
+	local chargeAmount
+	
+	local exoWeaponHolder = parent:GetActiveWeapon()
+	local LeftWeapon = exoWeaponHolder:GetLeftSlotWeapon()
+	local RightWeapon = exoWeaponHolder:GetRightSlotWeapon()
+	local otherSlotWeapon = self:GetExoWeaponSlot() == ExoWeaponHolder.kSlotNames.Left and exoWeaponHolder:GetRightSlotWeapon() or exoWeaponHolder:GetLeftSlotWeapon()
+
+	chargeAmount = self:GetChargeAmount()
+	UIchargeAmount = self:GetChargeAmount()
+	
     if parent and parent:GetIsLocalPlayer() then
     
         local viewModel = parent:GetViewModelEntity()
@@ -268,15 +250,17 @@ function PlasmaLauncher:OnUpdateRender()
         if not chargeDisplayUI then
         
             chargeDisplayUI = Client.CreateGUIView(246, 256)
-            chargeDisplayUI:Load("lua/GUI" .. self:GetExoWeaponSlotName():gsub("^%l", string.upper) .. "RailgunDisplay.lua")
+            chargeDisplayUI:Load("lua/ModularExos/GUI" .. self:GetExoWeaponSlotName():gsub("^%l", string.upper) .. "PlasmaDisplay.lua")
             chargeDisplayUI:SetTargetTexture("*exo_railgun_" .. self:GetExoWeaponSlotName())
             self.chargeDisplayUI = chargeDisplayUI
+			
+			Log("%s","lua/ModularExos/GUI" .. self:GetExoWeaponSlotName():gsub("^%l", string.upper) .. "PlasmaDisplay.lua")
             
         end
         
-        chargeDisplayUI:SetGlobal("chargeAmount" .. self:GetExoWeaponSlotName(), chargeAmount)
+        chargeDisplayUI:SetGlobal("chargeAmount" .. self:GetExoWeaponSlotName(), UIchargeAmount)
         chargeDisplayUI:SetGlobal("timeSinceLastShot" .. self:GetExoWeaponSlotName(), Shared.GetTime() - self.timeOfLastShot)
-        
+        		
     else
     
         if self.chargeDisplayUI then
@@ -287,17 +271,17 @@ function PlasmaLauncher:OnUpdateRender()
         end
         
     end
-    
+    	
     if self.chargeSound then
     
         local playing = self.chargeSound:GetIsPlaying()
-        if not playing and chargeAmount > 0 then
+        if not playing and UIchargeAmount > 0 then
             self.chargeSound:Start()
-        elseif playing and chargeAmount <= 0 then
+        elseif playing and UIchargeAmount <= 0 then
             self.chargeSound:Stop()
         end
         
-        self.chargeSound:SetParameter("charge", chargeAmount, 1)
+        self.chargeSound:SetParameter("charge", UIchargeAmount, 1)
         
     end
     
@@ -306,11 +290,12 @@ end
 function PlasmaLauncher:OnTag(tagName)
 
     PROFILE("PlasmaLauncher:OnTag")
-    
+    	
     if self:GetIsLeftSlot() then
     
         if tagName == "l_shoot" then
             Shoot(self, true)
+
         elseif tagName == "l_shoot_end" then
             self.lockCharging = false
         end
@@ -333,8 +318,9 @@ function PlasmaLauncher:OnUpdateAnimationInput(modelMixin)
     if self.plasmalauncherAttacking then
         activity = "primary"
     end
-    modelMixin:SetAnimationInput("activity_" .. self:GetExoWeaponSlotName(), activity)
     
+	modelMixin:SetAnimationInput("activity_" .. self:GetExoWeaponSlotName(), activity)
+
 end
 
 function PlasmaLauncher:UpdateViewModelPoseParameters(viewModel)
